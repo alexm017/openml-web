@@ -1,0 +1,66 @@
+<IfModule mime_module>
+  AddHandler application/x-httpd-ea-php81 .php .php8 .phtml
+</IfModule>
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+
+    # If the requested file or directory exists, don't rewrite
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+
+    # Route /register to register.php
+    RewriteRule ^register/?$ register.php [L,QSA]
+
+    #####################################################################################
+    # Administrative | Route /login to login.php
+    RewriteRule ^login/?$ login.php [L,QSA]
+    RewriteRule ^profile/?$ profile.php [L,QSA]
+    RewriteRule ^upload/?$ upload.php [L,QSA]
+    RewriteRule ^model/?$ overview.php [L,QSA] #ml_model.php redirect to overview.php
+    RewriteRule ^logout/?$ logout.php [L,QSA]
+    RewriteRule ^training/?$ training_ml/training.php [L,QSA] #upload training data, community
+
+    
+    #Setup
+    RewriteRule ^model/overview?$ setup/overview.php [L,QSA]
+    RewriteRule ^model/intothedeep/overview?$ setup/overview.php [L,QSA]
+    RewriteRule ^model/decode/overview?$ ftc_decode/setup/overview.php [L,QSA]
+    RewriteRule ^model/intothedeep/prerequisites?$ setup/prerequisites.php [L,QSA]
+    RewriteRule ^model/decode/prerequisites?$ ftc_decode/setup/prerequisites.php [L,QSA]
+    RewriteRule ^model/intothedeep/resources?$ setup/resources.php [L,QSA]
+    RewriteRule ^model/decode/resources?$ ftc_decode/setup/resources.php [L,QSA]
+    
+    #2D Sample Detection
+    RewriteRule ^model/intothedeep/2d_cameracalib?$ 2d_sample_detection/cameracalib.php [L,QSA]
+    RewriteRule ^model/decode/2d_cameracalib?$ ftc_decode/2d_sample_detection/cameracalib.php [L,QSA]
+    
+    #3D Sample Detection
+    RewriteRule ^model/intothedeep/3d_cameracalib?$ 3d_sample_detection/cameracalib.php [L,QSA]
+    RewriteRule ^model/decode/3d_cameracalib?$ ftc_decode/3d_sample_detection/cameracalib.php [L,QSA]
+
+    #Training ML
+    RewriteRule ^model/intothedeep/training?$ training_ml/traningdata.php [L,QSA]
+    RewriteRule ^model/decode/training?$ ftc_decode/training_ml/traningdata.php [L,QSA]
+    RewriteRule ^model/intothedeep/training_structure?$ training_ml/trainings.php [L,QSA]
+    RewriteRule ^model/decode/training_structure?$ ftc_decode/training_ml/trainings.php [L,QSA]
+    RewriteRule ^model/intothedeep/training_ml?$ training_ml/pythontraining.php [L,QSA]
+    RewriteRule ^model/decode/training_ml?$ ftc_decode/training_ml/pythontraining.php [L,QSA]
+    RewriteRule ^model/intothedeep/label_tool?$ training_ml/label_tool.php [L,QSA]
+    RewriteRule ^model/decode/label_tool?$ ftc_decode/training_ml/label_tool.php [L,QSA]
+
+    #Examples
+    RewriteRule ^model/intothedeep/pythonml?$ examples/pythonml.php [L,QSA]
+    RewriteRule ^model/decode/pythonml?$ ftc_decode/examples/pythonml.php [L,QSA]
+    RewriteRule ^model/intothedeep/android_studio?$ examples/android_studio.php [L,QSA]
+    RewriteRule ^model/decode/android_studio?$ ftc_decode/examples/android_studio.php [L,QSA]
+    RewriteRule ^model/intothedeep/robot_control?$ examples/robot_control.php [L,QSA]
+    RewriteRule ^model/decode/robot_control?$ ftc_decode/examples/robot_control.php [L,QSA]
+
+    #######################################################################################    
+
+    # Optionally, route the root URL to index.php
+    RewriteRule ^$ index.php [L,QSA]
+</IfModule>
+
