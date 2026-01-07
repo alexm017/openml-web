@@ -60,6 +60,24 @@
 
     #######################################################################################    
 
+    #FTC DECODE 2026
+
+    RewriteRule ^model/decode/apriltag/?$ ftc_decode/apriltag/getting_started.php [L,QSA]
+    RewriteRule ^model/decode/apriltag_code_sample/?$ ftc_decode/apriltag/apriltag_code_sample.php [L,QSA]
+    RewriteRule ^model/decode/apriltag_implementation/?$ ftc_decode/apriltag/apriltag_implement.php [L,QSA]
+
+    #Autonomous Control
+    RewriteRule ^model/decode/autonomous/?$ ftc_decode/autonomous/getting_started.php [L,QSA]
+    RewriteRule ^model/decode/odometry/?$ ftc_decode/odometry/getting_started.php [L,QSA]
+    RewriteRule ^model/decode/road_runner_056/?$ ftc_decode/road_runner_056/getting_started.php [L,QSA]
+    RewriteRule ^model/decode/road_runner_10/?$ ftc_decode/road_runner_10/getting_started.php [L,QSA]
+    RewriteRule ^model/decode/pedro_pathing/?$ ftc_decode/pedro_pathing/getting_started.php [L,QSA]
+
+    #Auto Artifact Pick-up (beta)
+    RewriteRule ^model/decode/auto_artifact/?$ ftc_decode/auto_artifact/getting_started.php [L,QSA]
+    RewriteRule ^model/decode/auto_artifact_detection/?$ ftc_decode/auto_artifact_detection/getting_started.php [L,QSA]
+    RewriteRule ^model/decode/auto_artifact_code/?$ ftc_decode/auto_artifact_code/getting_started.php [L,QSA]
+
     # Optionally, route the root URL to index.php
     RewriteRule ^$ index.php [L,QSA]
 </IfModule>

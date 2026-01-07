@@ -487,33 +487,35 @@ $season_path = ($season_cookie == 'Decode') ? 'decode' : 'intothedeep';
                     <div class="setup">AprilTag Detection</div>
                     <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/apriltag">Getting
                             Started</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/apriltag">AprilTag
+                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/apriltag_implementation">AprilTag
                             Implementation</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/apriltag">AprilTag
+                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/apriltag_code_sample">AprilTag
                             Code Sample</a></div>
 
                     <div class="docsLine"></div>
 
                     <div class="setup">Autonomous Control</div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/apriltag">Getting
+                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/autonomous">Getting
                             Started</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/apriltag">Odometry
+                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/odometry">Odometry
                             Pods</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/apriltag">Road Runner 0.5.6
+                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/road_runner_056">Road Runner 0.5.6
                             Implementation</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/apriltag">Road Runner 1.0
+                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/road_runner_10">Road Runner 1.0
                             Implementation</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/apriltag">Pedro Pathing
+                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/pedro_pathing">Pedro Pathing
                             Implementation</a></div>
 
                     <div class="docsLine"></div>
 
                     <div class="setup">Auto Artifact Pick-up (beta)</div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/apriltag">Getting
+                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/auto_artifact">Getting
                             Started</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/apriltag">Detection Method
+                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/auto_artifact_detection">Detection
+                            Method
                             Implementation</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/apriltag">Sample Code For Pick-up</a>
+                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/auto_artifact_code">Sample Code For
+                            Pick-up</a>
                     </div>
 
                 <?php endif; ?>
