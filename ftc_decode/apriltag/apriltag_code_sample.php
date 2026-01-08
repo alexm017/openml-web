@@ -1,5 +1,24 @@
 <?php
 session_start();
+
+$lang = isset($_COOKIE['site_lang']) ? $_COOKIE['site_lang'] : 'en';
+$season_cookie = isset($_COOKIE['season_choice']) ? $_COOKIE['season_choice'] : 'IntoTheDeep';
+$season_year = ($season_cookie == 'Decode') ? '2026' : '2025';
+$season_path = ($season_cookie == 'Decode') ? 'decode' : 'intothedeep';
+
+if (isset($_COOKIE['detection_method'])) {
+    $detection_method = $_COOKIE['detection_method'];
+} else {
+    $detection_method = 'machine_learning';
+}
+
+if ($detection_method == 'color_blob') {
+    $detection_method = 'Color Blob Detection';
+}
+if ($detection_method == 'machine_learning') {
+    $detection_method = 'Machine Learning';
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -125,297 +144,317 @@ session_start();
         </div>
         <div class="docs">Documentation</div>
         <div class="rbox">
-            <div class="title">Python Code For Detection</div>
+            <div class="title">
+                <?php if ($lang == 'ro'): ?>
+                    Cod Exemplu AprilTag (TeleOp + Detectie AprilTag)
+                <?php else: ?>
+                    AprilTag Code Sample (TeleOp + AprilTag Detection)
+                <?php endif; ?>
+            </div>
             <div class="text-container">
                 <?php
-                $lang = isset($_COOKIE['site_lang']) ? $_COOKIE['site_lang'] : 'en';
-                $season_cookie = isset($_COOKIE['season_choice']) ? $_COOKIE['season_choice'] : 'IntoTheDeep';
-                $season_year = ($season_cookie == 'Decode') ? '2026' : '2025';
-                $season_path = ($season_cookie == 'Decode') ? 'decode' : 'intothedeep';
-                if (isset($_COOKIE['detection_method'])) {
-                    $detection_method = $_COOKIE['detection_method'];
-                } else {
-                    $detection_method = 'machine_learning';
-                }
-                if ($detection_method == 'color_blob') {
-                    $detection_method = 'Color Blob Detection';
-                }
-                if ($detection_method == 'machine_learning') {
-                    $detection_method = 'Machine Learning';
-                }
                 if ($lang == 'ro'):
                     ?>
-                    <div class="stext"><b class="bc">[!]</b> Camera trebuie să fie neapărat <u>perpendiculară</u> cu
-                        terenul. <b class="bc">[!]</b></div>
-                    <div class="stext"><b class="bc">[!]</b> Camera trebuie să ofere o vedere în 2D (Exemplu în <u><a
-                                href="/model/cameracalib" style="text-decoration:none; color: white;">Camera
-                                Calibration</a></u>). <b class="bc">[!]</b></div>
-                    <div class="stext"><b class="bc">[!]</b> Camera trebuie să fie deasupra sample-ului pentru a calcula
-                        orientarea sample-ului. <b class="bc">[!]</b></div>
-                    <div class="stext"><b><u>ml_testing.py</u></b></div>
+                    <div class="stext"><b class="bc">Pasul 1</b> -> Adaugă fișierul <u>aprilTagIdentification.java</u> în
+                        proiectul tău. (Click pentru descărcare)
+                    </div>
+                    <div class="stext"><u>aprilTagIdentification.java</u></div>
                     <div class="code-window">
-                        <pre><code class="language-python" >#Pentru a opri codul trebuie apasata tasta Q
-                                                import cv2
-                                                from ultralytics import YOLO
-                                                import math
+                        <pre><code class="language-java" >
+                                package org.firstinspires.ftc.teamcode.drive.ComputerVision;
 
-                                                model = YOLO("C:\\Users\\&lt;USER>\\Desktop\\OpenML\\high.pt") #Modifica aici cu Path-ul tau curent si cu modelul OpenML descarcat
+                                import android.util.Size;
 
-                                                focal_length_pixels = 600
-                                                object_real_width = 3.8
-                                                camera_angle_from_object = 0
-                                                fov_degrees = 60 #Aici se pune FOV-ul camerei. Uita-te pe Camera Calibration pe a afla cum se calculeaza
-                                                object_width = 0
-                                                object_height = 0
+                                import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+                                import com.qualcomm.robotcore.hardware.HardwareMap;
 
-                                                maxWidth = 0
-                                                minWidth = 3000
+                                import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+                                import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+                                import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+                                import org.firstinspires.ftc.vision.VisionPortal;
+                                import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
+                                import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
-                                                cap = cv2.VideoCapture(0) #Daca nu functioneaza, incrementeaza numarul cu 1 pana cand camera functioneaza si apare pe ecran
+                                import java.util.List;
 
-                                                while True:
-                                                    ret, frame = cap.read()
-                                                    if not ret:
-                                                        break
+                                public class AprilTagIdentification {
+                                    AprilTagProcessor aprilTagProcessor;
+                                    VisionPortal visionPortal;
+                                    MultipleTelemetry telemetry;
 
-                                                    results = model.predict(frame, conf=0.5)
+                                    public double detectionId;
+                                    public void init(HardwareMap hwdmap, MultipleTelemetry telemetrys){
+                                        telemetry = telemetrys;
+                                        aprilTagProcessor = new AprilTagProcessor.Builder()
+                                                .setDrawTagID(true)
+                                                .setDrawTagOutline(true)
+                                                .setDrawAxes(true)
+                                                .setDrawCubeProjection(true)
+                                                .setOutputUnits(DistanceUnit.CM, AngleUnit.DEGREES)
+                                                .build();
 
-                                                    frame_with_results = results[0].plot()
-                                                    boxes = results[0].boxes
-                                                    if len(boxes) > 0:
-                                                        x1, y1, x2, y2 = map(int, boxes.xyxy[0])
-                                                        object_width = x2 - x1
-                                                        object_height = y2 - y1
+                                        VisionPortal.Builder builder = new VisionPortal.Builder();
+                                        builder.setCamera(hwdmap.get(WebcamName.class, "YOUR_WEBCAM_NAME"));
+                                        builder.setCameraResolution(new Size(640, 480));
+                                        builder.addProcessor(aprilTagProcessor);
 
-                                                        middle_of_the_object_pos = (x2 + x1) / 2
-                                                        middle_of_the_screen = 640 / 2 #640x480 640 Este distanta orizontala si masoara mijlocul imaginii orizontal. Daca testati pe o rezolutie de 320x240, schimbati in 320 de la 640
-                                                        offset = middle_of_the_object_pos - middle_of_the_screen
-                                                        camera_angle_from_object = (offset / 640) * fov_degrees #Aici masoara unghiul sample-ului fata de camera orizontal. (Se poate si vertical, acelasi lucru, dar daca rezolutia este 640x480, in loc de 640 este 480
+                                        visionPortal = builder.build();
+                                    }
 
-                                                        first_angle = 0.00 #Aici pune cel mai mic unghi calculat matematic cand ai urmati pasii de pe pagina Camera Calibration. Sample-ul este drept arctg(width/height) => unghi
-                                                        y = 0.00 #Aici calculezi (max angle - min angle)/90 de grade. Exemplu: (66.32-24.79)/90 => 0.459555
-                                                        raw_angle = math.degrees(math.atan(object_width / object_height))
-                                                        object_angle = (raw_angle - first_angle) / y
-                                                        servo_position = 0.5 + (object_angle * 0.0038) #Calcularea Servo_Pos la fel ca pe pagina Camera Calibration
-        
-                                                        cv2.putText(frame_with_results, f"Sample Angle: {object_angle:.2f}",
-                                                                    (x1, y1 + 80),
-                                                                    cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
-        
-                                                        cv2.putText(frame_with_results, f"Servo Pos: {servo_position:.2f}",
-                                                                    (x1, y1 + 100),
-                                                                    cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
-        
-                                                    cv2.imshow('OpenML - Real-time Detection', frame_with_results)
+                                    public void telemetryAprilTag() {
 
-                                                    if cv2.waitKey(1) &amp; 0xFF == ord('q'): # Apasa Q pentru a iesi din cod
-                                                        break
+                                        List<AprilTagDetection> currentDetections = aprilTagProcessor.getDetections();
+                                        telemetry.addData("[->] AprilTags Detected", currentDetections.size());
 
-                                                cap.release()
-                                                cv2.destroyAllWindows()
-                                                                    </code></pre>
+                                        for (AprilTagDetection detection : currentDetections) {
+                                            if (detection.metadata != null) {
+                                                telemetry.addLine(String.format("\n==== (ID %d) %s", detection.id, detection.metadata.name));
+                                                detectionId = detection.id;
+                                            } else {
+                                                telemetry.addLine(String.format("\n==== (ID %d) Unknown", detection.id));
+                                                telemetry.addLine(String.format("Center %6.0f %6.0f   (pixels)", detection.center.x, detection.center.y));
+                                            }
+                                        }
+
+                                    }
+
+                                    public void close(){
+                                        visionPortal.close();
+                                    }
+                                }
+                                                    </code></pre>
                     </div>
                     <div class="stext">
-                        Acest cod folosește YOLO pentru a detecta un obiect în timp real folosind o cameră și calculează
-                        poziția acestuia față de centru, determinând astfel unghiul său și poziția unui servomotor pentru
-                        urmărire.
+                        <b class="bc">Pasul 2</b> -> Setează numele webcam-ului în driver hub.
                     </div>
+                    <div class="rtext">
+                        <li>
+                            </b>1.</b> Mergi la driver hub și apasă pe cele 3 puncte din colțul dreapta-sus.</li>
+                    </div>
+                    <div class="rtext">
+                        <img style="border-radius: 10px;" width="500" src="/ftc_decode/data/step0_webcam.png">
+                    </div>
+                    <div class="rtext">
+                        <li>
+                            </b>2.</b> Apoi apasă pe Configure Robot.</li>
+                    </div>
+                    <div class="rtext">
+                        <img style="border-radius: 10px;" width="500" src="/ftc_decode/data/step1_webcam.png">
+                    </div>
+                    <div class="rtext">
+                        <li>
+                            </b>3.</b> Apasă mai întâi pe butonul <u>Scan</u> apoi așteaptă să apară webcam-ul. După ce
+                            vezi webcam-ul în configurație, apasă pe el și redenumește-l cum dorești.</li>
+                    </div>
+                    <div class="rtext">
+                        <img style="border-radius: 10px;" width="200" height="400" src="/ftc_decode/data/step2_webcam.jpg">
+                    </div>
+
                     <div class="stext">
-                        <b>Cum funcționează?</b>
+                        <b class="bc">Pasul 3</b> -> Creează clasa ta TeleOp folosind codul de mai jos.
                     </div>
-                    <div class="stext">
-                        <b>1. Inițializare</b>
-                    </div>
-                    <div class="rtext">
-                        <li>Se încarcă modelul YOLO antrenat pentru recunoașterea obiectului dorit.</li>
-                    </div>
-                    <div class="rtext">
-                        <li>Se definește câmpul vizual al camerei și alte variabile necesare pentru calcule.</li>
-                    </div>
-                    <div class="rtext">
-                        <li>Se deschide camera pentru capturarea imaginilor în timp real.</li>
-                    </div>
-                    <div class="stext">
-                        <b>2. Procesare continuă</b>
-                    </div>
-                    <div class="rtext">
-                        <li>Se preia fiecare cadru video și se trimite la modelul YOLO pentru detectarea obiectului.</li>
-                    </div>
-                    <div class="rtext">
-                        <li>Dacă obiectul este găsit, se obține un „bounding box” (coordonatele care încadrează obiectul).
-                        </li>
-                    </div>
-                    <div class="rtext">
-                        <li>Se calculează lățimea și înălțimea obiectului în pixeli.</li>
-                    </div>
-                    <div class="stext">
-                        <b>3. Calcularea unghiului și a poziției</b>
-                    </div>
-                    <div class="rtext">
-                        <li>Se compară poziția obiectului cu centrul ecranului pentru a determina cât de departe este de axa
-                            centrală.</li>
-                    </div>
-                    <div class="rtext">
-                        <li>Pe baza dimensiunilor obiectului detectat, se calculează unghiul său real.</li>
-                    </div>
-                    <div class="rtext">
-                        <li>Se ajustează unghiul calculat pentru a obține o valoare corectă a poziției servomotorului.</li>
-                    </div>
-                    <div class="stext">
-                        <b>4. Afișarea rezultatelor</b>
-                    </div>
-                    <div class="rtext">
-                        <li>Se desenează informațiile pe imagine, cum ar fi lățimea, înălțimea și unghiul obiectului.</li>
-                    </div>
-                    <div class="rtext">
-                        <li>Se afișează imaginea procesată într-o fereastră.</li>
-                    </div>
-                    <div class="stext">
-                        <b>5. Ieșire și oprire</b>
-                    </div>
-                    <div class="rtext">
-                        <li>Programul rulează continuu până când utilizatorul apasă tasta 'q'.</li>
-                    </div>
-                    <div class="rtext">
-                        <li>Se închide camera și se eliberează resursele.</li>
+
+                    <div class="stext"><u>TeleOp_AprilTagDemonstration.java</u></div>
+                    <div class="code-window">
+                        <pre><code class="language-java" >
+                                package org.firstinspires.ftc.teamcode.drive.OpModes;
+
+                                import com.acmerobotics.dashboard.FtcDashboard;
+                                import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+                                import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+                                import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+
+                                import org.firstinspires.ftc.teamcode.drive.ComputerVision.AprilTagIdentification;
+
+                                @TeleOp
+                                public class TeleOp_AprilTagDemonstration extends LinearOpMode {
+
+                                    MultipleTelemetry telemetrys;
+                                    AprilTagIdentification aprilTagIdentification = new AprilTagIdentification();
+
+                                    @Override
+                                    public void runOpMode() throws InterruptedException {
+
+                                        telemetrys = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+
+                                        aprilTagIdentification.init(hardwareMap, telemetrys);
+
+                                        while(opModeInInit()){
+                                            aprilTagIdentification.telemetryAprilTag();
+                                            telemetrys.update();
+                                        }
+
+                                        while(opModeIsActive()){
+                                            aprilTagIdentification.telemetryAprilTag();
+
+                                            telemetrys.update();
+                                        }
+                                    }
+                                }
+                                                    </code></pre>
                     </div>
                     <div class="endLine"></div>
                     <div class="endD"><a href="https://discord.gg/ZB6vQ62KZT">Support -> Discord</a></div>
                     <div class="end"></div>
                 <?php else: ?>
-                    <div class="stext"><b class="bc">[!]</b> The camera must be <u>perpendicular</u> to the
-                        ground. <b class="bc">[!]</b></div>
-                    <div class="stext"><b class="bc">[!]</b> The camera must provide a 2D view (Example in <u><a
-                                href="/model/cameracalib" style="text-decoration:none; color: white;">Camera
-                                Calibration</a></u>). <b class="bc">[!]</b></div>
-                    <div class="stext"><b class="bc">[!]</b> The camera must be above the sample to calculate the
-                        sample orientation. <b class="bc">[!]</b></div>
-                    <div class="stext"><b><u>ml_testing.py</u></b></div>
+                    <div class="stext"><b class="bc">Step 1</b> -> Add the <u>aprilTagIdentification.java</u> file to your
+                        project. (Click to download)
+                    </div>
+                    <div class="stext"><u>aprilTagIdentification.java</u></div>
                     <div class="code-window">
-                        <pre><code class="language-python" >#To stop the code, press the Q key
-                                                import cv2
-                                                from ultralytics import YOLO
-                                                import math
+                        <pre><code class="language-java" >
+                                package org.firstinspires.ftc.teamcode.drive.ComputerVision;
 
-                                                model = YOLO("C:\\Users\\&lt;USER>\\Desktop\\OpenML\\high.pt") #Modify here with your current Path and the downloaded OpenML model
+                                import android.util.Size;
 
-                                                focal_length_pixels = 600
-                                                object_real_width = 3.8
-                                                camera_angle_from_object = 0
-                                                fov_degrees = 60 #Here you put the camera FOV. Look at Camera Calibration to find out how to calculate it
-                                                object_width = 0
-                                                object_height = 0
+                                import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+                                import com.qualcomm.robotcore.hardware.HardwareMap;
 
-                                                maxWidth = 0
-                                                minWidth = 3000
+                                import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+                                import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+                                import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+                                import org.firstinspires.ftc.vision.VisionPortal;
+                                import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
+                                import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
-                                                cap = cv2.VideoCapture(0) #If it doesn't work, increment the number by 1 until the camera works and appears on the screen
+                                import java.util.List;
 
-                                                while True:
-                                                    ret, frame = cap.read()
-                                                    if not ret:
-                                                        break
+                                public class AprilTagIdentification {
+                                    AprilTagProcessor aprilTagProcessor;
+                                    VisionPortal visionPortal;
+                                    MultipleTelemetry telemetry;
 
-                                                    results = model.predict(frame, conf=0.5)
+                                    public double detectionId;
+                                    public void init(HardwareMap hwdmap, MultipleTelemetry telemetrys){
+                                        telemetry = telemetrys;
+                                        aprilTagProcessor = new AprilTagProcessor.Builder()
+                                                .setDrawTagID(true)
+                                                .setDrawTagOutline(true)
+                                                .setDrawAxes(true)
+                                                .setDrawCubeProjection(true)
+                                                .setOutputUnits(DistanceUnit.CM, AngleUnit.DEGREES)
+                                                .build();
 
-                                                    frame_with_results = results[0].plot()
-                                                    boxes = results[0].boxes
-                                                    if len(boxes) > 0:
-                                                        x1, y1, x2, y2 = map(int, boxes.xyxy[0])
-                                                        object_width = x2 - x1
-                                                        object_height = y2 - y1
+                                        VisionPortal.Builder builder = new VisionPortal.Builder();
+                                        builder.setCamera(hwdmap.get(WebcamName.class, "YOUR_WEBCAM_NAME"));
+                                        builder.setCameraResolution(new Size(640, 480));
+                                        builder.addProcessor(aprilTagProcessor);
 
-                                                        middle_of_the_object_pos = (x2 + x1) / 2
-                                                        middle_of_the_screen = 640 / 2 #640x480 640 Is the horizontal distance and measures the middle of the image horizontally. If testing on a 320x240 resolution, change to 320 from 640
-                                                        offset = middle_of_the_object_pos - middle_of_the_screen
-                                                        camera_angle_from_object = (offset / 640) * fov_degrees #Here it measures the sample angle relative to the camera horizontally. (It can also be vertical, same thing, but if the resolution is 640x480, instead of 640 it is 480
+                                        visionPortal = builder.build();
+                                    }
 
-                                                        first_angle = 0.00 #Here put the smallest mathematically calculated angle when you followed the steps on the Camera Calibration page. The sample is straight arctan(width/height) => angle
-                                                        y = 0.00 #Here you calculate (max angle - min angle)/90 degrees. Example: (66.32-24.79)/90 => 0.459555
-                                                        raw_angle = math.degrees(math.atan(object_width / object_height))
-                                                        object_angle = (raw_angle - first_angle) / y
-                                                        servo_position = 0.5 + (object_angle * 0.0038) #Calculating Servo_Pos same as on the Camera Calibration page
-        
-                                                        cv2.putText(frame_with_results, f"Sample Angle: {object_angle:.2f}",
-                                                                    (x1, y1 + 80),
-                                                                    cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
-        
-                                                        cv2.putText(frame_with_results, f"Servo Pos: {servo_position:.2f}",
-                                                                    (x1, y1 + 100),
-                                                                    cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
-        
-                                                    cv2.imshow('OpenML - Real-time Detection', frame_with_results)
+                                    public void telemetryAprilTag() {
 
-                                                    if cv2.waitKey(1) &amp; 0xFF == ord('q'): # Press Q to exit the code
-                                                        break
+                                        List<AprilTagDetection> currentDetections = aprilTagProcessor.getDetections();
+                                        telemetry.addData("[->] AprilTags Detected", currentDetections.size());
 
-                                                cap.release()
-                                                cv2.destroyAllWindows()
-                                                                    </code></pre>
+                                        for (AprilTagDetection detection : currentDetections) {
+                                            if (detection.metadata != null) {
+                                                telemetry.addLine(String.format("\n==== (ID %d) %s", detection.id, detection.metadata.name));
+                                                detectionId = detection.id;
+                                            } else {
+                                                telemetry.addLine(String.format("\n==== (ID %d) Unknown", detection.id));
+                                                telemetry.addLine(String.format("Center %6.0f %6.0f   (pixels)", detection.center.x, detection.center.y));
+                                            }
+                                        }
+
+                                    }
+
+                                    public void close(){
+                                        visionPortal.close();
+                                    }
+                                }
+
+                                                </code></pre>
                     </div>
                     <div class="stext">
-                        This code uses YOLO to detect an object in real-time using a camera and calculates its
-                        position relative to the center, thus determining its angle and the position of a servo motor for
-                        tracking.
+                        <b class="bc">Step 2</b> -> Set webcam name in your driver hub.
                     </div>
+                    <div class="rtext">
+                        <li>
+                            </b>1.</b> Go to the driver hub and click on the 3-dots top-right corner.</li>
+                    </div>
+                    <div class="rtext">
+                        <img style="border-radius: 10px;" width="500" src="/ftc_decode/data/step0_webcam.png">
+                    </div>
+                    <div class="rtext">
+                        <li>
+                            </b>2.</b> Then click on Configure Robot.</li>
+                    </div>
+                    <div class="rtext">
+                        <img style="border-radius: 10px;" width="500" src="/ftc_decode/data/step1_webcam.png">
+                    </div>
+                    <div class="rtext">
+                        <li>
+                            </b>3.</b> Click first on the <u>Scan</u> button then wait for the webcam to appear. After you
+                            see webcam in the configuration click on it and rename it to what you want.</li>
+                    </div>
+                    <div class="rtext">
+                        <img style="border-radius: 10px;" width="200" height="400" src="/ftc_decode/data/step2_webcam.jpg">
+                    </div>
+
                     <div class="stext">
-                        <b>How does it work?</b>
+                        <b class="bc">Step 3</b> -> Create your TeleOp class using the code below.
                     </div>
-                    <div class="stext">
-                        <b>1. Initialization</b>
+
+                    <div class="stext"><u>TeleOp_AprilTagDemonstration.java</u></div>
+                    <div class="code-window">
+                        <pre><code class="language-java" >
+                                package org.firstinspires.ftc.teamcode.drive.OpModes;
+
+                                import com.acmerobotics.dashboard.FtcDashboard;
+                                import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+                                import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+                                import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+
+                                import org.firstinspires.ftc.teamcode.drive.ComputerVision.AprilTagIdentification;
+
+                                @TeleOp
+                                public class TeleOp_AprilTagDemonstration extends LinearOpMode {
+
+                                    MultipleTelemetry telemetrys;
+                                    AprilTagIdentification aprilTagIdentification = new AprilTagIdentification();
+
+                                    @Override
+                                    public void runOpMode() throws InterruptedException {
+
+                                        telemetrys = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+
+                                        aprilTagIdentification.init(hardwareMap, telemetrys);
+
+                                        while(opModeInInit()){
+                                            aprilTagIdentification.telemetryAprilTag();
+                                            telemetrys.update();
+                                        }
+
+                                        while(opModeIsActive()){
+                                            aprilTagIdentification.telemetryAprilTag();
+
+                                            telemetrys.update();
+                                        }
+                                    }
+                                }
+                                                </code></pre>
                     </div>
                     <div class="rtext">
-                        <li>The trained YOLO model is loaded for recognizing the desired object.</li>
+                        <li>1. Select TeleOp_AprilTagDemonstration class in Driver Hub and <b>press init</b>. Do not press
+                            start
+                            after.</li>
                     </div>
                     <div class="rtext">
-                        <li>The camera's field of view and other variables necessary for calculations are defined.</li>
-                    </div>
-                    <div class="rtext">
-                        <li>The camera is opened for capturing images in real-time.</li>
-                    </div>
-                    <div class="stext">
-                        <b>2. Continuous processing</b>
-                    </div>
-                    <div class="rtext">
-                        <li>Each video frame is taken and sent to the YOLO model for object detection.</li>
-                    </div>
-                    <div class="rtext">
-                        <li>If the object is found, a 'bounding box' (coordinates framing the object) is obtained.
+                        <li>2. Press on the <b>3-dots top right corner</b>. Select <b>Camera Stream</b> to see image from
+                            your
+                            w ebcam.
                         </li>
                     </div>
                     <div class="rtext">
-                        <li>The width and height of the object in pixels are calculated.</li>
-                    </div>
-                    <div class="stext">
-                        <b>3. Calculating angle and position</b>
+                        <img style="border-radius: 10px;" width="200" height="400" src="/ftc_decode/data/step3.jpg">
                     </div>
                     <div class="rtext">
-                        <li>The object's position is compared with the center of the screen to determine how far it is from
-                            the central axis.</li>
+                        <li>3. You need to <b>press on the image</b> on your Driver Hub to <b>refresh</b> it.</li>
                     </div>
                     <div class="rtext">
-                        <li>Based on the dimensions of the detected object, its real angle is calculated.</li>
-                    </div>
-                    <div class="rtext">
-                        <li>The calculated angle is adjusted to obtain a correct servo motor position value.</li>
-                    </div>
-                    <div class="stext">
-                        <b>4. Displaying results</b>
-                    </div>
-                    <div class="rtext">
-                        <li>Information such as width, height, and object angle is drawn on the image.</li>
-                    </div>
-                    <div class="rtext">
-                        <li>The processed image is displayed in a window.</li>
-                    </div>
-                    <div class="stext">
-                        <b>5. Exit and stop</b>
-                    </div>
-                    <div class="rtext">
-                        <li>The program runs continuously until the user presses the 'q' key.</li>
-                    </div>
-                    <div class="rtext">
-                        <li>The camera is closed and resources are released.</li>
+                        <img style="border-radius: 10px;" width="500" src="/ftc_decode/data/step4.png">
                     </div>
                     <div class="endLine"></div>
                     <div class="endD"><a href="https://discord.gg/ZB6vQ62KZT">Support -> Discord</a></div>
@@ -501,25 +540,24 @@ session_start();
                     <div class="docsLine"></div>
 
                     <div class="setup">Control Autonom</div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/apriltag">Ghid de
+                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/autonomous">Ghid de
                             initializare</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/apriltag">Odometry
-                            Pods</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/apriltag">Implementare Road Runner
-                            0.5.6</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/apriltag">Implementare Road Runner
-                            1.0</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/apriltag">Implementare Pedro
+                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/odometry">Odometrie</a></div>
+                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/road_runner_056">Implementare Road
+                            Runner 0.5.6</a></div>
+                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/road_runner_10">Implementare Road
+                            Runner 1.0</a></div>
+                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/pedro_pathing">Implementare Pedro
                             Pathing</a></div>
 
                     <div class="docsLine"></div>
 
                     <div class="setup">Colectare Automata Artefacte (beta)</div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/apriltag">Ghid de
+                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/auto_artifact">Ghid de
                             initializare</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/apriltag">Implementare Metoda
-                            Detectie</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/apriltag">Cod Exemplu pentru
+                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/auto_artifact_detection">Implementare
+                            Metoda Detectie</a></div>
+                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/auto_artifact_code">Cod Exemplu pentru
                             Colectare</a>
                     </div>
                 <?php endif; ?>
@@ -594,25 +632,27 @@ session_start();
                     <div class="docsLine"></div>
 
                     <div class="setup">Autonomous Control</div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/apriltag">Getting
+                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/autonomous">Getting
                             Started</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/apriltag">Odometry
+                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/odometry">Odometry
                             Pods</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/apriltag">Road Runner 0.5.6
+                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/road_runner_056">Road Runner 0.5.6
                             Implementation</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/apriltag">Road Runner 1.0
+                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/road_runner_10">Road Runner 1.0
                             Implementation</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/apriltag">Pedro Pathing
+                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/pedro_pathing">Pedro Pathing
                             Implementation</a></div>
 
                     <div class="docsLine"></div>
 
                     <div class="setup">Auto Artifact Pick-up (beta)</div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/apriltag">Getting
+                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/auto_artifact">Getting
                             Started</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/apriltag">Detection Method
+                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/auto_artifact_detection">Detection
+                            Method
                             Implementation</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/apriltag">Sample Code For Pick-up</a>
+                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/auto_artifact_code">Sample Code For
+                            Pick-up</a>
                     </div>
                 <?php endif; ?>
             <?php endif; ?>

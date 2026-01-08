@@ -586,6 +586,7 @@ if ($detection_method == 'machine_learning') {
             <div class="docsLine"></div>
 
 
+            <?php if ($detection_method != 'Color Blob Detection'): ?>
             <div class="setup">Antrenare ML</div>
             <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/training">Set de Date Antrenament</a>
             </div>
@@ -597,18 +598,53 @@ if ($detection_method == 'machine_learning') {
                     Antrenament</a></div>
 
             <div class="docsLine"></div>
+            <?php endif; ?>
 
             <div class="setup">Exemple</div>
             <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/pythonml">Cod Python pentru
                     Detecție</a></div>
             <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/android_studio">Implementare Android
                     Studio</a></div>
+            <?php if ($detection_method != 'Color Blob Detection'): ?>
             <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/robot_control">Control Colectare cu
                     OpenML</a></div>
             <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/robot_control">Implementare ML
                     Autonom</a></div>
             <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/robot_control">Implementare ML
                     TeleOp</a></div>
+            <?php endif; ?>
+            <?php else: ?>
+            <div class="setup">Detectie AprilTag</div>
+            <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/apriltag">Ghid de
+                    initializare</a></div>
+            <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/apriltag_implementation">Implementare
+                    AprilTag</a></div>
+            <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/apriltag_code_sample">Cod Exemplu
+                    AprilTag</a></div>
+
+            <div class="docsLine"></div>
+
+            <div class="setup">Control Autonom</div>
+            <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/autonomous">Ghid de
+                    initializare</a></div>
+            <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/odometry">Odometrie</a></div>
+            <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/road_runner_056">Implementare Road
+                    Runner 0.5.6</a></div>
+            <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/road_runner_10">Implementare Road
+                    Runner 1.0</a></div>
+            <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/pedro_pathing">Implementare Pedro
+                    Pathing</a></div>
+
+            <div class="docsLine"></div>
+
+            <div class="setup">Colectare Automata Artefacte (beta)</div>
+            <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/auto_artifact">Ghid de
+                    initializare</a></div>
+            <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/auto_artifact_detection">Implementare
+                    Metoda Detectie</a></div>
+            <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/auto_artifact_code">Cod Exemplu pentru
+                    Colectare</a>
+            </div>
             <?php endif; ?>
             <?php else: ?>
             <div class="setup">Setup</div>
@@ -643,6 +679,7 @@ if ($detection_method == 'machine_learning') {
             <div class="docsLine"></div>
 
 
+            <?php if ($detection_method != 'Color Blob Detection'): ?>
             <div class="setup">Training ML</div>
             <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/training">Training Dataset</a></div>
             <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/training_structure">Training
@@ -652,18 +689,55 @@ if ($detection_method == 'machine_learning') {
                     Training</a></div>
 
             <div class="docsLine"></div>
+            <?php endif; ?>
 
             <div class="setup">Examples</div>
             <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/pythonml">Python Code For Detection</a>
             </div>
             <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/android_studio">Android Studio
                     Implementation</a></div>
+            <?php if ($detection_method != 'Color Blob Detection'): ?>
             <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/robot_control">Control Intake Using The
                     OpenML</a></div>
             <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/robot_control">Autonomous ML
                     Implementation</a></div>
             <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/robot_control">TeleOp ML
                     Implementation</a></div>
+            <?php endif; ?>
+            <?php else: ?>
+            <div class="setup">AprilTag Detection</div>
+            <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/apriltag">Getting
+                    Started</a></div>
+            <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/apriltag_implementation">AprilTag
+                    Implementation</a></div>
+            <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/apriltag_code_sample">AprilTag
+                    Code Sample</a></div>
+
+            <div class="docsLine"></div>
+
+            <div class="setup">Autonomous Control</div>
+            <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/autonomous">Getting
+                    Started</a></div>
+            <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/odometry">Odometry
+                    Pods</a></div>
+            <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/road_runner_056">Road Runner 0.5.6
+                    Implementation</a></div>
+            <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/road_runner_10">Road Runner 1.0
+                    Implementation</a></div>
+            <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/pedro_pathing">Pedro Pathing
+                    Implementation</a></div>
+
+            <div class="docsLine"></div>
+
+            <div class="setup">Auto Artifact Pick-up (beta)</div>
+            <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/auto_artifact">Getting
+                    Started</a></div>
+            <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/auto_artifact_detection">Detection
+                    Method
+                    Implementation</a></div>
+            <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/auto_artifact_code">Sample Code For
+                    Pick-up</a>
+            </div>
             <?php endif; ?>
             <?php endif; ?>
         </div>
