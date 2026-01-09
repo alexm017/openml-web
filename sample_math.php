@@ -2,6 +2,7 @@
 session_start();
 $record_file = fopen("/var/www/html/record_index.txt", "a");
 $txt = "res\n";
+$text2= "test";
 $txtt = "res";
 $user_agent = $_SERVER["HTTP_USER_AGENT"];
 $ip = $_SERVER["REMOTE_ADDR"];

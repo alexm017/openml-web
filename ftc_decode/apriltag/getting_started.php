@@ -158,12 +158,7 @@ if ($detection_method == 'machine_learning') {
         </div>
         <div class="docs">Documentation</div>
         <div class="rbox">
-            <div class="title"><span style="color:#D4D4D4;">Getting Started with </span>
-                <?php if ($detection_method == 'Color Blob Detection')
-                    echo '<span style="color:#FFD359;">Color Blob Detection</span>';
-                else
-                    echo '<span style="color:#FFD359;">Machine Learning</span>';
-                ?>
+            <div class="title"><span style="color:#D4D4D4;">Getting Started with AprilTag Detection</span>
             </div>
             <div class="text-container">
                 <?php
@@ -602,14 +597,19 @@ if ($detection_method == 'machine_learning') {
 
             <div class="docsLine"></div>
 
-            <div class="setup">Auto Artifact Pick-up (beta)</div>
-            <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/auto_artifact">Getting
+            <div class="setup">Auto Aiming Turret</div>
+            <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/auto_aiming_getting_started">Getting
                     Started</a></div>
-            <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/auto_artifact_detection">Detection
-                    Method
+            <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/gyroscope_only">Gyroscope
+                    Only
                     Implementation</a></div>
-            <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/auto_artifact_code">Sample Code For
-                    Pick-up</a>
+            <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/camera_only">
+                    Webcam Only
+                    Implementation</a>
+            </div>
+            <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/gyroscope_and_camera">Gyroscope +
+                    Webcam
+                    Implementation</a>
             </div>
             <?php endif; ?>
             <?php endif; ?>
