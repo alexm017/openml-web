@@ -166,41 +166,41 @@ if ($detection_method == 'machine_learning') {
                     <div class="stext">
                         <div class="codee-window">
                             <pre><code class="language-python">import cv2
-                                from ultralytics import YOLO
-                                import math
+                                    from ultralytics import YOLO
+                                    import math
 
-                                model = YOLO("C:\\Users\\&lt;USER>\\Desktop\\OpenML\\high.pt") #Modifica aici cu Path-ul tau curent si cu modelul OpenML descarcat
+                                    model = YOLO("C:\\Users\\&lt;USER>\\Desktop\\OpenML\\high.pt") #Modifica aici cu Path-ul tau curent si cu modelul OpenML descarcat
 
-                                cap = cv2.VideoCapture(0) #Daca nu functioneaza, incrementeaza numarul cu 1 pana cand camera functioneaza si apare pe ecran
+                                    cap = cv2.VideoCapture(0) #Daca nu functioneaza, incrementeaza numarul cu 1 pana cand camera functioneaza si apare pe ecran
 
-                                while True:
-                                    ret, frame = cap.read()
-                                    if not ret:
-                                        break
+                                    while True:
+                                        ret, frame = cap.read()
+                                        if not ret:
+                                            break
 
-                                    results = model.predict(frame, conf=0.5)
+                                        results = model.predict(frame, conf=0.5)
 
-                                    frame_with_results = results[0].plot()
-                                    boxes = results[0].boxes
-                                    if len(boxes) > 0:
-                                        x1, y1, x2, y2 = map(int, boxes.xyxy[0])
-                                        object_width = x2 - x1
-                                        object_height = y2 - y1
+                                        frame_with_results = results[0].plot()
+                                        boxes = results[0].boxes
+                                        if len(boxes) > 0:
+                                            x1, y1, x2, y2 = map(int, boxes.xyxy[0])
+                                            object_width = x2 - x1
+                                            object_height = y2 - y1
 
-                                        cv2.putText(frame_with_results, f"Obj Width: {object_width:.2f}",
-                                                    (x1, y1 + 40),
-                                                    cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
-                                        cv2.putText(frame_with_results, f"Obj Height: {object_height:.2f}",
-                                                    (x1, y1 + 60),
-                                                    cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
+                                            cv2.putText(frame_with_results, f"Obj Width: {object_width:.2f}",
+                                                        (x1, y1 + 40),
+                                                        cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
+                                            cv2.putText(frame_with_results, f"Obj Height: {object_height:.2f}",
+                                                        (x1, y1 + 60),
+                                                        cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
         
-                                    cv2.imshow('OpenML - Real-time Detection', frame_with_results)
+                                        cv2.imshow('OpenML - Real-time Detection', frame_with_results)
 
-                                    if cv2.waitKey(1) & 0xFF == ord('q'): # Apasa Q pentru a iesi din cod
-                                        break
+                                        if cv2.waitKey(1) & 0xFF == ord('q'): # Apasa Q pentru a iesi din cod
+                                            break
 
-                                cap.release()
-                                cv2.destroyAllWindows()</pre></code>
+                                    cap.release()
+                                    cv2.destroyAllWindows()</pre></code>
                         </div>
                     </div>
                     <div class="stext"><b class="bc">2.</b> Pentru a calcula orientarea la care se află sample-ul trebuie
@@ -333,41 +333,41 @@ if ($detection_method == 'machine_learning') {
                     <div class="stext">
                         <div class="codee-window">
                             <pre><code class="language-python">import cv2
-                                from ultralytics import YOLO
-                                import math
+                                    from ultralytics import YOLO
+                                    import math
 
-                                model = YOLO("C:\\Users\\&lt;USER>\\Desktop\\OpenML\\high.pt") #Modify here with your current Path and the downloaded OpenML model
+                                    model = YOLO("C:\\Users\\&lt;USER>\\Desktop\\OpenML\\high.pt") #Modify here with your current Path and the downloaded OpenML model
 
-                                cap = cv2.VideoCapture(0) #If it doesn't work, increment the number by 1 until the camera works and appears on the screen
+                                    cap = cv2.VideoCapture(0) #If it doesn't work, increment the number by 1 until the camera works and appears on the screen
 
-                                while True:
-                                    ret, frame = cap.read()
-                                    if not ret:
-                                        break
+                                    while True:
+                                        ret, frame = cap.read()
+                                        if not ret:
+                                            break
 
-                                    results = model.predict(frame, conf=0.5)
+                                        results = model.predict(frame, conf=0.5)
 
-                                    frame_with_results = results[0].plot()
-                                    boxes = results[0].boxes
-                                    if len(boxes) > 0:
-                                        x1, y1, x2, y2 = map(int, boxes.xyxy[0])
-                                        object_width = x2 - x1
-                                        object_height = y2 - y1
+                                        frame_with_results = results[0].plot()
+                                        boxes = results[0].boxes
+                                        if len(boxes) > 0:
+                                            x1, y1, x2, y2 = map(int, boxes.xyxy[0])
+                                            object_width = x2 - x1
+                                            object_height = y2 - y1
 
-                                        cv2.putText(frame_with_results, f"Obj Width: {object_width:.2f}",
-                                                    (x1, y1 + 40),
-                                                    cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
-                                        cv2.putText(frame_with_results, f"Obj Height: {object_height:.2f}",
-                                                    (x1, y1 + 60),
-                                                    cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
+                                            cv2.putText(frame_with_results, f"Obj Width: {object_width:.2f}",
+                                                        (x1, y1 + 40),
+                                                        cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
+                                            cv2.putText(frame_with_results, f"Obj Height: {object_height:.2f}",
+                                                        (x1, y1 + 60),
+                                                        cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
         
-                                    cv2.imshow('OpenML - Real-time Detection', frame_with_results)
+                                        cv2.imshow('OpenML - Real-time Detection', frame_with_results)
 
-                                    if cv2.waitKey(1) & 0xFF == ord('q'): # Press Q to exit the code
-                                        break
+                                        if cv2.waitKey(1) & 0xFF == ord('q'): # Press Q to exit the code
+                                            break
 
-                                cap.release()
-                                cv2.destroyAllWindows()</pre></code>
+                                    cap.release()
+                                    cv2.destroyAllWindows()</pre></code>
                         </div>
                     </div>
                     <div class="stext"><b class="bc">2.</b> To calculate the orientation of the sample, minWidth, maxWidth,
@@ -584,13 +584,16 @@ if ($detection_method == 'machine_learning') {
 
                     <div class="docsLine"></div>
 
-                    <div class="setup">Colectare Automata Artefacte (beta)</div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/auto_artifact">Ghid de
+                    <div class="setup">Turela de Ochire Automată</div>
+                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/auto_aiming_getting_started">Ghid de
                             initializare</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/auto_artifact_detection">Implementare
-                            Metoda Detectie</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/auto_artifact_code">Cod Exemplu pentru
-                            Colectare</a>
+                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/gyroscope_only">Implementare
+                            Doar Giroscop</a></div>
+                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/camera_only">
+                            Implementare Doar Webcam</a>
+                    </div>
+                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/gyroscope_and_camera">Implementare
+                            Giroscop + Webcam</a>
                     </div>
                 <?php endif; ?>
             <?php else: ?>
@@ -676,14 +679,19 @@ if ($detection_method == 'machine_learning') {
 
                     <div class="docsLine"></div>
 
-                    <div class="setup">Auto Artifact Pick-up (beta)</div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/auto_artifact">Getting
+                    <div class="setup">Auto Aiming Turret</div>
+                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/auto_aiming_getting_started">Getting
                             Started</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/auto_artifact_detection">Detection
-                            Method
+                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/gyroscope_only">Gyroscope
+                            Only
                             Implementation</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/auto_artifact_code">Sample Code For
-                            Pick-up</a>
+                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/camera_only">
+                            Webcam Only
+                            Implementation</a>
+                    </div>
+                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/gyroscope_and_camera">Gyroscope +
+                            Webcam
+                            Implementation</a>
                     </div>
                 <?php endif; ?>
             <?php endif; ?>

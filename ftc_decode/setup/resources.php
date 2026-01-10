@@ -325,13 +325,16 @@ $season_path = ($season_cookie == 'Decode') ? 'decode' : 'intothedeep';
 
                     <div class="docsLine"></div>
 
-                    <div class="setup">Colectare Automata Artefacte (beta)</div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/auto_artifact">Ghid de
+                    <div class="setup">Turela de Ochire Automată</div>
+                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/auto_aiming_getting_started">Ghid de
                             initializare</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/auto_artifact_detection">Implementare
-                            Metoda Detectie</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/auto_artifact_code">Cod Exemplu pentru
-                            Colectare</a>
+                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/gyroscope_only">Implementare
+                            Doar Giroscop</a></div>
+                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/camera_only">
+                            Implementare Doar Webcam</a>
+                    </div>
+                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/gyroscope_and_camera">Implementare
+                            Giroscop + Webcam</a>
                     </div>
                 <?php endif; ?>
             <?php else: ?>
@@ -418,14 +421,19 @@ $season_path = ($season_cookie == 'Decode') ? 'decode' : 'intothedeep';
 
                     <div class="docsLine"></div>
 
-                    <div class="setup">Auto Artifact Pick-up (beta)</div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/auto_artifact">Getting
+                    <div class="setup">Auto Aiming Turret</div>
+                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/auto_aiming_getting_started">Getting
                             Started</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/auto_artifact_detection">Detection
-                            Method
+                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/gyroscope_only">Gyroscope
+                            Only
                             Implementation</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/auto_artifact_code">Sample Code For
-                            Pick-up</a>
+                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/camera_only">
+                            Webcam Only
+                            Implementation</a>
+                    </div>
+                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/gyroscope_and_camera">Gyroscope +
+                            Webcam
+                            Implementation</a>
                     </div>
                 <?php endif; ?>
             <?php endif; ?>

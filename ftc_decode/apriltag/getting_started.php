@@ -286,9 +286,12 @@ if ($detection_method == 'machine_learning') {
                     <li>Ajustează valorile fov_degrees, first_angle și y pe baza calibrării camerei tale.</li>
                 </div>
                 <?php else: ?>
-                <div class="stext"><b class="bc">1. Visual Studio Code</b></div>
-                <div class="rtext">1. Download <b class="bc">Visual Studio Code</b>. (Recommended)
-                    <div class="downloadbtn"><a href="https://code.visualstudio.com/docs/?dv=win64user">Download</a>
+                <div class="stext">
+                    <h2> > Initial Setup</h2>
+                </div>
+                <div class="stext"><b class="bc">1. Android Studio</b></div>
+                <div class="rtext">1. Download <b class="bc"> Android Studio Latest Version</b>.
+                    <div class="downloadbtn"><a href="https://developer.android.com/studio">Download</a>
                     </div>
                 </div>
 
@@ -504,13 +507,16 @@ if ($detection_method == 'machine_learning') {
 
             <div class="docsLine"></div>
 
-            <div class="setup">Colectare Automata Artefacte (beta)</div>
-            <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/auto_artifact">Ghid de
+            <div class="setup">Turela de Ochire Automată</div>
+            <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/auto_aiming_getting_started">Ghid de
                     initializare</a></div>
-            <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/auto_artifact_detection">Implementare
-                    Metoda Detectie</a></div>
-            <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/auto_artifact_code">Cod Exemplu pentru
-                    Colectare</a>
+            <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/gyroscope_only">Implementare
+                    Doar Giroscop</a></div>
+            <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/camera_only">
+                    Implementare Doar Webcam</a>
+            </div>
+            <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/gyroscope_and_camera">Implementare
+                    Giroscop + Webcam</a>
             </div>
             <?php endif; ?>
             <?php else: ?>
