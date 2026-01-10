@@ -146,9 +146,9 @@ if ($detection_method == 'machine_learning') {
         <div class="rbox">
             <div class="title">
                 <?php if ($lang == 'ro'): ?>
-                    Cod Exemplu AprilTag (TeleOp + Detectie AprilTag)
+                    Implementare AprilTag (TeleOp + Detectie AprilTag)
                 <?php else: ?>
-                    AprilTag Code Sample (TeleOp + AprilTag Detection)
+                    AprilTag Implementation (TeleOp + AprilTag Detection)
                 <?php endif; ?>
             </div>
             <div class="text-container">
@@ -161,68 +161,68 @@ if ($detection_method == 'machine_learning') {
                     <div class="stext"><u>aprilTagIdentification.java</u></div>
                     <div class="code-window">
                         <pre><code class="language-java" >
-                                    package org.firstinspires.ftc.teamcode.drive.ComputerVision;
+    package org.firstinspires.ftc.teamcode.drive.ComputerVision;
 
-                                    import android.util.Size;
+    import android.util.Size;
 
-                                    import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
-                                    import com.qualcomm.robotcore.hardware.HardwareMap;
+    import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+    import com.qualcomm.robotcore.hardware.HardwareMap;
 
-                                    import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-                                    import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-                                    import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-                                    import org.firstinspires.ftc.vision.VisionPortal;
-                                    import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
-                                    import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
+    import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+    import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+    import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+    import org.firstinspires.ftc.vision.VisionPortal;
+    import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
+    import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
-                                    import java.util.List;
+    import java.util.List;
 
-                                    public class AprilTagIdentification {
-                                        AprilTagProcessor aprilTagProcessor;
-                                        VisionPortal visionPortal;
-                                        MultipleTelemetry telemetry;
+    public class AprilTagIdentification {
+        AprilTagProcessor aprilTagProcessor;
+        VisionPortal visionPortal;
+        MultipleTelemetry telemetry;
 
-                                        public double detectionId;
-                                        public void init(HardwareMap hwdmap, MultipleTelemetry telemetrys){
-                                            telemetry = telemetrys;
-                                            aprilTagProcessor = new AprilTagProcessor.Builder()
-                                                    .setDrawTagID(true)
-                                                    .setDrawTagOutline(true)
-                                                    .setDrawAxes(true)
-                                                    .setDrawCubeProjection(true)
-                                                    .setOutputUnits(DistanceUnit.CM, AngleUnit.DEGREES)
-                                                    .build();
+        public double detectionId;
+        public void init(HardwareMap hwdmap, MultipleTelemetry telemetrys){
+            telemetry = telemetrys;
+            aprilTagProcessor = new AprilTagProcessor.Builder()
+                    .setDrawTagID(true)
+                    .setDrawTagOutline(true)
+                    .setDrawAxes(true)
+                    .setDrawCubeProjection(true)
+                    .setOutputUnits(DistanceUnit.CM, AngleUnit.DEGREES)
+                    .build();
 
-                                            VisionPortal.Builder builder = new VisionPortal.Builder();
-                                            builder.setCamera(hwdmap.get(WebcamName.class, "YOUR_WEBCAM_NAME"));
-                                            builder.setCameraResolution(new Size(640, 480));
-                                            builder.addProcessor(aprilTagProcessor);
+            VisionPortal.Builder builder = new VisionPortal.Builder();
+            builder.setCamera(hwdmap.get(WebcamName.class, "YOUR_WEBCAM_NAME"));
+            builder.setCameraResolution(new Size(640, 480));
+            builder.addProcessor(aprilTagProcessor);
 
-                                            visionPortal = builder.build();
-                                        }
+            visionPortal = builder.build();
+        }
 
-                                        public void telemetryAprilTag() {
+        public void telemetryAprilTag() {
 
-                                            List<AprilTagDetection> currentDetections = aprilTagProcessor.getDetections();
-                                            telemetry.addData("[->] AprilTags Detected", currentDetections.size());
+            List<AprilTagDetection> currentDetections = aprilTagProcessor.getDetections();
+            telemetry.addData("[->] AprilTags Detected", currentDetections.size());
 
-                                            for (AprilTagDetection detection : currentDetections) {
-                                                if (detection.metadata != null) {
-                                                    telemetry.addLine(String.format("\n==== (ID %d) %s", detection.id, detection.metadata.name));
-                                                    detectionId = detection.id;
-                                                } else {
-                                                    telemetry.addLine(String.format("\n==== (ID %d) Unknown", detection.id));
-                                                    telemetry.addLine(String.format("Center %6.0f %6.0f   (pixels)", detection.center.x, detection.center.y));
-                                                }
-                                            }
+            for (AprilTagDetection detection : currentDetections) {
+                if (detection.metadata != null) {
+                    telemetry.addLine(String.format("\n==== (ID %d) %s", detection.id, detection.metadata.name));
+                    detectionId = detection.id;
+                } else {
+                    telemetry.addLine(String.format("\n==== (ID %d) Unknown", detection.id));
+                    telemetry.addLine(String.format("Center %6.0f %6.0f   (pixels)", detection.center.x, detection.center.y));
+                }
+            }
 
-                                        }
+        }
 
-                                        public void close(){
-                                            visionPortal.close();
-                                        }
-                                    }
-                                                        </code></pre>
+        public void close(){
+            visionPortal.close();
+        }
+    }
+                        </code></pre>
                     </div>
                     <div class="stext">
                         <b class="bc">Pasul 2</b> -> Setează numele webcam-ului în driver hub.
@@ -257,41 +257,41 @@ if ($detection_method == 'machine_learning') {
                     <div class="stext"><u>TeleOp_AprilTagDemonstration.java</u></div>
                     <div class="code-window">
                         <pre><code class="language-java" >
-                                    package org.firstinspires.ftc.teamcode.drive.OpModes;
+                                                                        package org.firstinspires.ftc.teamcode.drive.OpModes;
 
-                                    import com.acmerobotics.dashboard.FtcDashboard;
-                                    import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
-                                    import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-                                    import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+                                                                        import com.acmerobotics.dashboard.FtcDashboard;
+                                                                        import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+                                                                        import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+                                                                        import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-                                    import org.firstinspires.ftc.teamcode.drive.ComputerVision.AprilTagIdentification;
+                                                                        import org.firstinspires.ftc.teamcode.drive.ComputerVision.AprilTagIdentification;
 
-                                    @TeleOp
-                                    public class TeleOp_AprilTagDemonstration extends LinearOpMode {
+                                                                        @TeleOp
+                                                                        public class TeleOp_AprilTagDemonstration extends LinearOpMode {
 
-                                        MultipleTelemetry telemetrys;
-                                        AprilTagIdentification aprilTagIdentification = new AprilTagIdentification();
+                                                                            MultipleTelemetry telemetrys;
+                                                                            AprilTagIdentification aprilTagIdentification = new AprilTagIdentification();
 
-                                        @Override
-                                        public void runOpMode() throws InterruptedException {
+                                                                            @Override
+                                                                            public void runOpMode() throws InterruptedException {
 
-                                            telemetrys = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+                                                                                telemetrys = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
-                                            aprilTagIdentification.init(hardwareMap, telemetrys);
+                                                                                aprilTagIdentification.init(hardwareMap, telemetrys);
 
-                                            while(opModeInInit()){
-                                                aprilTagIdentification.telemetryAprilTag();
-                                                telemetrys.update();
-                                            }
+                                                                                while(opModeInInit()){
+                                                                                    aprilTagIdentification.telemetryAprilTag();
+                                                                                    telemetrys.update();
+                                                                                }
 
-                                            while(opModeIsActive()){
-                                                aprilTagIdentification.telemetryAprilTag();
+                                                                                while(opModeIsActive()){
+                                                                                    aprilTagIdentification.telemetryAprilTag();
 
-                                                telemetrys.update();
-                                            }
-                                        }
-                                    }
-                                                        </code></pre>
+                                                                                    telemetrys.update();
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                                            </code></pre>
                     </div>
                     <div class="endLine"></div>
                     <div class="endD"><a href="https://discord.gg/ZB6vQ62KZT">Support -> Discord</a></div>
@@ -303,69 +303,69 @@ if ($detection_method == 'machine_learning') {
                     <div class="stext"><u>aprilTagIdentification.java</u></div>
                     <div class="code-window">
                         <pre><code class="language-java" >
-                                    package org.firstinspires.ftc.teamcode.drive.ComputerVision;
+    package org.firstinspires.ftc.teamcode.drive.ComputerVision;
 
-                                    import android.util.Size;
+    import android.util.Size;
 
-                                    import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
-                                    import com.qualcomm.robotcore.hardware.HardwareMap;
+    import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+    import com.qualcomm.robotcore.hardware.HardwareMap;
 
-                                    import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-                                    import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-                                    import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-                                    import org.firstinspires.ftc.vision.VisionPortal;
-                                    import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
-                                    import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
+    import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+    import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+    import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+    import org.firstinspires.ftc.vision.VisionPortal;
+    import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
+    import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
-                                    import java.util.List;
+    import java.util.List;
 
-                                    public class AprilTagIdentification {
-                                        AprilTagProcessor aprilTagProcessor;
-                                        VisionPortal visionPortal;
-                                        MultipleTelemetry telemetry;
+    public class AprilTagIdentification {
+        AprilTagProcessor aprilTagProcessor;
+        VisionPortal visionPortal;
+        MultipleTelemetry telemetry;
 
-                                        public double detectionId;
-                                        public void init(HardwareMap hwdmap, MultipleTelemetry telemetrys){
-                                            telemetry = telemetrys;
-                                            aprilTagProcessor = new AprilTagProcessor.Builder()
-                                                    .setDrawTagID(true)
-                                                    .setDrawTagOutline(true)
-                                                    .setDrawAxes(true)
-                                                    .setDrawCubeProjection(true)
-                                                    .setOutputUnits(DistanceUnit.CM, AngleUnit.DEGREES)
-                                                    .build();
+        public double detectionId;
+        public void init(HardwareMap hwdmap, MultipleTelemetry telemetrys){
+            telemetry = telemetrys;
+            aprilTagProcessor = new AprilTagProcessor.Builder()
+                    .setDrawTagID(true)
+                    .setDrawTagOutline(true)
+                    .setDrawAxes(true)
+                    .setDrawCubeProjection(true)
+                    .setOutputUnits(DistanceUnit.CM, AngleUnit.DEGREES)
+                    .build();
 
-                                            VisionPortal.Builder builder = new VisionPortal.Builder();
-                                            builder.setCamera(hwdmap.get(WebcamName.class, "YOUR_WEBCAM_NAME"));
-                                            builder.setCameraResolution(new Size(640, 480));
-                                            builder.addProcessor(aprilTagProcessor);
+            VisionPortal.Builder builder = new VisionPortal.Builder();
+            builder.setCamera(hwdmap.get(WebcamName.class, "YOUR_WEBCAM_NAME"));
+            builder.setCameraResolution(new Size(640, 480));
+            builder.addProcessor(aprilTagProcessor);
 
-                                            visionPortal = builder.build();
-                                        }
+            visionPortal = builder.build();
+        }
 
-                                        public void telemetryAprilTag() {
+        public void telemetryAprilTag() {
 
-                                            List<AprilTagDetection> currentDetections = aprilTagProcessor.getDetections();
-                                            telemetry.addData("[->] AprilTags Detected", currentDetections.size());
+            List<AprilTagDetection> currentDetections = aprilTagProcessor.getDetections();
+            telemetry.addData("[->] AprilTags Detected", currentDetections.size());
 
-                                            for (AprilTagDetection detection : currentDetections) {
-                                                if (detection.metadata != null) {
-                                                    telemetry.addLine(String.format("\n==== (ID %d) %s", detection.id, detection.metadata.name));
-                                                    detectionId = detection.id;
-                                                } else {
-                                                    telemetry.addLine(String.format("\n==== (ID %d) Unknown", detection.id));
-                                                    telemetry.addLine(String.format("Center %6.0f %6.0f   (pixels)", detection.center.x, detection.center.y));
-                                                }
-                                            }
+            for (AprilTagDetection detection : currentDetections) {
+                if (detection.metadata != null) {
+                    telemetry.addLine(String.format("\n==== (ID %d) %s", detection.id, detection.metadata.name));
+                    detectionId = detection.id;
+                } else {
+                    telemetry.addLine(String.format("\n==== (ID %d) Unknown", detection.id));
+                    telemetry.addLine(String.format("Center %6.0f %6.0f   (pixels)", detection.center.x, detection.center.y));
+                }
+            }
 
-                                        }
+        }
 
-                                        public void close(){
-                                            visionPortal.close();
-                                        }
-                                    }
+        public void close(){
+            visionPortal.close();
+        }
+    }
 
-                                                    </code></pre>
+                    </code></pre>
                     </div>
                     <div class="stext">
                         <b class="bc">Step 2</b> -> Set webcam name in your driver hub.
@@ -400,41 +400,41 @@ if ($detection_method == 'machine_learning') {
                     <div class="stext"><u>TeleOp_AprilTagDemonstration.java</u></div>
                     <div class="code-window">
                         <pre><code class="language-java" >
-                                    package org.firstinspires.ftc.teamcode.drive.OpModes;
+    package org.firstinspires.ftc.teamcode.drive.OpModes;
 
-                                    import com.acmerobotics.dashboard.FtcDashboard;
-                                    import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
-                                    import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-                                    import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+    import com.acmerobotics.dashboard.FtcDashboard;
+    import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+    import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+    import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-                                    import org.firstinspires.ftc.teamcode.drive.ComputerVision.AprilTagIdentification;
+    import org.firstinspires.ftc.teamcode.drive.ComputerVision.AprilTagIdentification;
 
-                                    @TeleOp
-                                    public class TeleOp_AprilTagDemonstration extends LinearOpMode {
+    @TeleOp
+    public class TeleOp_AprilTagDemonstration extends LinearOpMode {
 
-                                        MultipleTelemetry telemetrys;
-                                        AprilTagIdentification aprilTagIdentification = new AprilTagIdentification();
+        MultipleTelemetry telemetrys;
+        AprilTagIdentification aprilTagIdentification = new AprilTagIdentification();
 
-                                        @Override
-                                        public void runOpMode() throws InterruptedException {
+        @Override
+        public void runOpMode() throws InterruptedException {
 
-                                            telemetrys = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+            telemetrys = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
-                                            aprilTagIdentification.init(hardwareMap, telemetrys);
+            aprilTagIdentification.init(hardwareMap, telemetrys);
 
-                                            while(opModeInInit()){
-                                                aprilTagIdentification.telemetryAprilTag();
-                                                telemetrys.update();
-                                            }
+            while(opModeInInit()){
+                aprilTagIdentification.telemetryAprilTag();
+                telemetrys.update();
+            }
 
-                                            while(opModeIsActive()){
-                                                aprilTagIdentification.telemetryAprilTag();
+            while(opModeIsActive()){
+                aprilTagIdentification.telemetryAprilTag();
 
-                                                telemetrys.update();
-                                            }
-                                        }
-                                    }
-                                                    </code></pre>
+                telemetrys.update();
+            }
+        }
+    }
+                    </code></pre>
                     </div>
                     <div class="rtext">
                         <li>1. Select TeleOp_AprilTagDemonstration class in Driver Hub and <b>press init</b>. Do not press
@@ -531,10 +531,9 @@ if ($detection_method == 'machine_learning') {
                     <div class="setup">Detectie AprilTag</div>
                     <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/apriltag">Ghid de
                             initializare</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/apriltag_implementation">Implementare
-                            AprilTag</a></div>
+
                     <div class="sub-section">
-                        <p style="color:#c67171;">Cod Exemplu AprilTag</p>
+                        <p style="color:#c67171;">Implementare AprilTag</p>
                     </div>
 
                     <div class="docsLine"></div>
@@ -556,12 +555,12 @@ if ($detection_method == 'machine_learning') {
                     <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/auto_aiming_getting_started">Ghid de
                             initializare</a></div>
                     <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/gyroscope_only">Implementare
-                            Doar Giroscop</a></div>
+                            Doar IMU</a></div>
                     <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/camera_only">
                             Implementare Doar Webcam</a>
                     </div>
                     <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/gyroscope_and_camera">Implementare
-                            Giroscop + Webcam</a>
+                            IMU & Webcam</a>
                     </div>
                 <?php endif; ?>
             <?php else: ?>
@@ -626,10 +625,9 @@ if ($detection_method == 'machine_learning') {
                     <div class="setup">AprilTag Detection</div>
                     <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/apriltag">Getting
                             Started</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/apriltag_implementation">AprilTag
-                            Implementation</a></div>
+
                     <div class="sub-section">
-                        <p style="color:#c67171;">AprilTag Code Sample</p>
+                        <p style="color:#c67171;">AprilTag Implementation</p>
                     </div>
 
                     <div class="docsLine"></div>
@@ -651,14 +649,14 @@ if ($detection_method == 'machine_learning') {
                     <div class="setup">Auto Aiming Turret</div>
                     <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/auto_aiming_getting_started">Getting
                             Started</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/gyroscope_only">Gyroscope
+                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/gyroscope_only">IMU
                             Only
                             Implementation</a></div>
                     <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/camera_only">
                             Webcam Only
                             Implementation</a>
                     </div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/gyroscope_and_camera">Gyroscope +
+                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/gyroscope_and_camera">IMU &
                             Webcam
                             Implementation</a>
                     </div>

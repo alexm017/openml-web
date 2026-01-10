@@ -368,162 +368,99 @@ $season_path = ($season_cookie == 'Decode') ? 'decode' : 'intothedeep';
         </div>
 
         <div class="docs-container">
-            <?php if ($lang == 'ro'): ?>
-                <div class="setup">Configurare</div>
-                <div class="sub-section">
-                    <p style="color:#c67171;">Prezentare Generala</p>
+            <div class="setup">Setup</div>
+            <div class="sub-section">
+                <p style="color:#c67171;">Overview</p>
+            </div>
+            <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/prerequisites">Getting Started</a>
+            </div>
+            <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/resources">Resources</a></div>
+            <div class="docsLine"></div>
+
+            <?php if ($season_cookie != 'Decode'): ?>
+                <div class="setup">2D Sample Detection</div>
+                <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/2d_start">Starter Guide</a></div>
+                <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/2d_cameracalib">Camera Calibration</a>
                 </div>
-                <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/prerequisites">Initializare Device</a>
-                </div>
-                <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/resources">Resurse</a></div>
+                <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/2d_python_test">Python Detection
+                        Testing</a></div>
+                <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/2d_android">Android Studio
+                        Implementation</a></div>
+
                 <div class="docsLine"></div>
 
-                <?php if ($season_cookie != 'Decode'): ?>
-                    <div class="setup">Detectie Sample 2D</div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/2d_start">Ghid de initializare</a>
-                    </div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/2d_cameracalib">Calibrarea Camerei</a>
-                    </div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/2d_python_test">Testare Detecție
-                            Python</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/2d_android">Implementare Android
-                            Studio</a></div>
+                <div class="setup">3D Sample Detection</div>
+                <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/3d_start">Starter Guide</a></div>
+                <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/3d_cameracalib">Camera Calibration</a>
+                </div>
+                <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/3d_python_test">Python Detection
+                        Testing</a></div>
+                <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/3d_android">Android Studio
+                        Implementation</a></div>
 
-                    <div class="docsLine"></div>
-
-                    <div class="setup">Detectie Sample 3D</div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/3d_start">Ghid de initializare</a>
-                    </div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/3d_cameracalib">Calibrarea Camerei</a>
-                    </div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/3d_python_test">Testare Detecție
-                            Python</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/3d_android">Implementare Android
-                            Studio</a></div>
-
-                    <div class="docsLine"></div>
+                <div class="docsLine"></div>
 
 
-                    <div class="setup">Antrenare ML</div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/training">Set de Date Antrenament</a>
-                    </div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/training_structure">Structura
-                            Antrenare ML</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/label_tool">LabelImg Etichetare
-                            Imagini</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/training_ml">Cod Python pentru
-                            Antrenare ML</a></div>
+                <div class="setup">Training ML</div>
+                <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/training">Training Dataset</a></div>
+                <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/training_structure">Training
+                        Structure</a></div>
+                <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/label_tool">Label Images Tool</a></div>
+                <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/training_ml">Python Code For
+                        Training</a></div>
 
-                    <div class="docsLine"></div>
+                <div class="docsLine"></div>
 
-                    <div class="setup">Exemple</div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/pythonml">Cod Python pentru
-                            Detecție</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/android_studio">Implementare Android
-                            Studio</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/robot_control">Control Colectare cu
-                            OpenML</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/robot_control">Implementare ML
-                            Autonom</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/robot_control">Implementare ML
-                            TeleOp</a></div>
-                <?php endif; ?>
+                <div class="setup">Examples</div>
+                <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/pythonml">Python Code For Detection</a>
+                </div>
+                <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/android_studio">Android Studio
+                        Implementation</a></div>
+                <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/robot_control">Control Intake Using The
+                        OpenML</a></div>
+                <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/robot_control">Autonomous ML
+                        Implementation</a></div>
+                <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/robot_control">TeleOp ML
+                        Implementation</a></div>
             <?php else: ?>
-                <div class="setup">Setup</div>
-                <div class="sub-section">
-                    <p style="color:#c67171;">Overview</p>
-                </div>
-                <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/prerequisites">Getting Started</a>
-                </div>
-                <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/resources">Resources</a></div>
+                <div class="setup">AprilTag Detection</div>
+                <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/apriltag">Getting
+                        Started</a></div>
+
+                <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/apriltag_code_sample">AprilTag
+                        Implementation</a></div>
+
                 <div class="docsLine"></div>
 
-                <?php if ($season_cookie != 'Decode'): ?>
-                    <div class="setup">2D Sample Detection</div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/2d_start">Starter Guide</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/2d_cameracalib">Camera Calibration</a>
-                    </div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/2d_python_test">Python Detection
-                            Testing</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/2d_android">Android Studio
-                            Implementation</a></div>
+                <div class="setup">Autonomous Control</div>
+                <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/autonomous">Getting
+                        Started</a></div>
+                <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/odometry">Odometry
+                        Pods</a></div>
+                <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/road_runner_056">Road Runner 0.5.6
+                        Implementation</a></div>
+                <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/road_runner_10">Road Runner 1.0
+                        Implementation</a></div>
+                <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/pedro_pathing">Pedro Pathing
+                        Implementation</a></div>
 
-                    <div class="docsLine"></div>
+                <div class="docsLine"></div>
 
-                    <div class="setup">3D Sample Detection</div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/3d_start">Starter Guide</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/3d_cameracalib">Camera Calibration</a>
-                    </div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/3d_python_test">Python Detection
-                            Testing</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/3d_android">Android Studio
-                            Implementation</a></div>
+                <div class="setup">Auto Aiming Turret</div>
+                <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/auto_aiming_getting_started">Getting
+                        Started</a></div>
+                <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/gyroscope_only">IMU
+                        Only
+                        Implementation</a></div>
+                <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/camera_only">
+                        Webcam Only
+                        Implementation</a>
+                </div>
+                <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/gyroscope_and_camera">IMU &
+                        Webcam
+                        Implementation</a>
+                </div>
 
-                    <div class="docsLine"></div>
-
-
-                    <div class="setup">Training ML</div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/training">Training Dataset</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/training_structure">Training
-                            Structure</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/label_tool">Label Images Tool</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/training_ml">Python Code For
-                            Training</a></div>
-
-                    <div class="docsLine"></div>
-
-                    <div class="setup">Examples</div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/pythonml">Python Code For Detection</a>
-                    </div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/android_studio">Android Studio
-                            Implementation</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/robot_control">Control Intake Using The
-                            OpenML</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/robot_control">Autonomous ML
-                            Implementation</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/robot_control">TeleOp ML
-                            Implementation</a></div>
-                <?php else: ?>
-                    <div class="setup">AprilTag Detection</div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/apriltag">Getting
-                            Started</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/apriltag_implementation">AprilTag
-                            Implementation</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/apriltag_code_sample">AprilTag
-                            Code Sample</a></div>
-
-                    <div class="docsLine"></div>
-
-                    <div class="setup">Autonomous Control</div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/autonomous">Getting
-                            Started</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/odometry">Odometry
-                            Pods</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/road_runner_056">Road Runner 0.5.6
-                            Implementation</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/road_runner_10">Road Runner 1.0
-                            Implementation</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/pedro_pathing">Pedro Pathing
-                            Implementation</a></div>
-
-                    <div class="docsLine"></div>
-
-                    <div class="setup">Auto Aiming Turret</div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/auto_aiming_getting_started">Getting
-                            Started</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/gyroscope_only">Gyroscope
-                            Only
-                            Implementation</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/camera_only">
-                            Webcam Only
-                            Implementation</a>
-                    </div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/gyroscope_and_camera">Gyroscope +
-                            Webcam
-                            Implementation</a>
-                    </div>
-
-                <?php endif; ?>
             <?php endif; ?>
         </div>
     </div>

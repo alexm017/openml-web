@@ -236,6 +236,29 @@ if ($detection_method == 'machine_learning') {
             background-color: #ffffffff;
             transform: scale(1.05);
         }
+
+        .video-wrapper {
+            position: relative;
+            width: fit-content;
+            display: inline-block;
+        }
+
+        .video-play-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 60px;
+            color: rgba(255, 255, 255, 0.8);
+            pointer-events: none;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s ease;
+        }
+
+        .video-wrapper:hover .video-play-overlay {
+            color: #fff;
+            transform: translate(-50%, -50%) scale(1.1);
+        }
     </style>
 
     <script>
@@ -294,131 +317,40 @@ if ($detection_method == 'machine_learning') {
                 ?>
             </div>
             <div class="text-container">
-                <?php
-                $lang = isset($_COOKIE['site_lang']) ? $_COOKIE['site_lang'] : 'en';
-                if ($lang == 'ro'):
-                    ?>
-                <div class="stext"><b class="bc">1. Visual Studio Code</b></div>
-                <div class="rtext">1. Descarcă <b class="bc">Visual Studio Code</b>. (Recomandat)
-                    <div class="downloadbtn"><a href="https://code.visualstudio.com/docs/?dv=win64user">Download</a>
+                <div class="stext">
+                    <h2> > Initial Setup</h2>
+                </div>
+                <div class="stext">
+                    Click below to watch the initial setup tutorial.
+                </div>
+                <div class="stext">
+                    <div class="video-wrapper">
+                        <video id="setupVideo" width="600" controls style="border-radius: 10px;"
+                            poster="/ftc_decode/data/initial_setup_thumbnail.png">
+                            <source src="/ftc_decode/data/initial_setup.mkv">
+                            Your browser does not support the video tag.
+                        </video>
+                        <i class="fa fa-play-circle video-play-overlay"></i>
                     </div>
                 </div>
+                <script>
+                    document.addEventListener('DOMContentLoaded', function () {
+                        var video = document.getElementById('setupVideo');
+                        var overlay = document.querySelector('.video-play-overlay');
 
-                <div class="stext">2.<b class="bc"> Descarcă Python 3.7 sau mai nou </b>(testat pe Python
-                    3.8/3.9/3.10/3.11)</div>
-                <div class="rtext">
-                    <div class="downloadbtn"><a
-                            href="https://www.python.org/ftp/python/3.12.9/python-3.12.9-amd64.exe">Download</a></div>
-                </div>
-                <div class="stext"><b class="bc">3. Configurează Visual Studio Code & Terminalul </b></div>
-                <div class="rtext">1. Open Folder (Este folderul unde dorești să ai proiectul OpenML)</div>
-                <div class="rtext">2. Open New Terminal</div>
-                <div class="rtext"><img src="/assets/ai/terminal.png" width=500 style="border-radius: 10px;"></div>
-                <div class="rtext">3. Instalează dependențele</div>
-                <div class="stext"><b class="bc">4. Dependențe (folosește pip3 pentru python3)</b></div>
-                <div class="stext">
-                    <div class="codee-window">
-                        <pre><code class="language-python" >pip install opencv-python ultralytics numpy</code></pre>
-                    </div>
-                </div>
-                <div class="stext">Sau</div>
-                <div class="stext">
-                    <div class="codee-window">
-                        <pre><code class="language-python" >pip install opencv-python==4.8.0.76
-                                            pip install ultralytics==8.0.196
-                                            pip install numpy==1.24.4		</code></pre>
-                    </div>
-                </div>
-                <div class="stext"><u>Dacă OpenCV nu funcționează încearcă să îl reinstalezi folosind metoda de mai sus
-                        (sau reîncearcă folosind metodele de mai jos)</u></div>
-                <div class="stext">
-                    <div class="codee-window">
-                        <pre><code class="language-python" >pip install opencv-python </code></pre>
-                    </div>
-                </div>
-                <div class="stext">Exemplu </div>
-                <div class="stext"><img src="/assets/ai/show_terminal_2.png" width="600" style="border-radius: 10px;">
-                </div>
-                <div class="stext">5.<b class="bc"> Cerințe Hardware</b></div>
-                <div class="rtext">
-                    <li>Este nevoie de un Webcam conectat la dispozitiv (codul folosește cv2.VideoCapture(0), asigură-te
-                        că indexul camerei 0 este corect pentru configurația ta.)</li>
-                </div>
-                <div class="rtext">
-                    <li>Putere CPU suficientă pentru inferență în timp real (se recomandă o placă grafică cu suport CUDA
-                        pentru performanțe mai bune) pentru Testare și Control Hub este, de asemenea, acceptat.
-                    </li>
-                </div>
-                <div class="stext"><b class="bc">6. Testează Scriptul Python pentru Cameră</b></div>
-                <div class="rtext">
-                    <li>Creează un script Python cu numele <u>camera_test.py</u> și adaugă următorul cod în el</li>
-                </div>
-                <div class="stext"><u>camera_test.py</u></div>
-                <div class="stext">
-                    <div class="codee-window">
-                        <pre><code class="language-python" >import cv2
-                                            cap = cv2.VideoCapture(0) #Daca nu functioneaza, incrementeaza numarul cu 1 pana cand camera functioneaza si apare pe ecran
-                                            ret, frame = cap.read()
-                                            print("Camera working:", ret)
-                                            cap.release()</code></pre>
-                    </div>
-                </div>
-                <div class="stext">
-                    Apoi</div>
-                <div class="stext">
-                    <div class="codee-window">
-                        <pre><code class="language-python" >python camera_test.py</pre></code>
-                    </div>
-                </div>
+                        video.addEventListener('play', function () {
+                            overlay.style.opacity = '0';
+                        });
 
-                <div class="stext">7.<b class="bc">Dacă camera funcționează, descarcă modelul ML din
-                        <u>Resurse</u></b></div>
-                <div class="rtext">
-                    <li>Dacă ai o cameră de calitate <b class="bc">Foarte scăzută / Scăzută</b> descarcă <u><a
-                                href="/model/<?php echo $season_path; ?>/resources"
-                                style="text-decoration: none; color: white;">primul ML</a></u>
-                    </li>
-                </div>
-                <div class="rtext">
-                    <li>Dacă ai o cameră de calitate <b class="bc">Medie / Foarte bună </b> descarcă <u><a
-                                href="/model/<?php echo $season_path; ?>/resources"
-                                style="text-decoration: none; color: white;">al doilea
-                                ML</a></u></li>
-                </div>
-                <div class="rtext">
-                    <li><u>Asigură-te că descarci modelul cu <b class="bc">[Python Testing]</b> pentru calitatea camerei
-                            tale [Contează foarte mult]</u></li>
-                </div>
+                        video.addEventListener('pause', function () {
+                            overlay.style.opacity = '1';
+                        });
 
-                <div class="stext">8. <b class="bc">Calibrează Camera</b></div>
-                <div class="rtext">
-                    <li>Accesează <u><a href="/model/<?php echo $season_path; ?>/cameracalib"
-                                style="text-decoration: none; color: white">Camera
-                                Calibration</a></u>, iar apoi întoarce-te după ce ai terminat calibrarea camerei.</li>
-                </div>
-
-                <div class="stext">9.🎉Dacă ai parcurs cu <b class="bc">succes</b> toți pașii, poți trece la <b
-                        class="bc">Cod Python pentru Detecție</b> pentru a testa modelul OpenML 🎉 </div>
-                <div class="rtext">
-                    <li>Accesează <u><a href="/model/<?php echo $season_path; ?>/pythonml"
-                                style="text-decoration: none; color: white;">Cod Python
-                                pentru Detecție</a></u></li>
-                    </li>
-                </div>
-
-                <div class="stext">10.<b class="bc"> Note suplimentare</b></div>
-                <div class="rtext">
-                    <li>Codul utilizează modulele math și cv2 pentru calcule geometrice și operațiuni cu camera. Acestea
-                        sunt incluse în dependențele menționate mai sus.</li>
-                </div>
-                <div class="rtext">
-                    <li>Dacă întâmpini erori legate de CUDA, asigură-te că ai drivere GPU compatibile și că PyTorch/CUDA
-                        este instalat (Ultralytics YOLO se ocupă, de obicei, de acest aspect automat).</li>
-                </div>
-                <div class="rtext">
-                    <li>Ajustează valorile fov_degrees, first_angle și y pe baza calibrării camerei tale.</li>
-                </div>
-                <?php else: ?>
+                        video.addEventListener('ended', function () {
+                            overlay.style.opacity = '1';
+                        });
+                    });
+                </script>
                 <div class="stext"><b class="bc">1. Visual Studio Code</b></div>
                 <div class="rtext">1. Download <b class="bc">Visual Studio Code</b>. (Recommended)
                     <div class="downloadbtn"><a href="https://code.visualstudio.com/docs/?dv=win64user">Download</a>
@@ -543,7 +475,6 @@ if ($detection_method == 'machine_learning') {
                 <div class="rtext">
                     <li>Adjust the fov_degrees, first_angle and y values based on your camera calibration.</li>
                 </div>
-                <?php endif; ?>
 
                 <div class="endLine"></div>
                 <div class="endD"><a href="https://discord.gg/ZB6vQ62KZT">Support -> Discord</a></div>
@@ -617,9 +548,8 @@ if ($detection_method == 'machine_learning') {
             <div class="setup">Detectie AprilTag</div>
             <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/apriltag">Ghid de
                     initializare</a></div>
-            <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/apriltag_implementation">Implementare
-                    AprilTag</a></div>
-            <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/apriltag_code_sample">Cod Exemplu
+
+            <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/apriltag_code_sample">Implementare
                     AprilTag</a></div>
 
             <div class="docsLine"></div>
@@ -641,12 +571,12 @@ if ($detection_method == 'machine_learning') {
             <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/auto_aiming_getting_started">Ghid de
                     initializare</a></div>
             <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/gyroscope_only">Implementare
-                    Doar Giroscop</a></div>
+                    Doar IMU</a></div>
             <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/camera_only">
                     Implementare Doar Webcam</a>
             </div>
             <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/gyroscope_and_camera">Implementare
-                    Giroscop + Webcam</a>
+                    IMU & Webcam</a>
             </div>
             <?php endif; ?>
             <?php else: ?>
@@ -711,10 +641,8 @@ if ($detection_method == 'machine_learning') {
             <div class="setup">AprilTag Detection</div>
             <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/apriltag">Getting
                     Started</a></div>
-            <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/apriltag_implementation">AprilTag
-                    Implementation</a></div>
             <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/apriltag_code_sample">AprilTag
-                    Code Sample</a></div>
+                    Implementation</a></div>
 
             <div class="docsLine"></div>
 
@@ -735,14 +663,14 @@ if ($detection_method == 'machine_learning') {
             <div class="setup">Auto Aiming Turret</div>
             <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/auto_aiming_getting_started">Getting
                     Started</a></div>
-            <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/gyroscope_only">Gyroscope
+            <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/gyroscope_only">IMU
                     Only
                     Implementation</a></div>
             <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/camera_only">
                     Webcam Only
                     Implementation</a>
             </div>
-            <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/gyroscope_and_camera">Gyroscope +
+            <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/gyroscope_and_camera">IMU &
                     Webcam
                     Implementation</a>
             </div>

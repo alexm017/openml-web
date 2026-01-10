@@ -139,102 +139,49 @@ $season_path = ($season_cookie == 'Decode') ? 'decode' : 'intothedeep';
         <div class="rbox">
             <div class="title">Resources</div>
             <div class="text-container">
-                <?php
-                $lang = isset($_COOKIE['site_lang']) ? $_COOKIE['site_lang'] : 'en';
-                if ($lang == 'ro'):
-                    ?>
-                    <div class="stext">1. Dacă ai o <b class="bc">Cameră de Calitate Scăzută</b> și vrei să testezi Modelul
-                        ML în
-                        <b class="bc">Python</b> Descarcă Acest Model:
+                <div class="stext">1. If you have <b class="bc">Low Quality Camera</b> and want to test the ML Model in
+                    <b class="bc">Python</b> Download This Model:
+                </div>
+                <div class="rtext">
+                    <div class="stext">
+                        <li><b>Machine Learning Model <u>[Low Quality Camera]</b></u> <b class="bc"><u>[For Python
+                                    Testing]</u></li></b>
                     </div>
-                    <div class="rtext">
-                        <div class="stext">
-                            <li><b>Model Machine Learning <u>[Cameră Calitate Scăzută]</b></u> <b class="bc"><u>[Pentru
-                                        Testare Python]</u></li></b>
-                        </div>
-                        <div class="downloadbtn"><a href="/assets/ai/low.pt">Descarcă</a></div>
-                    </div><br></br>
-                    <div class="stext">2. Dacă ai o <b class="bc">Cameră de Calitate Medie -> Înaltă</b> și vrei să testezi
-                        Modelul ML în <b class="bc">Python</b> Descarcă Acest Model:</div>
-                    <div class="rtext">
-                        <div class="stext">
-                            <li><b>Model Machine Learning <u>[Webcam Normal]</u> <b class="bc"><u>[Pentru Testare
-                                            Python]</u></b></li>
-                        </div>
-                        <div class="downloadbtn"><a href="/assets/ai/high.pt">Descarcă</a></div>
+                    <div class="downloadbtn"><a href="/assets/ai/low.pt">Download</a></div>
+                </div><br></br>
+                <div class="stext">2. If you have <b class="bc">Medium -> High Quality Camera</b> and want to test the
+                    ML Model in <b class="bc">Python</b> Download This Model:</div>
+                <div class="rtext">
+                    <div class="stext">
+                        <li><b>Machine Learning Model <u>[Normal Webcams]</u> <b class="bc"><u>[For Python
+                                        Testing]</u></b></li>
                     </div>
-                    <div class="endLinee"></div>
-                    <br></br>
-                    <br></br>
-                    <div class="stext">3. Dacă ai o <b class="bc">Cameră de Calitate Scăzută</b> și vrei să testezi Modelul
-                        ML pe
-                        <b class="bc">Robot</b> Descarcă Acest Model:
+                    <div class="downloadbtn"><a href="/assets/ai/high.pt">Download</a></div>
+                </div>
+                <div class="endLinee"></div>
+                <br></br>
+                <br></br>
+                <div class="stext">3. If you have <b class="bc">Low Quality Camera</b> and want to test the ML Model on
+                    the <b class="bc">Robot</b> Download This Model:</div>
+                <div class="rtext">
+                    <div class="ftext">
+                        <li><b>Machine Learning <u>[Low Quality Camera]</u> <b class="bc"><u>[Robot (Control Hub)]</u>
+                        </li></b>
                     </div>
-                    <div class="rtext">
-                        <div class="ftext">
-                            <li><b>Machine Learning <u>[Cameră Calitate Scăzută]</u> <b class="bc"><u>[Robot (Control
-                                            Hub)]</u>
-                            </li></b>
-                        </div>
-                        <div class="downloadbtn"><a href="/assets/ai/low.tflite">Descarcă</a></div><br></br>
+                    <div class="downloadbtn"><a href="/assets/ai/low.tflite">Download</a></div><br></br>
+                </div>
+                <div class="stext">4. If you have <b class="bc">Medium -> High Quality Camera</b> and want to test the
+                    ML Model on the <b class="bc">Robot</b> Download This Model:</div>
+                <div class="rtext">
+                    <div class="stext">
+                        <li><b>Machine Learning Model <u>[Normal Webcam]</u> <b class="bc"><u>[Robot (Control
+                                        Hub)]</u></b></li>
                     </div>
-                    <div class="stext">4. Dacă ai o <b class="bc">Cameră de Calitate Medie -> Înaltă</b> și vrei să testezi
-                        Modelul ML pe <b class="bc">Robot</b> Descarcă Acest Model:</div>
-                    <div class="rtext">
-                        <div class="stext">
-                            <li><b>Model Machine Learning <u>[Webcam Normal]</u> <b class="bc"><u>[Robot (Control
-                                            Hub)]</u></b></li>
-                        </div>
-                        <div class="downloadbtn"><a href="/assets/ai/high.tflite">Descarcă</a></div>
-                    </div>
-                    <div class="endLine"></div>
-                    <div class="endD"><a href="https://discord.gg/ZB6vQ62KZT">Support -> Discord</a></div>
-                    <div class="end"></div>
-                <?php else: ?>
-                    <div class="stext">1. If you have <b class="bc">Low Quality Camera</b> and want to test the ML Model in
-                        <b class="bc">Python</b> Download This Model:
-                    </div>
-                    <div class="rtext">
-                        <div class="stext">
-                            <li><b>Machine Learning Model <u>[Low Quality Camera]</b></u> <b class="bc"><u>[For Python
-                                        Testing]</u></li></b>
-                        </div>
-                        <div class="downloadbtn"><a href="/assets/ai/low.pt">Download</a></div>
-                    </div><br></br>
-                    <div class="stext">2. If you have <b class="bc">Medium -> High Quality Camera</b> and want to test the
-                        ML Model in <b class="bc">Python</b> Download This Model:</div>
-                    <div class="rtext">
-                        <div class="stext">
-                            <li><b>Machine Learning Model <u>[Normal Webcams]</u> <b class="bc"><u>[For Python
-                                            Testing]</u></b></li>
-                        </div>
-                        <div class="downloadbtn"><a href="/assets/ai/high.pt">Download</a></div>
-                    </div>
-                    <div class="endLinee"></div>
-                    <br></br>
-                    <br></br>
-                    <div class="stext">3. If you have <b class="bc">Low Quality Camera</b> and want to test the ML Model on
-                        the <b class="bc">Robot</b> Download This Model:</div>
-                    <div class="rtext">
-                        <div class="ftext">
-                            <li><b>Machine Learning <u>[Low Quality Camera]</u> <b class="bc"><u>[Robot (Control Hub)]</u>
-                            </li></b>
-                        </div>
-                        <div class="downloadbtn"><a href="/assets/ai/low.tflite">Download</a></div><br></br>
-                    </div>
-                    <div class="stext">4. If you have <b class="bc">Medium -> High Quality Camera</b> and want to test the
-                        ML Model on the <b class="bc">Robot</b> Download This Model:</div>
-                    <div class="rtext">
-                        <div class="stext">
-                            <li><b>Machine Learning Model <u>[Normal Webcam]</u> <b class="bc"><u>[Robot (Control
-                                            Hub)]</u></b></li>
-                        </div>
-                        <div class="downloadbtn"><a href="/assets/ai/high.tflite">Download</a></div>
-                    </div>
-                    <div class="endLine"></div>
-                    <div class="endD"><a href="https://discord.gg/ZB6vQ62KZT">Support -> Discord</a></div>
-                    <div class="end"></div>
-                <?php endif; ?>
+                    <div class="downloadbtn"><a href="/assets/ai/high.tflite">Download</a></div>
+                </div>
+                <div class="endLine"></div>
+                <div class="endD"><a href="https://discord.gg/ZB6vQ62KZT">Support -> Discord</a></div>
+                <div class="end"></div>
             </div>
         </div>
         <div class="docs-container">
@@ -305,9 +252,8 @@ $season_path = ($season_cookie == 'Decode') ? 'decode' : 'intothedeep';
                     <div class="setup">Detectie AprilTag</div>
                     <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/apriltag">Ghid de
                             initializare</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/apriltag_implementation">Implementare
-                            AprilTag</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/apriltag_code_sample">Cod Exemplu
+
+                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/apriltag_code_sample">Implementare
                             AprilTag</a></div>
 
                     <div class="docsLine"></div>
@@ -329,12 +275,12 @@ $season_path = ($season_cookie == 'Decode') ? 'decode' : 'intothedeep';
                     <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/auto_aiming_getting_started">Ghid de
                             initializare</a></div>
                     <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/gyroscope_only">Implementare
-                            Doar Giroscop</a></div>
+                            Doar IMU</a></div>
                     <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/camera_only">
                             Implementare Doar Webcam</a>
                     </div>
                     <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/gyroscope_and_camera">Implementare
-                            Giroscop + Webcam</a>
+                            IMU & Webcam</a>
                     </div>
                 <?php endif; ?>
             <?php else: ?>
@@ -400,10 +346,9 @@ $season_path = ($season_cookie == 'Decode') ? 'decode' : 'intothedeep';
                     <div class="setup">AprilTag Detection</div>
                     <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/apriltag">Getting
                             Started</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/apriltag_implementation">AprilTag
-                            Implementation</a></div>
+
                     <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/apriltag_code_sample">AprilTag
-                            Code Sample</a></div>
+                            Implementation</a></div>
 
                     <div class="docsLine"></div>
 
@@ -424,14 +369,14 @@ $season_path = ($season_cookie == 'Decode') ? 'decode' : 'intothedeep';
                     <div class="setup">Auto Aiming Turret</div>
                     <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/auto_aiming_getting_started">Getting
                             Started</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/gyroscope_only">Gyroscope
+                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/gyroscope_only">IMU
                             Only
                             Implementation</a></div>
                     <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/camera_only">
                             Webcam Only
                             Implementation</a>
                     </div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/gyroscope_and_camera">Gyroscope +
+                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/gyroscope_and_camera">IMU &
                             Webcam
                             Implementation</a>
                     </div>
