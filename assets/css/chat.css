@@ -6,8 +6,10 @@
   --chat-border: rgba(0, 0, 0, 0.16);
   --chat-text: #0a0a0a;
   --chat-muted: #4e4e48;
-  --chat-user-msg: #ececea;
-  --chat-ai-msg: #f7f7f5;
+  --chat-user-msg: #e8c9c9;
+  --chat-ai-msg: #2a2a2a;
+  --chat-ai-text: #f5f5f4;
+  --chat-user-text: #0a0a0a;
 }
 
 .chat-toggle-btn {
@@ -167,14 +169,14 @@ body:has(.chat-window.open) .chat-bubble {
 .message.user {
   align-self: flex-end;
   background: var(--chat-user-msg);
-  color: var(--chat-text);
+  color: var(--chat-user-text);
   border-bottom-right-radius: 0.25rem;
 }
 
 .message.ai {
   align-self: flex-start;
   background: var(--chat-ai-msg);
-  color: var(--chat-text);
+  color: var(--chat-ai-text);
   border-bottom-left-radius: 0.25rem;
 }
 
@@ -191,7 +193,7 @@ body:has(.chat-window.open) .chat-bubble {
   width: 0.42rem;
   height: 0.42rem;
   border-radius: 50%;
-  background: #76766f;
+  background: #d5d5cf;
   animation: chatBounce 1.4s infinite ease-in-out;
 }
 
