@@ -1,657 +1,435 @@
 <?php
 session_start();
-$record_file = fopen("/var/www/html/record_index.txt", "a");
-$txt = "res\n";
-$txtt = "res";
-$user_agent = $_SERVER["HTTP_USER_AGENT"];
-$ip = $_SERVER["REMOTE_ADDR"];
-$date = date('m/d/Y h:i:s a', time());
-$txt2 = $txtt . " " . $user_agent . " " . $ip . " " . $date . "\n";
-fwrite($record_file, $txt);
-fwrite($record_file, $txt2);
-fclose($record_file);
+
+$record_file = @fopen('/var/www/html/record_index.txt', 'a');
+if ($record_file) {
+    $user_agent = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : 'unknown-agent';
+    $ip = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : 'unknown-ip';
+    $date = date('m/d/Y h:i:s a');
+    fwrite($record_file, "training-data\n");
+    fwrite($record_file, 'training-data ' . $user_agent . ' ' . $ip . ' ' . $date . "\n");
+    fclose($record_file);
+}
+
+$lang = isset($_COOKIE['site_lang']) ? $_COOKIE['site_lang'] : 'en';
+if ($lang !== 'ro') {
+    $lang = 'en';
+}
 
 $season_cookie = isset($_COOKIE['season_choice']) ? $_COOKIE['season_choice'] : 'IntoTheDeep';
-$season_year = ($season_cookie == 'Decode') ? '2026' : '2025';
-$season_path = ($season_cookie == 'Decode') ? 'decode' : 'intothedeep';
-if (isset($_COOKIE['detection_method'])) {
-	$detection_method = $_COOKIE['detection_method'];
-} else {
-	$detection_method = 'machine_learning';
-}
-if ($detection_method == 'color_blob') {
-	$detection_method = 'Color Blob Detection';
-}
-if ($detection_method == 'machine_learning') {
-	$detection_method = 'Machine Learning';
-}
-?>
+$season_path = ($season_cookie === 'Decode') ? 'decode' : 'intothedeep';
+$is_logged_in = isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] === 'userLoggedIn';
+$team_name = isset($_SESSION['teamname']) ? $_SESSION['teamname'] : '';
 
+$text = [
+    'en' => [
+        'title' => 'Training Datasets',
+        'subtitle' => 'Choose a dataset, review its preview section, and download the package.',
+        'preview' => 'Preview placeholder',
+        'preview_hint' => 'Add your dataset preview (image/video/notes) here later.',
+        'download' => 'Download Dataset',
+        'training_data' => 'Training Data',
+        'ml_model' => 'ML Model',
+        'signup' => 'Sign Up',
+        'login' => 'Login',
+        'hello' => 'Hello',
+        'note' => 'Note',
+    ],
+    'ro' => [
+        'title' => 'Training Datasets',
+        'subtitle' => 'Alege un set de date, vezi zona de preview și descarcă pachetul.',
+        'preview' => 'Placeholder preview',
+        'preview_hint' => 'Adauga aici mai tarziu preview-ul setului (imagine/video/notite).',
+        'download' => 'Descarca Setul de Date',
+        'training_data' => 'Date de Antrenament',
+        'ml_model' => 'Model ML',
+        'signup' => 'Inregistrare',
+        'login' => 'Autentificare',
+        'hello' => 'Salut',
+        'note' => 'Note',
+    ],
+];
+
+$datasets = [
+    [
+        'title_en' => 'ITD Dataset 01 - Core Samples (Medium)',
+        'title_ro' => 'ITD Dataset 01 - Mostre de baza (Mediu)',
+        'desc_en' => 'Balanced starter set for initial model training and quick iteration.',
+        'desc_ro' => 'Set echilibrat pentru antrenare initiala si iteratii rapide.',
+        'download' => '/assets/ai/medium_dataset.rar',
+    ],
+    [
+        'title_en' => 'ITD Dataset 02 - Extended Samples (Large)',
+        'title_ro' => 'ITD Dataset 02 - Mostre extinse (Mare)',
+        'desc_en' => 'Large dataset with more diversity for stronger generalization.',
+        'desc_ro' => 'Set mare de date cu diversitate mai mare pentru generalizare mai buna.',
+        'download' => '/assets/ai/large_dataset.rar',
+    ],
+    [
+        'title_en' => 'ITD Dataset 03 - Lighting Variations',
+        'title_ro' => 'ITD Dataset 03 - Variatii de iluminare',
+        'desc_en' => 'Focused split for difficult lighting conditions and color consistency.',
+        'desc_ro' => 'Set dedicat conditiilor de lumina dificile si consistentei culorilor.',
+        'download' => '/assets/ai/intothedeep_dataset_03.rar',
+    ],
+    [
+        'title_en' => 'ITD Dataset 04 - Validation Holdout',
+        'title_ro' => 'ITD Dataset 04 - Validare holdout',
+        'desc_en' => 'Reserved validation set for objective model checks before deployment.',
+        'desc_ro' => 'Set rezervat pentru validare obiectiva inainte de deploy.',
+        'download' => '/assets/ai/intothedeep_dataset_04.rar',
+    ],
+];
+
+$t = $text[$lang];
+$current_year = date('Y');
+?>
 <!DOCTYPE html>
-<html>
+<html lang="<?php echo htmlspecialchars($lang, ENT_QUOTES, 'UTF-8'); ?>">
 
 <head>
-	<meta charset="UTF-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>AlphaBit - OpenML</title>
-	<link rel="stylesheet" href="/assets/css/model_style.css?v=20260304">
-	<link rel="stylesheet" href="/assets/css/overview_theme.css?v=20260304">
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-	<link rel="shortcut icon" type="image/x-icon" href="/assets/images/alphabit.ico" />
-	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/styles/atom-one-dark.min.css">
-	<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/highlight.min.js"></script>
-	<script>
-		document.addEventListener("DOMContentLoaded", () => {
-			hljs.highlightAll();
-		});
-	</script>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><?php echo htmlspecialchars($t['title'], ENT_QUOTES, 'UTF-8'); ?> - AlphaBit OpenML</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="shortcut icon" type="image/x-icon" href="/assets/images/alphabit.ico">
+    <style>
+        :root {
+            --font-main: 'Manrope', 'Montserrat', sans-serif;
+            --ink-900: #f5f5f4;
+            --ink-700: #d0d0cc;
+            --ink-600: #a3a39d;
+            --accent: #f5f5f4;
+            --accent-2: #ebebe8;
+            --surface: rgba(12, 12, 12, 0.9);
+            --border: rgba(255, 255, 255, 0.14);
+            --control-bg: #f5f5f4;
+            --control-bg-hover: #ffffff;
+            --control-border: rgba(0, 0, 0, 0.16);
+            --control-ink: #0a0a0a;
+            --shadow-lg: 0 24px 54px rgba(0, 0, 0, 0.5);
+            --shadow-md: 0 14px 34px rgba(0, 0, 0, 0.4);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100svh;
+            font-family: var(--font-main);
+            color: var(--ink-900);
+            background: linear-gradient(165deg, #040404 0%, #090909 52%, #101010 100%);
+        }
+
+        body::before,
+        body::after {
+            content: '';
+            position: fixed;
+            border-radius: 999px;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        body::before {
+            width: 30rem;
+            height: 30rem;
+            top: -10rem;
+            right: -10rem;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0));
+        }
+
+        body::after {
+            width: 24rem;
+            height: 24rem;
+            bottom: -8rem;
+            left: -8rem;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0));
+        }
+
+        .site-navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 90;
+            width: 100%;
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+            align-items: center;
+            gap: 1rem;
+            padding: 0.78rem clamp(1rem, 3vw, 3.5rem);
+            background: rgba(8, 8, 8, 0.84);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .brand-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            justify-self: start;
+            text-decoration: none;
+            font-weight: 800;
+            letter-spacing: 0.01em;
+            font-size: clamp(1.05rem, 1.3vw, 1.25rem);
+            color: inherit;
+        }
+
+        .brand-logo {
+            width: clamp(1.85rem, 3vw, 2.25rem);
+            height: clamp(1.85rem, 3vw, 2.25rem);
+            object-fit: contain;
+        }
+
+        .navbar-links,
+        .navbar-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.55rem;
+            flex-wrap: wrap;
+        }
+
+        .navbar-links {
+            justify-self: center;
+            justify-content: center;
+        }
+
+        .navbar-actions {
+            justify-self: end;
+            justify-content: flex-end;
+        }
+
+        .nav-link,
+        .profile-chip {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            padding: 0.52rem 0.95rem;
+            border-radius: 999px;
+            border: 1px solid var(--control-border);
+            color: var(--control-ink);
+            background: var(--control-bg);
+            font-weight: 650;
+            font-size: 0.92rem;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+        }
+
+        .nav-link:hover,
+        .profile-chip:hover,
+        .download-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 22px rgba(0, 0, 0, 0.34);
+            background: var(--control-bg-hover);
+        }
+
+        .profile-chip {
+            gap: 0.45rem;
+        }
+
+        .profile-chip img {
+            width: 1.5rem;
+            height: 1.5rem;
+            border-radius: 999px;
+        }
+
+        .training-page {
+            width: min(1180px, 100%);
+            margin: 0 auto;
+            padding: 6.6rem 1rem 2rem;
+        }
+
+        .page-intro {
+            border-radius: 1.2rem;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            box-shadow: var(--shadow-lg);
+            padding: 1.3rem;
+            margin-bottom: 1rem;
+        }
+
+        .page-intro h1 {
+            margin: 0;
+            font-size: clamp(1.6rem, 3vw, 2.1rem);
+        }
+
+        .page-intro p {
+            margin: 0.5rem 0 0;
+            color: var(--ink-700);
+        }
+
+        .dataset-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 1rem;
+        }
+
+        .dataset-card {
+            border-radius: 1.1rem;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            box-shadow: var(--shadow-md);
+            padding: 1rem;
+            display: grid;
+            gap: 0.8rem;
+        }
+
+        .dataset-card h2 {
+            margin: 0;
+            font-size: 1.12rem;
+        }
+
+        .dataset-card p {
+            margin: 0;
+            color: var(--ink-700);
+            font-size: 0.95rem;
+        }
+
+        .preview-slot {
+            min-height: 180px;
+            border-radius: 0.9rem;
+            border: 1px dashed rgba(255, 255, 255, 0.3);
+            background: rgba(8, 8, 8, 0.92);
+            display: grid;
+            place-items: center;
+            text-align: center;
+            padding: 1rem;
+            color: var(--ink-600);
+            line-height: 1.4;
+        }
+
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: fit-content;
+            border: 1px solid rgba(0, 0, 0, 0.18);
+            border-radius: 999px;
+            padding: 0.72rem 1.1rem;
+            color: var(--control-ink);
+            background: linear-gradient(135deg, var(--accent), var(--accent-2));
+            font-weight: 700;
+            text-decoration: none;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+        }
+
+        .page-note {
+            margin-top: 1rem;
+            color: var(--ink-600);
+            font-size: 0.92rem;
+            text-align: center;
+        }
+
+        .site-footer {
+            margin-top: 1rem;
+            display: flex;
+            justify-content: center;
+            color: var(--ink-600);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 900px) {
+            .dataset-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 780px) {
+            .site-navbar {
+                display: flex;
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .brand-link,
+            .navbar-links,
+            .navbar-actions {
+                justify-content: center;
+            }
+
+            .navbar-links {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 560px) {
+
+            .nav-link,
+            .profile-chip {
+                width: 100%;
+            }
+        }
+    </style>
 </head>
 
 <body>
-	<div id="language-popup" class="language-popup-overlay" style="display: none;">
-		<div class="language-popup-content">
-			<h2>Choose Language / Alege Limba</h2>
-			<div class="language-options">
-				<button onclick="selectLanguage('ro')">Română</button>
-				<button onclick="selectLanguage('en')">English</button>
-			</div>
-		</div>
-	</div>
+    <header class="site-navbar">
+        <a class="brand-link" href="/">
+            <span>AlphaBit OpenML</span>
+            <img class="brand-logo" src="/assets/images/ai_star_alpha.png" alt="AlphaBit logo">
+        </a>
 
-	<style>
-		.language-popup-overlay {
-			position: fixed;
-			top: 0;
-			left: 0;
-			width: 100%;
-			height: 100%;
-			background-color: rgba(0, 0, 0, 0.9);
-			z-index: 9999;
-			display: flex;
-			justify-content: center;
-			align-items: center;
-		}
+        <nav class="navbar-links" aria-label="Primary">
+            <a class="nav-link"
+                href="/model/<?php echo htmlspecialchars($season_path, ENT_QUOTES, 'UTF-8'); ?>/training"><?php echo htmlspecialchars($t['training_data'], ENT_QUOTES, 'UTF-8'); ?></a>
+            <a class="nav-link"
+                href="/model/<?php echo htmlspecialchars($season_path, ENT_QUOTES, 'UTF-8'); ?>/overview"><?php echo htmlspecialchars($t['ml_model'], ENT_QUOTES, 'UTF-8'); ?></a>
+        </nav>
 
-		.language-popup-content {
-			background-color: #1e1e1e;
-			padding: 40px;
-			border-radius: 15px;
-			text-align: center;
-			border: 1px solid #333;
-			box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-		}
+        <div class="navbar-actions">
+            <?php if (!$is_logged_in): ?>
+                <a class="nav-link" href="/register"><?php echo htmlspecialchars($t['signup'], ENT_QUOTES, 'UTF-8'); ?></a>
+                <a class="nav-link" href="/login"><?php echo htmlspecialchars($t['login'], ENT_QUOTES, 'UTF-8'); ?></a>
+            <?php else: ?>
+                <a class="profile-chip" href="/profile">
+                    <img src="/assets/images/user3.png" alt="Profile">
+                    <span><?php echo htmlspecialchars($t['hello'] . ', ' . $team_name, ENT_QUOTES, 'UTF-8'); ?></span>
+                </a>
+            <?php endif; ?>
+        </div>
+    </header>
 
-		.language-popup-content h2 {
-			color: #fff;
-			margin-bottom: 35px;
-			font-family: Arial, sans-serif;
-		}
+    <main class="training-page">
+        <section class="page-intro">
+            <h1><?php echo htmlspecialchars($t['title'], ENT_QUOTES, 'UTF-8'); ?></h1>
+            <p><?php echo htmlspecialchars($t['subtitle'], ENT_QUOTES, 'UTF-8'); ?></p>
+        </section>
 
-		.language-options {
-			display: flex;
-			gap: 20px;
-			justify-content: center;
-		}
+        <section class="dataset-grid" aria-label="IntoTheDeep datasets">
+            <?php foreach ($datasets as $index => $dataset): ?>
+                <article class="dataset-card">
+                    <h2><?php echo htmlspecialchars($lang === 'ro' ? $dataset['title_ro'] : $dataset['title_en'], ENT_QUOTES, 'UTF-8'); ?>
+                    </h2>
+                    <p><?php echo htmlspecialchars($lang === 'ro' ? $dataset['desc_ro'] : $dataset['desc_en'], ENT_QUOTES, 'UTF-8'); ?>
+                    </p>
+                    <div class="preview-slot">
+                        <div>
+                            <strong><?php echo htmlspecialchars($t['preview'], ENT_QUOTES, 'UTF-8'); ?>
+                                <?php echo $index + 1; ?></strong><br>
+                            <?php echo htmlspecialchars($t['preview_hint'], ENT_QUOTES, 'UTF-8'); ?>
+                        </div>
+                    </div>
+                    <a class="download-btn"
+                        href="<?php echo htmlspecialchars($dataset['download'], ENT_QUOTES, 'UTF-8'); ?>" download>
+                        <?php echo htmlspecialchars($t['download'], ENT_QUOTES, 'UTF-8'); ?>
+                    </a>
+                </article>
+            <?php endforeach; ?>
+        </section>
 
-		.language-options button {
-			padding: 15px 30px;
-			font-size: 18px;
-			cursor: pointer;
-			background-color: #d4d4d4ff;
-			color: black;
-			border: none;
-			border-radius: 8px;
-		}
+        <footer class="site-footer"><?php echo $current_year; ?> AlphaBit OpenML</footer>
+    </main>
 
-		.language-options button:hover {
-			background-color: #ffffffff;
-			transform: scale(1.05);
-		}
-	</style>
-
-	<script>
-		function setCookie(name, value, days) {
-			var expires = "";
-			if (days) {
-				var date = new Date();
-				date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-				expires = "; expires=" + date.toUTCString();
-			}
-			document.cookie = name + "=" + (value || "") + expires + "; path=/";
-		}
-
-		function getCookie(name) {
-			var nameEQ = name + "=";
-			var ca = document.cookie.split(';');
-			for (var i = 0; i < ca.length; i++) {
-				var c = ca[i];
-				while (c.charAt(0) == ' ') c = c.substring(1, c.length);
-				if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
-			}
-			return null;
-		}
-
-		function selectLanguage(lang) {
-			setCookie('site_lang', lang, 365);
-			document.getElementById('language-popup').style.display = 'none';
-			location.reload();
-		}
-
-		document.addEventListener("DOMContentLoaded", function () {
-			var lang = getCookie('site_lang');
-			if (!lang) {
-				document.getElementById('language-popup').style.display = 'flex';
-			}
-		});
-	</script>
-	<div class="background-container">
-		<div class="alphabit-topleft">
-			<a href="/">AlphaBit OpenML</a>
-		</div>
-		<div class="before_docs"><?php echo $season_year; ?></div>
-		<div class="ai-star-logo">
-			<img src="/assets/images/ai_star_alpha.png" width=50>
-		</div>
-		<div class="docs">Documentation</div>
-		<div class="rbox">
-			<div class="title">Training Dataset</div>
-			<div class="text-container">
-				<?php
-				$lang = isset($_COOKIE['site_lang']) ? $_COOKIE['site_lang'] : 'en';
-				if ($lang == 'ro'):
-					?>
-					<div class="ftext">
-						<li><b>Set de Date Antrenament [3 Mostre] <u>[Set mare]</u> (3671 Imagini Etichetate) (343
-								Fundaluri)
-						</li></b>
-					</div>
-					<div class="downloadbtn"><a href="/assets/ai/large_dataset.rar">Descarcă</a></div>
-					<div class="stext">
-						<li><b>Set de Date Antrenament [3 Mostre] <u>[Set mediu]</u> (2653 Imagini Etichetate) (317
-								Fundaluri)
-								[Recomandat pentru prima antrenare]</li></b>
-					</div>
-
-					<div class="downloadbtn"><a href="/assets/ai/medium_dataset.rar">Descarcă</a></div>
-
-					<div class="stext">Acest set de date a fost creat special pentru antrenarea modelelor de învățare
-						automată și este disponibil în mod open-source. Imaginile din set sunt organizate în categorii
-						(clase) bine definite, pentru a asigura o structură clară și ușor de utilizat în procesul de
-						antrenare.></div>
-					<div class="stext"><u><b>Puncte cheie:</b></u></li>
-					</div>
-					<div class="rtext">
-						<li><b>Echilibru între clase</b>: Pentru a preveni instabilitatea în timpul antrenării modelului,
-							este esențial ca diferența în numărul de imagini dintre clase să nu depășească 5%. Un
-							dezechilibru mai mare poate duce la o performanță suboptimală și la probleme de generalizare.
-						</li>
-					</div>
-					<div class="rtext">
-						<li><b>Verificare și validare</b>: La finalul documentației, este inclus un script Python care
-							parcurge toate imaginile din set și afișează numărul de imagini pentru fiecare clasă. Acest
-							instrument de verificare ajută la menținerea integrității setului de date și asigură respectarea
-							cerinței de echilibru.</li>
-					</div>
-					<div class="stext"><b>Repartiția datelor și importanța validării în antrenarea unui AI</b></li>
-					</div>
-					<div class="stext"><u>La antrenarea unui AI este esențială împărțirea setului de date în două părți
-							principale:</u></div>
-					<div class="rtext">
-						<li><b>Date de antrenare (training data)</b>: Aceasta reprezintă 80% sau 90% din totalul datelor.
-							Modelul "învață" din aceste date, adică identifică tipare și relații relevante pentru sarcina
-							dată.</li>
-					</div>
-					<div class="rtext">
-						<li><b>Date de validare (validation data)</b>: Acestea reprezintă restul de 20% sau 10% din date.
-							Ele sunt folosite pentru a evalua performanța modelului pe date pe care acesta nu le-a văzut în
-							timpul antrenării.</li>
-					</div>
-
-					<div class="stext"><b><u>De ce este importantă validarea?</u></b></li>
-					</div>
-					<div class="rtext">
-						<li><b>Evitarea overfitting-ului</b>: Validarea permite detectarea situațiilor în care modelul se
-							potrivește prea bine datelor de antrenare, dar nu reușește să generalizeze pe date noi.</li>
-					</div>
-					<div class="rtext">
-						<li><b>Alegerea parametrilor optimi</b>: Evaluând performanța pe setul de validare, poți ajusta
-							hiperparametrii modelului pentru a îmbunătăți acuratețea și robustețea.</li>
-					</div>
-					<div class="rtext">
-						<li><b>Evaluare obiectivă</b>: Setul de validare oferă o estimare realistă a performanței modelului
-							în situații reale, pe date necunoscute.</li>
-					</div>
-
-					<div class="stext"><b><u>Alegerea între 80/20 și 90/10:</u></b></li>
-					</div>
-					<div class="rtext">
-						<li><b>80% antrenare / 20% validare</b>: Se recomandă atunci când dispui de un set de date suficient
-							de mare. Un set de validare mai mare te ajută să evaluezi mai precis performanța modelului.</li>
-					</div>
-					<div class="rtext">
-						<li><b>90% antrenare / 10% validare</b>: Este preferabil când setul de date este mai restrâns.
-							Astfel, modelul beneficiază de mai multe exemple pentru învățare, însă evaluarea se face pe un
-							set de validare mai mic, ceea ce poate oferi o imagine puțin mai puțin robustă a performanței.
-						</li>
-					</div>
-
-					<div class="stext"><b>Python Script Pentru Verificarea Echilibrului Intre Clase</b></div>
-					<div class="stext">
-						<div class="codee-window">
-							<pre><code class="language-python" >import os
-									import xml.etree.ElementTree as ET
-									from termcolor import colored
-
-									voc_labels_dir = "datasets/AI/train/images"  # Path to your VOC XML label files
-									yolo_labels_dir = "datasets/AI/train/labels"  # Path to save YOLO format label files
-									image_dir = "datasets/AI/train/images"  # Path to your images
-
-									os.makedirs(yolo_labels_dir, exist_ok=True)
-
-									def convert_bbox(size, box):
-										dw = 1.0 / size[0]
-										dh = 1.0 / size[1]
-										x = (box[0] + box[1]) / 2.0
-										y = (box[2] + box[3]) / 2.0
-										w = box[1] - box[0]
-										h = box[3] - box[2]
-										return (x * dw, y * dh, w * dw, h * dh)
-
-									class_mapping = {
-										"YellowSample": 0,
-										"BlueSample": 1,
-										"RedSample": 2
-									}
-
-									yellow_count = 0
-									blue_count = 0
-									red_count = 0
-									total_labeled_images = 0
-									duplicates = 0
-									lastFile = ""
-									hy = 0
-									hb = 0
-									hr = 0
-									maxl = 0
-									b_differece = 0
-									r_differece = 0
-									y_differece = 0
-
-									for file in os.listdir(voc_labels_dir):
-										if file.endswith(".xml"):
-											xml_path = os.path.join(voc_labels_dir, file)
-											tree = ET.parse(xml_path)
-											root = tree.getroot()
-
-											yolo_path = os.path.join(yolo_labels_dir, file.replace(".xml", ".txt"))
-											with open(yolo_path, "w") as f:
-												for obj in root.findall("object"):
-													class_name = obj.find("name").text
-
-													if class_name in class_mapping:
-														class_id = class_mapping[class_name]
-														if class_id == 0:
-															yellow_count += 1
-														elif class_id == 1:
-															blue_count += 1
-														elif class_id == 2:
-															red_count += 1
-					
-														total_labeled_images += 1
-														if lastFile == file:
-															duplicates += 1
-													else:
-														print(f"Warning: Unknown class '{class_name}' in {file}")
-				
-													lastFile = file
-
-									if yellow_count > blue_count and yellow_count > red_count:
-										maxl = yellow_count
-									elif blue_count > yellow_count and blue_count > red_count:
-										maxl = blue_count
-									elif red_count > yellow_count and red_count > blue_count:
-										maxl = red_count
-
-									if maxl == yellow_count:
-										b_differece = maxl - blue_count
-										r_differece = maxl - red_count
-									elif maxl == blue_count:
-										y_differece = maxl - yellow_count
-										r_differece = maxl - red_count
-									elif maxl == red_count:
-										y_differece = maxl - yellow_count
-										b_differece = maxl - blue_count
-
-									if maxl * 0.05 &lt; b_differece or maxl * 0.05 &lt; r_differece or maxl * 0.05 &lt; y_differece:
-										print(colored("Warning: There is a difference of more than 5% between the classes.", "red"))
-										print(colored("Please check the labeled images and make sure that the classes are balanced.", "red"))
-									else:
-										print(colored("Classes are balanced.", "green"))
-
-									print("")
-									print("Total labeled images: " + colored(str(total_labeled_images-duplicates), "green"))
-									print(colored("Yellow samples: ", "yellow") + colored(str(yellow_count), "green") + " | [Difference]: " + colored(str(y_differece), "red"))
-									print(colored("Blue samples: ", "blue") + colored(str(blue_count), "green") + " | [Difference]: " + colored(str(b_differece), "red"))
-									print(colored("Red samples: ", "red") + colored(str(red_count), "green") + " | [Difference]: " + colored(str(r_differece), "red"))
-													</pre></code>
-						</div>
-					</div>
-					<br></br>
-
-					<div class="endLine"></div>
-					<div class="endD"><a href="https://discord.gg/jYR3fyRRjd">Support -> Discord</a></div>
-					<div class="end"></div>
-				<?php else: ?>
-					<div class="ftext">
-						<li><b>Training Dataset [3 Samples] <u>[Larger dataset]</u> (3671 Labeled Images) (343 Backgrounds)
-						</li></b>
-					</div>
-					<div class="downloadbtn"><a href="/assets/ai/large_dataset.rar">Download</a></div>
-					<div class="stext">
-						<li><b>Training Dataset [3 Samples] <u>[Medium dataset]</u> (2653 Labeled Images) (317 Backgrounds)
-								[Recommended for your first time training]</li></b>
-					</div>
-
-					<div class="downloadbtn"><a href="/assets/ai/medium_dataset.rar">Download</a></div>
-
-					<div class="stext">This dataset was created specifically for training machine learning models and is
-						available open-source. The images in the set are organized into well-defined categories (classes) to
-						ensure a clear structure that is easy to use in the training process.</div>
-					<div class="stext"><u><b>Key Points:</b></u></li>
-					</div>
-					<div class="rtext">
-						<li><b>Class Balance</b>: To prevent instability during model training, it is essential that the
-							difference in the number of images between classes does not exceed 5%. A larger imbalance can
-							lead to suboptimal performance and generalization issues.
-						</li>
-					</div>
-					<div class="rtext">
-						<li><b>Verification and Validation</b>: At the end of the documentation, a Python script is included
-							that iterates through all images in the set and displays the number of images for each class.
-							This verification tool helps maintain dataset integrity and ensures compliance with the balance
-							requirement.</li>
-					</div>
-					<div class="stext"><b>Data Distribution and the Importance of Validation in AI Training</b></li>
-					</div>
-					<div class="stext"><u>When training an AI, it is essential to split the dataset into two main parts:</u>
-					</div>
-					<div class="rtext">
-						<li><b>Training Data</b>: This represents 80% or 90% of the total data. The model "learns" from this
-							data, identifying patterns and relationships relevant to the given task.</li>
-					</div>
-					<div class="rtext">
-						<li><b>Validation Data</b>: This represents the remaining 20% or 10% of the data. It is used to
-							evaluate the model's performance on data it has not seen during training.</li>
-					</div>
-
-					<div class="stext"><b><u>Why is Validation Important?</u></b></li>
-					</div>
-					<div class="rtext">
-						<li><b>Avoiding Overfitting: Validation allows detection of situations where the model fits the
-								training data too well but fails to generalize to new data.</li>
-					</div>
-					<div class="rtext">
-						<li><b>Choosing Optimal Parameters</b>: By evaluating performance on the validation set, you can
-							adjust the model's hyperparameters to improve accuracy and robustness.</li>
-					</div>
-					<div class="rtext">
-						<li><b>Objective Evaluation</b>: The validation set offers a realistic estimate of the model's
-							performance in real-world situations, on unknown data.</li>
-					</div>
-
-					<div class="stext"><b><u>Choosing Between 80/20 and 90/10:</u></b></li>
-					</div>
-					<div class="rtext">
-						<li><b>80% Training / 20% Validation</b>: Recommended when you have a sufficiently large dataset. A
-							larger validation set helps you evaluate model performance more precisely.</li>
-					</div>
-					<div class="rtext">
-						<li><b>90% Training / 10% Validation</b>: Preferable when the dataset is smaller. Thus, the model
-							benefits from more examples for learning, but evaluation is done on a smaller validation set,
-							which may offer a slightly less robust picture of performance.
-						</li>
-					</div>
-
-					<div class="stext"><b>Python Script For Checking Class Balance</b></div>
-					<div class="stext">
-						<div class="codee-window">
-							<pre><code class="language-python" >import os
-									import xml.etree.ElementTree as ET
-									from termcolor import colored
-
-									voc_labels_dir = "datasets/AI/train/images"  # Path to your VOC XML label files
-									yolo_labels_dir = "datasets/AI/train/labels"  # Path to save YOLO format label files
-									image_dir = "datasets/AI/train/images"  # Path to your images
-
-									os.makedirs(yolo_labels_dir, exist_ok=True)
-
-									def convert_bbox(size, box):
-										dw = 1.0 / size[0]
-										dh = 1.0 / size[1]
-										x = (box[0] + box[1]) / 2.0
-										y = (box[2] + box[3]) / 2.0
-										w = box[1] - box[0]
-										h = box[3] - box[2]
-										return (x * dw, y * dh, w * dw, h * dh)
-
-									class_mapping = {
-										"YellowSample": 0,
-										"BlueSample": 1,
-										"RedSample": 2
-									}
-
-									yellow_count = 0
-									blue_count = 0
-									red_count = 0
-									total_labeled_images = 0
-									duplicates = 0
-									lastFile = ""
-									hy = 0
-									hb = 0
-									hr = 0
-									maxl = 0
-									b_differece = 0
-									r_differece = 0
-									y_differece = 0
-
-									for file in os.listdir(voc_labels_dir):
-										if file.endswith(".xml"):
-											xml_path = os.path.join(voc_labels_dir, file)
-											tree = ET.parse(xml_path)
-											root = tree.getroot()
-
-											yolo_path = os.path.join(yolo_labels_dir, file.replace(".xml", ".txt"))
-											with open(yolo_path, "w") as f:
-												for obj in root.findall("object"):
-													class_name = obj.find("name").text
-
-													if class_name in class_mapping:
-														class_id = class_mapping[class_name]
-														if class_id == 0:
-															yellow_count += 1
-														elif class_id == 1:
-															blue_count += 1
-														elif class_id == 2:
-															red_count += 1
-					
-														total_labeled_images += 1
-														if lastFile == file:
-															duplicates += 1
-													else:
-														print(f"Warning: Unknown class '{class_name}' in {file}")
-				
-													lastFile = file
-
-									if yellow_count > blue_count and yellow_count > red_count:
-										maxl = yellow_count
-									elif blue_count > yellow_count and blue_count > red_count:
-										maxl = blue_count
-									elif red_count > yellow_count and red_count > blue_count:
-										maxl = red_count
-
-									if maxl == yellow_count:
-										b_differece = maxl - blue_count
-										r_differece = maxl - red_count
-									elif maxl == blue_count:
-										y_differece = maxl - yellow_count
-										r_differece = maxl - red_count
-									elif maxl == red_count:
-										y_differece = maxl - yellow_count
-										b_differece = maxl - blue_count
-
-									if maxl * 0.05 &lt; b_differece or maxl * 0.05 &lt; r_differece or maxl * 0.05 &lt; y_differece:
-										print(colored("Warning: There is a difference of more than 5% between the classes.", "red"))
-										print(colored("Please check the labeled images and make sure that the classes are balanced.", "red"))
-									else:
-										print(colored("Classes are balanced.", "green"))
-
-									print("")
-									print("Total labeled images: " + colored(str(total_labeled_images-duplicates), "green"))
-									print(colored("Yellow samples: ", "yellow") + colored(str(yellow_count), "green") + " | [Difference]: " + colored(str(y_differece), "red"))
-									print(colored("Blue samples: ", "blue") + colored(str(blue_count), "green") + " | [Difference]: " + colored(str(b_differece), "red"))
-									print(colored("Red samples: ", "red") + colored(str(red_count), "green") + " | [Difference]: " + colored(str(r_differece), "red"))
-													</pre></code>
-						</div>
-					</div>
-					<br></br>
-
-					<div class="endLine"></div>
-					<div class="endD"><a href="https://discord.gg/jYR3fyRRjd">Support -> Discord</a></div>
-					<div class="end"></div>
-				<?php endif; ?>
-			</div>
-		</div>
-		<div class="docs-container">
-			<?php if ($lang == 'ro'): ?>
-				<div class="setup">Configurare</div>
-				<div class="sub-section"><a href="/model/<?php echo $season_path; ?>/overview">Prezentare Generală</a></div>
-				<div class="sub-section"><a href="/model/<?php echo $season_path; ?>/prerequisites">Initializare Device</a>
-				</div>
-				<div class="sub-section"><a href="/model/<?php echo $season_path; ?>/resources">Resurse</a></div>
-				<div class="docsLine"></div>
-
-				<?php if ($season_cookie != 'Decode'): ?>
-					<div class="setup">Detectie Sample 2D</div>
-					<div class="sub-section"><a href="/model/<?php echo $season_path; ?>/2d_start">Ghid de initializare</a>
-					</div>
-					<div class="sub-section"><a href="/model/<?php echo $season_path; ?>/2d_cameracalib">Calibrarea Camerei</a>
-					</div>
-					<div class="sub-section"><a href="/model/<?php echo $season_path; ?>/2d_python_test">Testare Detectie
-							Python</a></div>
-					<div class="sub-section"><a href="/model/<?php echo $season_path; ?>/2d_android">Implementare Android
-							Studio</a></div>
-
-					<div class="docsLine"></div>
-
-					<div class="setup">Detectie Sample 3D</div>
-					<div class="sub-section"><a href="/model/<?php echo $season_path; ?>/3d_start">Ghid de initializare</a>
-					</div>
-					<div class="sub-section"><a href="/model/<?php echo $season_path; ?>/3d_cameracalib">Calibrarea Camerei</a>
-					</div>
-					<div class="sub-section"><a href="/model/<?php echo $season_path; ?>/3d_python_test">Testare Detectie
-							Python</a></div>
-					<div class="sub-section"><a href="/model/<?php echo $season_path; ?>/3d_android">Implementare Android
-							Studio</a></div>
-
-					<div class="docsLine"></div>
-
-
-					<?php if ($detection_method != 'Color Blob Detection'): ?>
-						<div class="setup">Antrenare ML</div>
-						<div class="sub-section">
-							<p style="color:#c67171;">Set de Date Antrenament</p>
-						</div>
-						<div class="sub-section"><a href="/model/<?php echo $season_path; ?>/training_structure">Structura
-								Antrenamentului</a></div>
-						<div class="sub-section"><a href="/model/<?php echo $season_path; ?>/label_tool">Utilitar Etichetare
-								Imagini</a></div>
-						<div class="sub-section"><a href="/model/<?php echo $season_path; ?>/training_ml">Cod Python pentru
-								Antrenament</a></div>
-
-						<div class="docsLine"></div>
-					<?php endif; ?>
-
-					<div class="setup">Exemple</div>
-					<div class="sub-section"><a href="/model/<?php echo $season_path; ?>/pythonml">Cod Python pentru
-							Detecție</a></div>
-					<div class="sub-section"><a href="/model/<?php echo $season_path; ?>/android_studio">Implementare Android
-							Studio</a></div>
-					<?php if ($detection_method != 'Color Blob Detection'): ?>
-						<div class="sub-section"><a href="/model/<?php echo $season_path; ?>/robot_control">Control Colectare cu
-								OpenML</a></div>
-						<div class="sub-section"><a href="/model/<?php echo $season_path; ?>/robot_control">Implementare ML
-								Autonom</a></div>
-						<div class="sub-section"><a href="/model/<?php echo $season_path; ?>/robot_control">Implementare ML
-								TeleOp</a></div>
-					<?php endif; ?>
-				<?php endif; ?>
-			<?php else: ?>
-				<div class="setup">Setup</div>
-				<div class="sub-section"><a href="/model/<?php echo $season_path; ?>/overview">Overview</a></div>
-				<div class="sub-section"><a href="/model/<?php echo $season_path; ?>/prerequisites">Getting Started</a>
-				</div>
-				<div class="sub-section"><a href="/model/<?php echo $season_path; ?>/resources">Resources</a></div>
-				<div class="docsLine"></div>
-
-				<?php if ($season_cookie != 'Decode'): ?>
-					<div class="setup">2D Sample Detection</div>
-					<div class="sub-section"><a href="/model/<?php echo $season_path; ?>/2d_start">Starter Guide</a></div>
-					<div class="sub-section"><a href="/model/<?php echo $season_path; ?>/2d_cameracalib">Camera Calibration</a>
-					</div>
-					<div class="sub-section"><a href="/model/<?php echo $season_path; ?>/2d_python_test">Python Detection
-							Testing</a></div>
-					<div class="sub-section"><a href="/model/<?php echo $season_path; ?>/2d_android">Android Studio
-							Implementation</a></div>
-
-					<div class="docsLine"></div>
-
-					<div class="setup">3D Sample Detection</div>
-					<div class="sub-section"><a href="/model/<?php echo $season_path; ?>/3d_start">Starter Guide</a></div>
-					<div class="sub-section"><a href="/model/<?php echo $season_path; ?>/3d_cameracalib">Camera Calibration</a>
-					</div>
-					<div class="sub-section"><a href="/model/<?php echo $season_path; ?>/3d_python_test">Python Detection
-							Testing</a></div>
-					<div class="sub-section"><a href="/model/<?php echo $season_path; ?>/3d_android">Android Studio
-							Implementation</a></div>
-
-					<div class="docsLine"></div>
-
-
-					<?php if ($detection_method != 'Color Blob Detection'): ?>
-						<div class="setup">Training ML</div>
-						<div class="sub-section">
-							<p style="color:#c67171;">Training Dataset</p>
-						</div>
-						<div class="sub-section"><a href="/model/<?php echo $season_path; ?>/training_structure">Training
-								Structure</a></div>
-						<div class="sub-section"><a href="/model/<?php echo $season_path; ?>/label_tool">Label Images Tool</a></div>
-						<div class="sub-section"><a href="/model/<?php echo $season_path; ?>/training_ml">Python Code For
-								Training</a></div>
-
-						<div class="docsLine"></div>
-					<?php endif; ?>
-
-					<div class="setup">Examples</div>
-					<div class="sub-section"><a href="/model/<?php echo $season_path; ?>/pythonml">Python Code For Detection</a>
-					</div>
-					<div class="sub-section"><a href="/model/<?php echo $season_path; ?>/android_studio">Android Studio
-							Implementation</a></div>
-					<?php if ($detection_method != 'Color Blob Detection'): ?>
-						<div class="sub-section"><a href="/model/<?php echo $season_path; ?>/robot_control">Control Intake Using The
-								OpenML</a></div>
-						<div class="sub-section"><a href="/model/<?php echo $season_path; ?>/robot_control">Autonomous ML
-								Implementation</a></div>
-						<div class="sub-section"><a href="/model/<?php echo $season_path; ?>/robot_control">TeleOp ML
-								Implementation</a></div>
-					<?php endif; ?>
-				<?php endif; ?>
-			<?php endif; ?>
-		</div>
-	</div>
-
-<?php include_once $_SERVER['DOCUMENT_ROOT'] . '/assets/includes/chat_widget.php'; ?>
+    <?php include_once $_SERVER['DOCUMENT_ROOT'] . '/assets/includes/chat_widget.php'; ?>
 </body>
 
 </html>

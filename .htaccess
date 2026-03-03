@@ -42,7 +42,7 @@
 
     #Training ML
     RewriteRule ^model/intothedeep/training?$ training_ml/traningdata.php [L,QSA]
-    RewriteRule ^model/decode/training?$ ftc_decode/training_ml/traningdata.php [L,QSA]
+    RewriteRule ^model/decode/training?$ training_ml/traningdata.php [L,QSA]
     RewriteRule ^model/intothedeep/training_structure?$ training_ml/trainings.php [L,QSA]
     RewriteRule ^model/decode/training_structure?$ ftc_decode/training_ml/trainings.php [L,QSA]
     RewriteRule ^model/intothedeep/training_ml?$ training_ml/pythontraining.php [L,QSA]

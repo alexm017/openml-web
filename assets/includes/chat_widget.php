@@ -21,7 +21,7 @@ if ($chat_lang === 'ro') {
     $chat_offline = 'Could not reach the assistant right now. Please check your connection.';
 }
 ?>
-<link rel="stylesheet" href="/assets/css/chat.css">
+<link rel="stylesheet" href="/assets/css/chat.css?v=20260304">
 
 <div id="chat-bubble" class="chat-bubble">
     <span class="chat-bubble-title"><?php echo htmlspecialchars($chat_bubble_title, ENT_QUOTES, 'UTF-8'); ?></span>
