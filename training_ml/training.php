@@ -128,7 +128,7 @@ fclose($record_file);
 			<img src="assets/images/ai_star_alpha.png" width=55>
 		</div>
 		<div class="alphabit-topleft">
-			<a href="/">AlphaBit OpenML</a>
+			<a href="#">AlphaBit OpenML</a>
 		</div>
 		<div class="before_docs"><?php echo $season_year; ?></div>
 		<?php if ($lang == 'ro'): ?>

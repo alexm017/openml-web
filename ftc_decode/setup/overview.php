@@ -232,7 +232,7 @@ $lang = isset($_COOKIE['site_lang']) ? $_COOKIE['site_lang'] : 'en';
 
     <div class="background-container">
         <div class="alphabit-topleft">
-            <a href="#">AlphaBit OpenML</a>
+            <a href="/">AlphaBit OpenML</a>
         </div>
         <div class="before_docs"><?php echo $season_year; ?></div>
         <div class="ai-star-logo">

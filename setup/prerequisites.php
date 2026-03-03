@@ -149,7 +149,7 @@ if ($detection_method == 'machine_learning') {
 
 	<div class="background-container">
 		<div class="alphabit-topleft">
-			<a href="#">AlphaBit OpenML</a>
+			<a href="/">AlphaBit OpenML</a>
 		</div>
 		<div class="before_docs">
 			<?php echo $season_year; ?>

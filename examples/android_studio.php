@@ -133,7 +133,7 @@ fclose($record_file);
     </script>
     <div class="background-container">
         <div class="alphabit-topleft">
-            <a href="#">AlphaBit OpenML</a>
+            <a href="/">AlphaBit OpenML</a>
         </div>
         <div class="before_docs"><?php echo $season_year; ?></div>
         <div class="ai-star-logo">
