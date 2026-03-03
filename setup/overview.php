@@ -14,9 +14,7 @@ fclose($record_file);
 $season_cookie = isset($_COOKIE['season_choice']) ? $_COOKIE['season_choice'] : 'IntoTheDeep';
 $season_year = ($season_cookie == 'Decode') ? '2026' : '2025';
 $season_path = ($season_cookie == 'Decode') ? 'decode' : 'intothedeep';
-if (isset($_COOKIE['detection_method'])) {
-	$detection_method = $_COOKIE['detection_method'];
-}
+$detection_method = isset($_COOKIE['detection_method']) ? $_COOKIE['detection_method'] : 'machine_learning';
 if ($detection_method == 'color_blob') {
 	$detection_method = 'Color Blob Detection';
 }
@@ -33,7 +31,8 @@ if ($detection_method == 'machine_learning') {
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>AlphaBit - OpenML</title>
-	<link rel="stylesheet" href="/assets/css/model_style.css">
+	<link rel="stylesheet" href="/assets/css/model_style.css?v=20260304">
+	<link rel="stylesheet" href="/assets/css/overview_theme.css?v=20260304">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	<link rel="shortcut icon" type="image/x-icon" href="/assets/images/alphabit.ico" />
@@ -44,8 +43,8 @@ if ($detection_method == 'machine_learning') {
 		<div class="language-popup-content">
 			<h2>Choose Language / Alege Limba</h2>
 			<div class="language-options">
-				<button onclick="selectLanguage('ro')">🇷🇴 Română</button>
-				<button onclick="selectLanguage('en')">🇬🇧 English</button>
+				<button onclick="selectLanguage('ro')">Română</button>
+				<button onclick="selectLanguage('en')">English</button>
 			</div>
 		</div>
 	</div>
@@ -132,7 +131,8 @@ if ($detection_method == 'machine_learning') {
 		function selectSeason(season) {
 			setCookie('season_choice', season, 365);
 			document.getElementById('season-popup').style.display = 'none';
-			window.location.reload();
+			var seasonPath = season === 'Decode' ? 'decode' : 'intothedeep';
+			window.location.href = '/model/' + seasonPath + '/overview';
 		}
 
 		function selectChoice(choice) {
@@ -158,8 +158,8 @@ if ($detection_method == 'machine_learning') {
 				return; // Stop here, wait for reload
 			}
 
-			// 3. Detection Method Popup
-			if (!detection_method) {
+			// 3. Detection Method Popup (Into The Deep only)
+			if (season_choice !== 'Decode' && !detection_method) {
 				document.getElementById('choice-popup').style.display = 'flex';
 				return; // Stop here, wait for reload
 			}
@@ -653,6 +653,8 @@ if ($detection_method == 'machine_learning') {
 			<?php endif; ?>
 		</div>
 	</div>
+
+<?php include_once $_SERVER['DOCUMENT_ROOT'] . '/assets/includes/chat_widget.php'; ?>
 </body>
 
 </html>

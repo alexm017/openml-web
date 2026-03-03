@@ -21,7 +21,8 @@ fclose($record_file);
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>AlphaBit - OpenML</title>
-	<link rel="stylesheet" href="../assets/css/model_style.css">
+	<link rel="stylesheet" href="../assets/css/model_style.css?v=20260304">
+	<link rel="stylesheet" href="../assets/css/overview_theme.css?v=20260304">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	<link rel="shortcut icon" type="image/x-icon" href="/assets/images/alphabit.ico" />
@@ -32,8 +33,8 @@ fclose($record_file);
 		<div class="language-popup-content">
 			<h2>Choose Language / Alege Limba</h2>
 			<div class="language-options">
-				<button onclick="selectLanguage('ro')">🇷🇴 Română</button>
-				<button onclick="selectLanguage('en')">🇬🇧 English</button>
+				<button onclick="selectLanguage('ro')">Română</button>
+				<button onclick="selectLanguage('en')">English</button>
 			</div>
 		</div>
 	</div>
@@ -155,13 +156,13 @@ fclose($record_file);
 					?>
 					<div class="stext">Va fi adăugat în curând</div>
 					<div class="stext">Alătură-te serverului de Discord pentru a vedea toate funcționalitățile noi ce vor fi
-						adăugate 🎉</div>
+						adăugate.</div>
 					<div class="endLine"></div>
 					<div class="endD"><a href="https://discord.gg/ZB6vQ62KZT">Support -> Discord</a></div>
 					<div class="end"></div>
 				<?php else: ?>
 					<div class="stext">To be added soon</div>
-					<div class="stext">Join the discord to see all the new features that will be added 🎉</div>
+					<div class="stext">Join the discord to see all the new features that will be added.</div>
 					<div class="endLine"></div>
 					<div class="endD"><a href="https://discord.gg/ZB6vQ62KZT">Support -> Discord</a></div>
 					<div class="end"></div>
@@ -292,6 +293,8 @@ fclose($record_file);
 			<?php endif; ?>
 		</div>
 	</div>
+
+<?php include_once $_SERVER['DOCUMENT_ROOT'] . '/assets/includes/chat_widget.php'; ?>
 </body>
 
 </html>

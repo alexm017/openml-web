@@ -1,427 +1,372 @@
 <?php
 session_start();
-$record_file = fopen("/var/www/html/record_index.txt", "a");
-$txt = "index\n";
-$txtt = "index";
-$user_agent = $_SERVER["HTTP_USER_AGENT"];
-$ip = $_SERVER["REMOTE_ADDR"];
-$date = date('m/d/Y h:i:s a', time());
-$txt2 = $txtt . " " . $user_agent . " " . $ip . " " . $date . "\n";
-fwrite($record_file, $txt);
-fwrite($record_file, $txt2);
-fclose($record_file);
-?>
 
+$record_file = @fopen('/var/www/html/record_index.txt', 'a');
+if ($record_file) {
+    $user_agent = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : 'unknown-agent';
+    $ip = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : 'unknown-ip';
+    $date = date('m/d/Y h:i:s a');
+    fwrite($record_file, "index\n");
+    fwrite($record_file, 'index ' . $user_agent . ' ' . $ip . ' ' . $date . "\n");
+    fclose($record_file);
+}
+
+$lang = isset($_COOKIE['site_lang']) ? $_COOKIE['site_lang'] : 'en';
+$season_cookie = isset($_COOKIE['season_choice']) ? $_COOKIE['season_choice'] : 'IntoTheDeep';
+$season_path = ($season_cookie === 'Decode') ? 'decode' : 'intothedeep';
+$is_logged_in = isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] === 'userLoggedIn';
+$team_name = isset($_SESSION['teamname']) ? $_SESSION['teamname'] : '';
+$current_year = date('Y');
+
+$translations = [
+    'en' => [
+        'news' => 'New release: explore our open source ML model for object detection and autonomy.',
+        'training_data' => 'Training Data',
+        'ml_model' => 'ML Model',
+        'signup' => 'Sign Up',
+        'login' => 'Login',
+        'hello' => 'Hello,',
+        'hero_kicker' => 'AlphaBit OpenML Platform',
+        'hero_title' => 'Where Robotics Meets Machine Learning',
+        'hero_description' => 'We build FTC-ready machine learning tools that detect game elements, estimate position and orientation, and support autonomous collection with high reliability.',
+        'hero_cta' => 'Explore OpenML Platform',
+        'scroll_label' => 'Scroll to learn more',
+        'second_news' => 'Try our newest ML stack built for competition robotics.',
+        'second_description' => 'Machine learning is not a buzzword for us. It is a practical layer that helps robots adapt in real time. Our training pipeline, model versions, and field-tested examples help teams move from experiments to reliable match performance faster.',
+        'image_info' => 'Our sample detection model averages over 90% accuracy with a robust dataset and iterative training workflow.',
+        'contact_heading' => 'Contact Details',
+        'name_label' => 'Name',
+        'name_placeholder' => 'Your full name',
+        'email_label' => 'E-mail Address',
+        'email_placeholder' => 'you@example.com',
+        'team_label' => 'Team Name',
+        'team_placeholder' => 'Your FTC team',
+        'message_label' => 'Message',
+        'message_placeholder' => 'Tell us what you want to build.',
+        'submit' => 'Send Message',
+        'support_email_label' => 'E-mail:',
+        'support_address_label' => 'Address:',
+        'rights_reserved' => 'All rights reserved.',
+        'image_one_alt' => 'Object detection preview',
+        'image_two_alt' => 'Model output sample',
+        'chat_bubble' => 'Need help with OpenML?',
+        'chat_bubble_sub' => 'Ask the AlphaBit assistant',
+        'chat_title' => 'AlphaBit AI Assistant',
+        'chat_welcome' => 'Hi! I can help with model setup, training data, and robotics ML workflow questions.',
+        'chat_placeholder' => 'Type your question...',
+        'chat_send' => 'Send',
+        'chat_error' => 'Sorry, something went wrong. Please try again.',
+        'chat_offline' => 'Could not reach the assistant right now. Please check your connection.',
+    ],
+    'ro' => [
+        'news' => 'Lansare nouă: explorează modelul nostru open source pentru detecție și autonomie.',
+        'training_data' => 'Date de Antrenament',
+        'ml_model' => 'Model ML',
+        'signup' => 'Înregistrare',
+        'login' => 'Autentificare',
+        'hello' => 'Salut,',
+        'hero_kicker' => 'Platforma AlphaBit OpenML',
+        'hero_title' => 'Unde Robotica Întâlnește Machine Learning-ul',
+        'hero_description' => 'Construim soluții ML pentru FTC care detectează elemente de joc, estimează poziția și orientarea și susțin colectarea autonomă cu fiabilitate ridicată.',
+        'hero_cta' => 'Obține Modelul OpenML',
+        'scroll_label' => 'Derulează pentru detalii',
+        'second_news' => 'Testează cel mai nou stack ML creat pentru robotica de competiție.',
+        'second_description' => 'Machine learning-ul nu este un termen la modă pentru noi. Este un strat practic care ajută roboții să se adapteze în timp real. Pipeline-ul nostru de antrenament, versiunile de model și exemplele testate pe teren ajută echipele să treacă mai rapid de la experimente la performanță stabilă în meciuri.',
+        'image_info' => 'Modelul nostru de detectare a mostrelor depășește în medie 90% acuratețe datorită setului robust de date și antrenării iterative.',
+        'contact_heading' => 'Detalii Contact',
+        'name_label' => 'Nume',
+        'name_placeholder' => 'Numele tău complet',
+        'email_label' => 'Adresă E-mail',
+        'email_placeholder' => 'tu@exemplu.com',
+        'team_label' => 'Nume Echipă',
+        'team_placeholder' => 'Echipa ta FTC',
+        'message_label' => 'Mesaj',
+        'message_placeholder' => 'Spune-ne ce vrei să construiești.',
+        'submit' => 'Trimite Mesajul',
+        'support_email_label' => 'E-mail:',
+        'support_address_label' => 'Adresă:',
+        'rights_reserved' => 'Toate drepturile rezervate.',
+        'image_one_alt' => 'Previzualizare detecție obiecte',
+        'image_two_alt' => 'Exemplu rezultat model',
+        'chat_bubble' => 'Ai nevoie de ajutor cu OpenML?',
+        'chat_bubble_sub' => 'Intreaba asistentul AlphaBit',
+        'chat_title' => 'Asistent AI AlphaBit',
+        'chat_welcome' => 'Salut! Te pot ajuta cu setup-ul modelului, date de antrenament și întrebări despre workflow-ul ML în robotică.',
+        'chat_placeholder' => 'Scrie întrebarea ta...',
+        'chat_send' => 'Trimite',
+        'chat_error' => 'A apărut o eroare. Te rog încearcă din nou.',
+        'chat_offline' => 'Nu am putut contacta asistentul acum. Verifică conexiunea.',
+    ],
+];
+
+if (!isset($translations[$lang])) {
+    $lang = 'en';
+}
+$text = $translations[$lang];
+?>
 <!DOCTYPE html>
-<html>
+<html lang="<?php echo htmlspecialchars($lang, ENT_QUOTES, 'UTF-8'); ?>">
 
 <head>
-	<meta charset="UTF-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-	<title>AlphaBit - OpenML</title>
-	<link rel="stylesheet" href="assets/css/style.css">
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-	<link rel="shortcut icon" type="image/x-icon" href="assets/images/alphabit.ico" />
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AlphaBit - OpenML</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/home.css?v=20260303">
+    <link rel="stylesheet" href="assets/css/chat.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="shortcut icon" type="image/x-icon" href="assets/images/alphabit.ico">
 </head>
 
 <body>
-	<div id="language-popup" class="language-popup-overlay" style="display: none;">
-		<div class="language-popup-content">
-			<h2>Choose Language / Alege Limba</h2>
-			<div class="language-options">
-				<button onclick="selectLanguage('ro')">🇷🇴 Română</button>
-				<button onclick="selectLanguage('en')">🇬🇧 English</button>
-			</div>
-		</div>
-	</div>
+    <div id="language-popup" class="language-popup-overlay" style="display: none;">
+        <div class="language-popup-content">
+            <h2>Choose Language / Alege Limba</h2>
+            <div class="language-options">
+                <button type="button" onclick="selectLanguage('ro')">Romanian</button>
+                <button type="button" onclick="selectLanguage('en')">English</button>
+            </div>
+        </div>
+    </div>
 
-	<style>
-		.language-popup-overlay {
-			position: fixed;
-			top: 0;
-			left: 0;
-			width: 100%;
-			height: 100%;
-			background-color: rgba(0, 0, 0, 0.9);
-			z-index: 9999;
-			display: flex;
-			justify-content: center;
-			align-items: center;
-		}
+    <noscript>You need to enable JavaScript to run this website.</noscript>
 
-		.language-popup-content {
-			background-color: #1e1e1e;
-			padding: 40px;
-			border-radius: 15px;
-			text-align: center;
-			border: 1px solid #333;
-			box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-		}
+    <section class="background-container">
+        <header class="site-navbar">
+            <a class="brand-link" href="/">
+                <span>AlphaBit OpenML</span>
+                <img class="brand-logo" src="assets/images/ai_star_alpha.png" alt="AlphaBit logo">
+            </a>
 
-		.language-popup-content h2 {
-			color: #fff;
-			margin-bottom: 35px;
-			font-family: Arial, sans-serif;
-		}
+            <nav class="navbar-links" aria-label="Primary">
+                <a class="nav-link"
+                    href="model/<?php echo $season_path; ?>/training"><?php echo htmlspecialchars($text['training_data'], ENT_QUOTES, 'UTF-8'); ?></a>
+                <a class="nav-link"
+                    href="model/<?php echo $season_path; ?>/overview"><?php echo htmlspecialchars($text['ml_model'], ENT_QUOTES, 'UTF-8'); ?></a>
+            </nav>
 
-		.language-options {
-			display: flex;
-			gap: 20px;
-			justify-content: center;
-		}
+            <div class="navbar-actions">
+                <?php if (!$is_logged_in): ?>
+                    <a class="nav-link nav-link-soft"
+                        href="/register"><?php echo htmlspecialchars($text['signup'], ENT_QUOTES, 'UTF-8'); ?></a>
+                    <a class="nav-link nav-link-accent"
+                        href="/login"><?php echo htmlspecialchars($text['login'], ENT_QUOTES, 'UTF-8'); ?></a>
+                <?php else: ?>
+                    <a class="profile-chip" href="/profile">
+                        <img src="assets/images/user3.png" alt="Profile picture">
+                        <span><?php echo htmlspecialchars($text['hello'] . ' ' . $team_name . '!', ENT_QUOTES, 'UTF-8'); ?></span>
+                    </a>
+                <?php endif; ?>
+            </div>
+        </header>
 
-		.language-options button {
-			padding: 15px 30px;
-			font-size: 18px;
-			cursor: pointer;
-			background-color: #d4d4d4ff;
-			color: black;
-			border: none;
-			border-radius: 8px;
-		}
+        <p class="alphabit-news"><?php echo htmlspecialchars($text['news'], ENT_QUOTES, 'UTF-8'); ?></p>
 
-		.language-options button:hover {
-			background-color: #ffffffff;
-			transform: scale(1.05);
-		}
-	</style>
+        <div class="hero-content">
+            <p class="alphabit-fwelcome"><?php echo htmlspecialchars($text['hero_kicker'], ENT_QUOTES, 'UTF-8'); ?></p>
+            <h1 class="alphabit-swelcome"><?php echo htmlspecialchars($text['hero_title'], ENT_QUOTES, 'UTF-8'); ?></h1>
+            <p class="alphabit-welcome-text">
+                <?php echo htmlspecialchars($text['hero_description'], ENT_QUOTES, 'UTF-8'); ?>
+            </p>
+            <a class="alphabit-learn"
+                href="model/<?php echo $season_path; ?>/overview"><?php echo htmlspecialchars($text['hero_cta'], ENT_QUOTES, 'UTF-8'); ?>
+                <span aria-hidden="true"></span></a>
+        </div>
 
-	<script>
-		function setCookie(name, value, days) {
-			var expires = "";
-			if (days) {
-				var date = new Date();
-				date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-				expires = "; expires=" + date.toUTCString();
-			}
-			document.cookie = name + "=" + (value || "") + expires + "; path=/";
-		}
+        <a class="scroll" href="#why-openml"
+            aria-label="<?php echo htmlspecialchars($text['scroll_label'], ENT_QUOTES, 'UTF-8'); ?>"></a>
+    </section>
 
-		function getCookie(name) {
-			var nameEQ = name + "=";
-			var ca = document.cookie.split(';');
-			for (var i = 0; i < ca.length; i++) {
-				var c = ca[i];
-				while (c.charAt(0) == ' ') c = c.substring(1, c.length);
-				if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
-			}
-			return null;
-		}
+    <section class="fpage" id="why-openml">
+        <p class="fpage-news"><?php echo htmlspecialchars($text['second_news'], ENT_QUOTES, 'UTF-8'); ?></p>
 
-		function selectLanguage(lang) {
-			setCookie('site_lang', lang, 365);
-			document.getElementById('language-popup').style.display = 'none';
-			location.reload();
-		}
+        <div class="fpage-grid">
+            <article class="ftext-box ftext-left">
+                <p class="fpage-ftext"><?php echo htmlspecialchars($text['second_description'], ENT_QUOTES, 'UTF-8'); ?>
+                </p>
+            </article>
 
-		document.addEventListener("DOMContentLoaded", function () {
-			var lang = getCookie('site_lang');
-			if (!lang) {
-				document.getElementById('language-popup').style.display = 'flex';
-			}
-		});
-	</script>
-	<noscript>You need to enable JavaScript to run this website.</noscript>
-	<?php
-	$lang = isset($_COOKIE['site_lang']) ? $_COOKIE['site_lang'] : 'en';
-	$season_cookie = isset($_COOKIE['season_choice']) ? $_COOKIE['season_choice'] : 'IntoTheDeep';
-	$season_year = ($season_cookie == 'Decode') ? '2026' : '2025';
-	$season_path = ($season_cookie == 'Decode') ? 'decode' : 'intothedeep';
-	if ($lang == 'ro'):
-		?>
-		<div class="background-container">
-			<div class="alphabit-topleft">
-				<a href="#">AlphaBit OpenML</a>
-			</div>
-			<div class="alphabit-news">
-				🎉 Descoperă cel mai nou model ML open source lansat pentru detecția obiectelor și autonomie (Into The
-				Deep🌊)
-			</div>
-			<div class="scroll"></div>
-			<?php
-			session_start();
-			if ($_SESSION["loggedIn"] != "userLoggedIn") {
-				echo '<div class="alphabit-signup">
-						<a href="register">Înregistrare</a>
-				</div>
-				<div class="alphabit-login">
-					<a href="login">Autentificare</a>
-				</div>';
-			} else {
-				echo '<div class="alphabit-profile-teamname"><a href="profile">Salut, ' . $_SESSION["teamname"] . '!</a></div>';
-				echo '<div class="alphabit-profile-teamname-pic"><img src="assets/images/user3.png" width=45></div>';
-			}
-			?>
-			<div class="alphabit-training">
-				<a href="model/<?php echo $season_path; ?>/training">Date de Antrenament</a>
-			</div>
-			<div class="alphabit-ml-model">
-				<a href="model/<?php echo $season_path; ?>/overview">Model ML</a>
-			</div>
-			<div class="alphabit-fwelcome">
-				Bine ați venit la Hub-ul ML Alphabit
-			</div>
-			<div class="alphabit-swelcome">
-				Unde Robotica Întâlnește Machine Learning-ul!
-			</div>
-			<div class="alphabit-welcome-text">
-				Suntem o echipă de robotică FTC care împinge limitele inovației cu sistemul nostru de machine learning de
-				ultimă
-				generație. Tehnologia noastră detectează automat elementele de joc, le calculează pozițiile și orientările
-				și
-				permite robotului nostru să le colecteze autonom. Descoperă cum redefinim viitorul roboticii competitive!
-			</div>
-			<div class="alphabit-learn">
-				<a href="model/<?php echo $season_path; ?>/overview">Obține Modelul OpenML ✨</a>
-			</div>
-			<div class="ai-star-logo">
-				<img src="assets/images/ai_star_alpha.png" width=55>
-			</div>
-		</div>
+            <figure class="fimage-box fimage-top">
+                <img class="fpage-fimage" src="assets/images/simage-ml.jpeg"
+                    alt="<?php echo htmlspecialchars($text['image_one_alt'], ENT_QUOTES, 'UTF-8'); ?>">
+            </figure>
 
+            <figure class="simage-box fimage-bottom">
+                <img class="fpage-simage" src="assets/images/fimage-ml.jpeg"
+                    alt="<?php echo htmlspecialchars($text['image_two_alt'], ENT_QUOTES, 'UTF-8'); ?>">
+            </figure>
 
-		<div class="fpage">
-			<div class="ftext-box"></div>
-			<div class="fimage-info-box"></div>
-			<div class="fpage-ftext">Machine learning nu este doar un termen la modă, ci un instrument transformator care
-				oferă
-				roboților capacitatea de a învăța, de a se adapta și de a excela în timp real. Prin integrarea ML în
-				proiectele
-				voastre FTC, puteți valorifica informații bazate pe date pentru a optimiza performanța și a inova pe teren.
-				Platforma noastră deschisă de machine learning este concepută pentru a ajuta echipe ca a voastră să
-				depășească
-				limitele roboticii.
-			</div>
-			<div class="fimage-box"></div>
-			<div class="simage-box"></div>
-			<img class="fpage-fimage" src="assets/images/simage-ml.jpeg" width=450>
-			<img class="fpage-simage" src="assets/images/fimage-ml.jpeg" width=450>
-			<div class="fimage-info">Acuratețea noastră medie pentru detectarea mostrelor este de peste 90% datorită
-				modelului
-				nostru de detectare a obiectelor de ultimă generație și setului său de date de antrenament.</div>
-			<div class="fpage-learn"><a href="model/<?php echo $season_path; ?>/overview">Obține Modelul OpenML ✨</a></div>
-			<div class="fpage-news">Încearcă cel mai nou Model ML pentru detecția obiectelor și autonomie 🎉</div>
-		</div>
+            <article class="ftext-box ftext-right">
+                <p class="fpage-ftext"><?php echo htmlspecialchars($text['image_info'], ENT_QUOTES, 'UTF-8'); ?></p>
+            </article>
+        </div>
+        <div class="fpage-cta-wrap">
+            <a class="fpage-learn"
+                href="model/<?php echo $season_path; ?>/overview"><?php echo htmlspecialchars($text['hero_cta'], ENT_QUOTES, 'UTF-8'); ?>
+            </a>
+        </div>
+    </section>
 
+    <section class="cpage" id="contact">
+        <div class="contact-layout">
+            <div class="contact-box">
+                <h2 class="alphabit-contact-details">
+                    <?php echo htmlspecialchars($text['contact_heading'], ENT_QUOTES, 'UTF-8'); ?>
+                </h2>
 
-		<div class="cpage">
+                <form id="contact-form" action="index.php" method="post">
+                    <label
+                        for="contact-name"><?php echo htmlspecialchars($text['name_label'], ENT_QUOTES, 'UTF-8'); ?></label>
+                    <input id="contact-name" type="text" name="name"
+                        placeholder="<?php echo htmlspecialchars($text['name_placeholder'], ENT_QUOTES, 'UTF-8'); ?>"
+                        autocomplete="name" required>
 
-			<div class="alphabit-contact-details">
-				DETALII CONTACT
-			</div>
-			<div class="contact-box">
-				<div class="alphabit-contact">
-					<img src="assets/images/hmm.png">
-				</div>
-				<div class="contact-name-text">
-					Nume
-				</div>
-				<div class="contact-name-email">
-					Adresă E-mail
-				</div>
-				<div class="contact-name-teamname">
-					Nume Echipă
-				</div>
-				<div class="contact-name-message">
-					Mesaj
-				</div>
-			</div>
-			<form id="contact-form" action="index.php" method="post">
-				<input type="text" name="name" placeholder="" class="contact-name" required></input>
-				<input type="email" name="name" placeholder="" class="contact-email" required></input>
-				<input type="text" name="name" placeholder="" class="contact-teamname" required></input>
-				<input type="text" name="name" placeholder="" class="contact-message" required></input>
-				<button type="submit" name="submit" placeholder="TRIMITE" class="contact-submit">TRIMITE</button>
-			</form>
-			<a href="https://www.linkedin.com/in/team-alphabit-b0b0b333a/" class="fa fa-linkedin"></a>
-			<a href="https://www.youtube.com/@alphabit-ro1378" class="fa fa-youtube"></a>
-			<a href="https://www.facebook.com/AlphaBitPetrosani" class="fa fa-facebook"></a>
-			<a href="https://www.instagram.com/alphabit137/" class="fa fa-instagram"></a>
-			<div class="mapouter">
-				<div class="gmap_canvas"><iframe class="gmap_iframe" frameborder="0" scrolling="no" marginheight="0"
-						marginwidth="0"
-						src="https://maps.google.com/maps?width=650&amp;height=450&amp;hl=en&amp;q=Strada 1 Decembrie 1918 7, Petroșani, Romania&amp;t=&amp;z=14&amp;ie=UTF8&amp;iwloc=B&amp;output=embed"></iframe><a
-						href="https://sprunkin.com/">Sprunki</a></div>
-				<style>
-					.mapouter {
-						position: absolute;
-						top: 30%;
-						left: 55%;
-						text-align: right;
-						width: 650px;
-						height: 450px;
-					}
+                    <label
+                        for="contact-email"><?php echo htmlspecialchars($text['email_label'], ENT_QUOTES, 'UTF-8'); ?></label>
+                    <input id="contact-email" type="email" name="email"
+                        placeholder="<?php echo htmlspecialchars($text['email_placeholder'], ENT_QUOTES, 'UTF-8'); ?>"
+                        autocomplete="email" required>
 
-					.gmap_canvas {
-						overflow: hidden;
-						background: none !important;
-						width: 650px;
-						height: 450px;
-					}
+                    <label
+                        for="contact-team"><?php echo htmlspecialchars($text['team_label'], ENT_QUOTES, 'UTF-8'); ?></label>
+                    <input id="contact-team" type="text" name="teamname"
+                        placeholder="<?php echo htmlspecialchars($text['team_placeholder'], ENT_QUOTES, 'UTF-8'); ?>"
+                        required>
 
-					.gmap_iframe {
-						width: 650px !important;
-						height: 450px !important;
-					}
-				</style>
-			</div>
+                    <label
+                        for="contact-message"><?php echo htmlspecialchars($text['message_label'], ENT_QUOTES, 'UTF-8'); ?></label>
+                    <textarea id="contact-message" name="message" rows="5"
+                        placeholder="<?php echo htmlspecialchars($text['message_placeholder'], ENT_QUOTES, 'UTF-8'); ?>"
+                        required></textarea>
 
-			<div class="contact-details-email">
-				Adresă E-mail: <a href="mailto:support@alphabit.ro">support@alphabit.ro</a>
-			</div>
-			<div class="contact-details-address">
-				Adresă fizică: Romania, Hunedoara, Petrosani, Strada 1 Decembrie 1918 7
-			</div>
-			<a href="#" class="fa fa-copyright"></a>
-			<div class="copyright-text">
-				2025 AlphaBit. Toate drepturile rezervate.
-			</div>
-		</div>
-	<?php else: ?>
-		<div class="background-container">
-			<div class="alphabit-topleft">
-				<a href="#">AlphaBit OpenML</a>
-			</div>
-			<div class="alphabit-news">
-				🎉 Check out our newest open source ML model released for object detection and autonomy (Into The Deep🌊)
-			</div>
-			<div class="scroll"></div>
-			<?php
-			session_start();
-			if ($_SESSION["loggedIn"] != "userLoggedIn") {
-				echo '<div class="alphabit-signup">
-						<a href="register">Sign Up</a>
-				</div>
-				<div class="alphabit-login">
-					<a href="login">Login</a>
-				</div>';
-			} else {
-				echo '<div class="alphabit-profile-teamname"><a href="profile">Hello, ' . $_SESSION["teamname"] . '!</a></div>';
-				echo '<div class="alphabit-profile-teamname-pic"><img src="assets/images/user3.png" width=45></div>';
-			}
-			?>
-			<div class="alphabit-training">
-				<a href="model/<?php echo $season_path; ?>/training">Training Data</a>
-			</div>
-			<div class="alphabit-ml-model">
-				<a href="model/<?php echo $season_path; ?>/overview">ML Model</a>
-			</div>
-			<div class="alphabit-fwelcome">
-				Welcome to Alphabit’s ML Hub
-			</div>
-			<div class="alphabit-swelcome">
-				Where Robotics Meets Machine Learning!
-			</div>
-			<div class="alphabit-welcome-text">
-				We’re an FTC robotics team pushing the boundaries of innovation with our state-of-the-art machine learning
-				system. Our technology automatically detects game elements, calculates their positions and orientations, and
-				empowers our robot to collect them autonomously. Dive in and explore how we’re redefining the future of
-				competitive robotics!
-			</div>
-			<div class="alphabit-learn">
-				<a href="model/<?php echo $season_path; ?>/overview">Get OpenML Model ✨</a>
-			</div>
-			<div class="ai-star-logo">
-				<img src="assets/images/ai_star_alpha.png" width=55>
-			</div>
-		</div>
+                    <button type="submit" name="submit"
+                        class="contact-submit"><?php echo htmlspecialchars($text['submit'], ENT_QUOTES, 'UTF-8'); ?></button>
+                </form>
 
+                <div class="social-links">
+                    <a href="https://www.linkedin.com/in/team-alphabit-b0b0b333a/" class="fa fa-linkedin"
+                        aria-label="LinkedIn"></a>
+                    <a href="https://www.youtube.com/@alphabit-ro1378" class="fa fa-youtube" aria-label="YouTube"></a>
+                    <a href="https://www.facebook.com/AlphaBitPetrosani" class="fa fa-facebook"
+                        aria-label="Facebook"></a>
+                    <a href="https://www.instagram.com/alphabit137/" class="fa fa-instagram" aria-label="Instagram"></a>
+                </div>
+            </div>
 
-		<div class="fpage">
-			<div class="ftext-box"></div>
-			<div class="fimage-info-box"></div>
-			<div class="fpage-ftext">Machine learning isn’t just a buzzword—it’s a transformative tool that gives robots the
-				ability to learn, adapt, and excel in real-time. By integrating ML into your FTC projects, you can harness
-				data-driven insights to optimize performance and innovate on the field. Our open machine learning platform
-				is designed to empower teams like yours to push the boundaries of robotics.
-			</div>
-			<div class="fimage-box"></div>
-			<div class="simage-box"></div>
-			<img class="fpage-fimage" src="assets/images/simage-ml.jpeg" width=450>
-			<img class="fpage-simage" src="assets/images/fimage-ml.jpeg" width=450>
-			<div class="fimage-info">Our average accuracy for detecting samples is over 90% thanks to our state-of-the-art
-				object detection model and it's training dataset.</div>
-			<div class="fpage-learn"><a href="model/<?php echo $season_path; ?>/overview">Get OpenML Model ✨</a></div>
-			<div class="fpage-news">Try our newest ML Model for object detection and autonomy 🎉</div>
-		</div>
+            <aside class="contact-side">
+                <p class="contact-details-email">
+                    <?php echo htmlspecialchars($text['support_email_label'], ENT_QUOTES, 'UTF-8'); ?>
+                    <a href="mailto:support@alphabit.ro">support@alphabit.ro</a>
+                </p>
 
+                <p class="contact-details-address">
+                    <?php echo htmlspecialchars($text['support_address_label'], ENT_QUOTES, 'UTF-8'); ?>
+                    Romania, Hunedoara, Petrosani, Strada 1 Decembrie 1918 7
+                </p>
 
-		<div class="cpage">
+                <div class="mapouter">
+                    <div class="gmap_canvas">
+                        <iframe class="gmap_iframe"
+                            src="https://maps.google.com/maps?width=650&amp;height=450&amp;hl=en&amp;q=Strada 1 Decembrie 1918 7, Petroșani, Romania&amp;t=&amp;z=14&amp;ie=UTF8&amp;iwloc=B&amp;output=embed"
+                            loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade"
+                            title="AlphaBit location"></iframe>
+                    </div>
+                </div>
+            </aside>
+        </div>
 
-			<div class="alphabit-contact-details">
-				CONTACT DETAILS
-			</div>
-			<div class="contact-box">
-				<div class="alphabit-contact">
-					<img src="assets/images/hmm.png">
-				</div>
-				<div class="contact-name-text">
-					Name
-				</div>
-				<div class="contact-name-email">
-					E-mail Address
-				</div>
-				<div class="contact-name-teamname">
-					Team name
-				</div>
-				<div class="contact-name-message">
-					Message
-				</div>
-			</div>
-			<form id="contact-form" action="index.php" method="post">
-				<input type="text" name="name" placeholder="" class="contact-name" required></input>
-				<input type="email" name="name" placeholder="" class="contact-email" required></input>
-				<input type="text" name="name" placeholder="" class="contact-teamname" required></input>
-				<input type="text" name="name" placeholder="" class="contact-message" required></input>
-				<button type="submit" name="submit" placeholder="SUBMIT" class="contact-submit">SUBMIT</button>
-			</form>
-			<a href="https://www.linkedin.com/in/team-alphabit-b0b0b333a/" class="fa fa-linkedin"></a>
-			<a href="https://www.youtube.com/@alphabit-ro1378" class="fa fa-youtube"></a>
-			<a href="https://www.facebook.com/AlphaBitPetrosani" class="fa fa-facebook"></a>
-			<a href="https://www.instagram.com/alphabit137/" class="fa fa-instagram"></a>
-			<div class="mapouter">
-				<div class="gmap_canvas"><iframe class="gmap_iframe" frameborder="0" scrolling="no" marginheight="0"
-						marginwidth="0"
-						src="https://maps.google.com/maps?width=650&amp;height=450&amp;hl=en&amp;q=Strada 1 Decembrie 1918 7, Petroșani, Romania&amp;t=&amp;z=14&amp;ie=UTF8&amp;iwloc=B&amp;output=embed"></iframe><a
-						href="https://sprunkin.com/">Sprunki</a></div>
-				<style>
-					.mapouter {
-						position: absolute;
-						top: 30%;
-						left: 55%;
-						text-align: right;
-						width: 650px;
-						height: 450px;
-					}
+        <footer class="site-footer">
+            <span class="fa fa-copyright" aria-hidden="true"></span>
+            <span
+                class="copyright-text"><?php echo htmlspecialchars($current_year . ' AlphaBit. ' . $text['rights_reserved'], ENT_QUOTES, 'UTF-8'); ?></span>
+        </footer>
+    </section>
 
-					.gmap_canvas {
-						overflow: hidden;
-						background: none !important;
-						width: 650px;
-						height: 450px;
-					}
+    <div id="chat-bubble" class="chat-bubble">
+        <span class="chat-bubble-title"><?php echo htmlspecialchars($text['chat_bubble'], ENT_QUOTES, 'UTF-8'); ?></span>
+        <span
+            class="chat-bubble-subtitle"><?php echo htmlspecialchars($text['chat_bubble_sub'], ENT_QUOTES, 'UTF-8'); ?></span>
+    </div>
+    <button id="chat-toggle-btn" class="chat-toggle-btn"
+        aria-label="<?php echo htmlspecialchars($text['chat_title'], ENT_QUOTES, 'UTF-8'); ?>">
+        <i class="fas fa-comment-dots" aria-hidden="true"></i>
+    </button>
 
-					.gmap_iframe {
-						width: 650px !important;
-						height: 450px !important;
-					}
-				</style>
-			</div>
+    <div id="chat-window" class="chat-window">
+        <div class="chat-header">
+            <h3><?php echo htmlspecialchars($text['chat_title'], ENT_QUOTES, 'UTF-8'); ?></h3>
+            <button id="chat-close-btn" class="chat-close-btn" aria-label="Close">
+                <i class="fas fa-times" aria-hidden="true"></i>
+            </button>
+        </div>
+        <div id="chat-messages" class="chat-messages">
+            <div class="message ai"><?php echo htmlspecialchars($text['chat_welcome'], ENT_QUOTES, 'UTF-8'); ?></div>
+            <div id="typing-indicator" class="typing-indicator">
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+            </div>
+        </div>
+        <div class="chat-input-area">
+            <input type="text" id="chat-input"
+                placeholder="<?php echo htmlspecialchars($text['chat_placeholder'], ENT_QUOTES, 'UTF-8'); ?>">
+            <button id="chat-send-btn" class="chat-send-btn"
+                aria-label="<?php echo htmlspecialchars($text['chat_send'], ENT_QUOTES, 'UTF-8'); ?>">
+                <i class="fas fa-paper-plane" aria-hidden="true"></i>
+            </button>
+        </div>
+    </div>
 
-			<div class="contact-details-email">
-				E-mail address: <a href="mailto:support@alphabit.ro">support@alphabit.ro</a>
-			</div>
-			<div class="contact-details-address">
-				Physical address: Romania, Hunedoara, Petrosani, Strada 1 Decembrie 1918 7
-			</div>
-			<a href="#" class="fa fa-copyright"></a>
-			<div class="copyright-text">
-				2025 AlphaBit. All rights reserved.
-			</div>
-		</div>
-	<?php endif; ?>
+    <script>
+        window.AlphaBitChatConfig = {
+            endpoint: '/api/chat.php',
+            apiErrorMessage: <?php echo json_encode($text['chat_error']); ?>,
+            networkErrorMessage: <?php echo json_encode($text['chat_offline']); ?>
+        };
+
+        function setCookie(name, value, days) {
+            var expires = '';
+            if (days) {
+                var date = new Date();
+                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+                expires = '; expires=' + date.toUTCString();
+            }
+            document.cookie = name + '=' + (value || '') + expires + '; path=/';
+        }
+
+        function getCookie(name) {
+            var nameEQ = name + '=';
+            var ca = document.cookie.split(';');
+            for (var i = 0; i < ca.length; i++) {
+                var c = ca[i];
+                while (c.charAt(0) === ' ') {
+                    c = c.substring(1, c.length);
+                }
+                if (c.indexOf(nameEQ) === 0) {
+                    return c.substring(nameEQ.length, c.length);
+                }
+            }
+            return null;
+        }
+
+        function selectLanguage(lang) {
+            setCookie('site_lang', lang, 365);
+            document.getElementById('language-popup').style.display = 'none';
+            location.reload();
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            if (!getCookie('site_lang')) {
+                document.getElementById('language-popup').style.display = 'flex';
+            }
+        });
+    </script>
+    <script src="assets/js/chat.js"></script>
 </body>
 
 </html>

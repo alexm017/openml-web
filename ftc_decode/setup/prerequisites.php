@@ -14,15 +14,8 @@ fclose($record_file);
 $season_cookie = isset($_COOKIE['season_choice']) ? $_COOKIE['season_choice'] : 'IntoTheDeep';
 $season_year = ($season_cookie == 'Decode') ? '2026' : '2025';
 $season_path = ($season_cookie == 'Decode') ? 'decode' : 'intothedeep';
-if (isset($_COOKIE['detection_method'])) {
-    $detection_method = $_COOKIE['detection_method'];
-}
-if ($detection_method == 'color_blob') {
-    $detection_method = 'Color Blob Detection';
-}
-if ($detection_method == 'machine_learning') {
-    $detection_method = 'Machine Learning';
-}
+$lang = isset($_COOKIE['site_lang']) ? $_COOKIE['site_lang'] : 'en';
+$detection_method = 'Machine Learning';
 ?>
 
 <!DOCTYPE html>
@@ -33,7 +26,8 @@ if ($detection_method == 'machine_learning') {
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AlphaBit - OpenML</title>
-    <link rel="stylesheet" href="/assets/css/model_style.css">
+    <link rel="stylesheet" href="/assets/css/model_style.css?v=20260304">
+    <link rel="stylesheet" href="/assets/css/overview_theme.css?v=20260304">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="shortcut icon" type="image/x-icon" href="/assets/images/alphabit.ico" />
@@ -51,8 +45,8 @@ if ($detection_method == 'machine_learning') {
         <div class="language-popup-content">
             <h2>Choose Language / Alege Limba</h2>
             <div class="language-options">
-                <button onclick="selectLanguage('ro')">🇷🇴 Română</button>
-                <button onclick="selectLanguage('en')">🇬🇧 English</button>
+                <button onclick="selectLanguage('ro')">Română</button>
+                <button onclick="selectLanguage('en')">English</button>
             </div>
         </div>
     </div>
@@ -144,99 +138,7 @@ if ($detection_method == 'machine_learning') {
         });
     </script>
 
-    <!----------------------------------------------------------------------------------->
-    <div id="choice-popup" class="choice-popup-overlay" style="display: none;">
-        <div class="choice-popup-content">
-            <h2>Choose Detection Method</h2>
-            <div class="choice-options">
-                <div class="choice-option">
-                    <button onclick="selectChoice('color_blob')">Color Blob Detection</button>
-                    <div class="choice-label fast"><b>Very Fast (~1ms)</b></div>
-                    <div class="choice-label fast" style="color: #d1d1d1ff"><b>(Recommended)</b></div>
-                </div>
-
-                <div class="choice-option">
-                    <button onclick="selectChoice('machine_learning')">Machine Learning (Beta)</button>
-                    <div class="choice-label slow"><b>Slow</b></div>
-                </div>
-            </div>
-
-        </div>
-    </div>
-
     <style>
-        .choice-option {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .choice-label {
-            margin-top: 6px;
-            font-size: 14px;
-            font-family: Arial, sans-serif;
-        }
-
-        .choice-label.fast {
-            color: #4caf50;
-            /* green */
-        }
-
-        .choice-label.slow {
-            color: #ff2600ff;
-            /* orange/red */
-        }
-
-
-        .choice-popup-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
-            z-index: 9999;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .choice-popup-content {
-            background-color: #1e1e1e;
-            padding: 40px;
-            border-radius: 15px;
-            text-align: center;
-            border: 1px solid #333;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-        }
-
-        .choice-popup-content h2 {
-            color: #fff;
-            margin-bottom: 35px;
-            font-family: Arial, sans-serif;
-        }
-
-        .choice-options {
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-        }
-
-        .choice-options button {
-            padding: 15px 30px;
-            font-size: 18px;
-            cursor: pointer;
-            background-color: #d4d4d4ff;
-            color: black;
-            border: none;
-            border-radius: 8px;
-        }
-
-        .choice-options button:hover {
-            background-color: #ffffffff;
-            transform: scale(1.05);
-        }
-
         .video-wrapper {
             position: relative;
             width: fit-content;
@@ -261,42 +163,6 @@ if ($detection_method == 'machine_learning') {
         }
     </style>
 
-    <script>
-        function setCookie(name, value, days) {
-            var expires = "";
-            if (days) {
-                var date = new Date();
-                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-                expires = "; expires=" + date.toUTCString();
-            }
-            document.cookie = name + "=" + (value || "") + expires + "; path=/";
-        }
-
-        function getCookie(name) {
-            var nameEQ = name + "=";
-            var ca = document.cookie.split(';');
-            for (var i = 0; i < ca.length; i++) {
-                var c = ca[i];
-                while (c.charAt(0) == ' ') c = c.substring(1, c.length);
-                if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
-            }
-            return null;
-        }
-
-        function selectChoice(choice) {
-            setCookie('detection_method', choice, 365);
-            document.getElementById('choice-popup').style.display = 'none';
-            location.reload();
-        }
-
-        document.addEventListener("DOMContentLoaded", function () {
-            var choice = getCookie('detection_method');
-            if (!choice) {
-                document.getElementById('choice-popup').style.display = 'flex';
-            }
-        });
-    </script>
-    <!----------------------------------------------------------------------------------->
     <div class="background-container">
         <div class="alphabit-topleft">
             <a href="#">AlphaBit OpenML</a>
@@ -309,34 +175,227 @@ if ($detection_method == 'machine_learning') {
         </div>
         <div class="docs">Documentation</div>
         <div class="rbox">
-            <div class="title">Getting Started
-                <?php if ($detection_method == 'Color Blob Detection')
-                    echo 'with <span style="color:#BBFF87;">Color Blob Detection</span>';
-                else
-                    echo 'with <span style="color:#BBFF87;">Machine Learning</span>';
-                ?>
-            </div>
+            <div class="title"><?php echo ($lang == 'ro') ? 'Ghid de Initializare (Decode 2026)' : 'Getting Started (Decode 2026)'; ?></div>
             <div class="text-container">
-                <div class="stext">
-                    <h2> > Initial Setup</h2>
-                </div>
-                <div class="stext">
-                    Click below to watch the initial setup tutorial.
-                </div>
-                <div class="stext">
-                    <div class="video-wrapper">
-                        <video id="setupVideo" width="600" controls style="border-radius: 10px;"
-                            poster="/ftc_decode/data/initial_setup_thumbnail.png">
-                            <source src="/ftc_decode/data/initial_setup.mkv">
-                            Your browser does not support the video tag.
-                        </video>
-                        <i class="fa fa-play-circle video-play-overlay"></i>
+                <?php if ($lang == 'ro'): ?>
+                    <div class="stext">
+                        <h2>Obiectiv</h2>
                     </div>
-                </div>
+                    <div class="rtext">
+                        Aceasta pagina te ghideaza de la setup initial pana la primul flux functional pentru sezonul FTC
+                        Decode 2026: detectie AprilTag, control autonom si ochire asistata de camera.
+                    </div>
+
+                    <div class="stext"><b class="bc">1. Verifica hardware-ul minim</b></div>
+                    <div class="rtext">
+                        <li>Control Hub / Robot Controller pregatit pentru testare.</li>
+                    </div>
+                    <div class="rtext">
+                        <li>Webcam UVC stabil, montata ferm pe robot.</li>
+                    </div>
+                    <div class="rtext">
+                        <li>Conexiune buna la baterie si iluminare constanta pentru testele de viziune.</li>
+                    </div>
+
+                    <div class="stext"><b class="bc">2. Instaleaza mediul de dezvoltare</b></div>
+                    <div class="rtext">
+                        <li>Instaleaza <b class="bc">Android Studio</b> si configureaza proiectul FTC SDK pentru codul de robot.</li>
+                    </div>
+                    <div class="rtext">
+                        <li>Pentru teste rapide pe laptop, instaleaza Python 3 si OpenCV.</li>
+                    </div>
+                    <div class="stext">
+                        <div class="codee-window">
+                            <pre><code class="language-bash">pip install opencv-python numpy</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="stext"><b class="bc">3. Test optional video setup</b></div>
+                    <div class="rtext">
+                        Urmareste tutorialul scurt de setup daca vrei un walkthrough vizual.
+                    </div>
+                    <div class="stext">
+                        <div class="video-wrapper">
+                            <video id="setupVideo" width="600" controls style="border-radius: 10px;"
+                                poster="/ftc_decode/data/initial_setup_thumbnail.png">
+                                <source src="/ftc_decode/data/initial_setup.mkv">
+                                Browserul tau nu suporta tag-ul video.
+                            </video>
+                            <i class="fa fa-play-circle video-play-overlay"></i>
+                        </div>
+                    </div>
+
+                    <div class="stext"><b class="bc">4. Verifica rapid camera</b></div>
+                    <div class="rtext">
+                        Ruleaza scriptul de test pentru a confirma ca imaginea este citita corect.
+                    </div>
+                    <div class="stext"><a href="/resources/camera_test.py" download><u><b>camera_test.py</b></u></a> (download)</div>
+                    <div class="stext">
+                        <div class="codee-window">
+                            <pre><code class="language-python">python camera_test.py</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="stext"><b class="bc">5. Configureaza fluxul AprilTag</b></div>
+                    <div class="rtext">
+                        <li>Citeste ghidul de baza: <u><a href="/model/<?php echo $season_path; ?>/apriltag"
+                                    style="text-decoration:none; color:#ffffff;">AprilTag Getting Started</a></u>.</li>
+                    </div>
+                    <div class="rtext">
+                        <li>Integreaza codul: <u><a href="/model/<?php echo $season_path; ?>/apriltag_code_sample"
+                                    style="text-decoration:none; color:#ffffff;">AprilTag Code Sample</a></u>.</li>
+                    </div>
+
+                    <div class="stext"><b class="bc">6. Adauga control autonom</b></div>
+                    <div class="rtext">
+                        Continua catre modulele de deplasare: <u><a href="/model/<?php echo $season_path; ?>/autonomous"
+                                style="text-decoration:none; color:#ffffff;">Getting Started</a></u>, <u><a
+                                href="/model/<?php echo $season_path; ?>/odometry"
+                                style="text-decoration:none; color:#ffffff;">Odometry</a></u>, <u><a
+                                href="/model/<?php echo $season_path; ?>/road_runner_056"
+                                style="text-decoration:none; color:#ffffff;">Road Runner 0.5.6</a></u>, <u><a
+                                href="/model/<?php echo $season_path; ?>/road_runner_10"
+                                style="text-decoration:none; color:#ffffff;">Road Runner 1.0</a></u>, <u><a
+                                href="/model/<?php echo $season_path; ?>/pedro_pathing"
+                                style="text-decoration:none; color:#ffffff;">Pedro Pathing</a></u>.
+                    </div>
+
+                    <div class="stext"><b class="bc">7. Activeaza ochirea automata</b></div>
+                    <div class="rtext">
+                        Alege varianta potrivita: <u><a href="/model/<?php echo $season_path; ?>/auto_aiming_getting_started"
+                                style="text-decoration:none; color:#ffffff;">Start</a></u>, <u><a
+                                href="/model/<?php echo $season_path; ?>/gyroscope_only"
+                                style="text-decoration:none; color:#ffffff;">IMU only</a></u>, <u><a
+                                href="/model/<?php echo $season_path; ?>/camera_only"
+                                style="text-decoration:none; color:#ffffff;">Webcam only</a></u>, <u><a
+                                href="/model/<?php echo $season_path; ?>/gyroscope_and_camera"
+                                style="text-decoration:none; color:#ffffff;">IMU + Webcam</a></u>.
+                    </div>
+
+                    <div class="stext"><b class="bc">8. Checklist final inainte de field test</b></div>
+                    <div class="rtext">
+                        <li>Camera are FPS stabil si imagine clara.</li>
+                    </div>
+                    <div class="rtext">
+                        <li>Detectia AprilTag ruleaza constant in telemetrie.</li>
+                    </div>
+                    <div class="rtext">
+                        <li>Traiectoriile autonome au fost testate in siguranta, la viteza mica, apoi crescute gradual.</li>
+                    </div>
+                <?php else: ?>
+                    <div class="stext">
+                        <h2>Goal</h2>
+                    </div>
+                    <div class="rtext">
+                        This page takes you from initial setup to a working first Decode 2026 flow: AprilTag detection,
+                        autonomous movement, and camera-assisted aiming.
+                    </div>
+
+                    <div class="stext"><b class="bc">1. Confirm minimum hardware</b></div>
+                    <div class="rtext">
+                        <li>Configured Control Hub / Robot Controller environment.</li>
+                    </div>
+                    <div class="rtext">
+                        <li>Stable UVC webcam mounted firmly on the robot.</li>
+                    </div>
+                    <div class="rtext">
+                        <li>Reliable battery power and consistent lighting for vision tests.</li>
+                    </div>
+
+                    <div class="stext"><b class="bc">2. Install development tools</b></div>
+                    <div class="rtext">
+                        <li>Install <b class="bc">Android Studio</b> and prepare your FTC SDK robot project.</li>
+                    </div>
+                    <div class="rtext">
+                        <li>For quick laptop camera tests, install Python 3 and OpenCV.</li>
+                    </div>
+                    <div class="stext">
+                        <div class="codee-window">
+                            <pre><code class="language-bash">pip install opencv-python numpy</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="stext"><b class="bc">3. Optional setup video</b></div>
+                    <div class="rtext">
+                        Use the short setup walkthrough if you want a visual reference before coding.
+                    </div>
+                    <div class="stext">
+                        <div class="video-wrapper">
+                            <video id="setupVideo" width="600" controls style="border-radius: 10px;"
+                                poster="/ftc_decode/data/initial_setup_thumbnail.png">
+                                <source src="/ftc_decode/data/initial_setup.mkv">
+                                Your browser does not support the video tag.
+                            </video>
+                            <i class="fa fa-play-circle video-play-overlay"></i>
+                        </div>
+                    </div>
+
+                    <div class="stext"><b class="bc">4. Validate camera input</b></div>
+                    <div class="rtext">
+                        Run the camera test script to confirm your capture device is detected correctly.
+                    </div>
+                    <div class="stext"><a href="/resources/camera_test.py" download><u><b>camera_test.py</b></u></a> (download)</div>
+                    <div class="stext">
+                        <div class="codee-window">
+                            <pre><code class="language-python">python camera_test.py</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="stext"><b class="bc">5. Build your AprilTag baseline</b></div>
+                    <div class="rtext">
+                        <li>Start with <u><a href="/model/<?php echo $season_path; ?>/apriltag"
+                                    style="text-decoration:none; color:#ffffff;">AprilTag Getting Started</a></u>.</li>
+                    </div>
+                    <div class="rtext">
+                        <li>Implement from <u><a href="/model/<?php echo $season_path; ?>/apriltag_code_sample"
+                                    style="text-decoration:none; color:#ffffff;">AprilTag Code Sample</a></u>.</li>
+                    </div>
+
+                    <div class="stext"><b class="bc">6. Add autonomous control</b></div>
+                    <div class="rtext">
+                        Continue through movement modules: <u><a href="/model/<?php echo $season_path; ?>/autonomous"
+                                style="text-decoration:none; color:#ffffff;">Getting Started</a></u>, <u><a
+                                href="/model/<?php echo $season_path; ?>/odometry"
+                                style="text-decoration:none; color:#ffffff;">Odometry</a></u>, <u><a
+                                href="/model/<?php echo $season_path; ?>/road_runner_056"
+                                style="text-decoration:none; color:#ffffff;">Road Runner 0.5.6</a></u>, <u><a
+                                href="/model/<?php echo $season_path; ?>/road_runner_10"
+                                style="text-decoration:none; color:#ffffff;">Road Runner 1.0</a></u>, <u><a
+                                href="/model/<?php echo $season_path; ?>/pedro_pathing"
+                                style="text-decoration:none; color:#ffffff;">Pedro Pathing</a></u>.
+                    </div>
+
+                    <div class="stext"><b class="bc">7. Enable auto aiming</b></div>
+                    <div class="rtext">
+                        Choose your implementation path: <u><a href="/model/<?php echo $season_path; ?>/auto_aiming_getting_started"
+                                style="text-decoration:none; color:#ffffff;">Start</a></u>, <u><a
+                                href="/model/<?php echo $season_path; ?>/gyroscope_only"
+                                style="text-decoration:none; color:#ffffff;">IMU only</a></u>, <u><a
+                                href="/model/<?php echo $season_path; ?>/camera_only"
+                                style="text-decoration:none; color:#ffffff;">Webcam only</a></u>, <u><a
+                                href="/model/<?php echo $season_path; ?>/gyroscope_and_camera"
+                                style="text-decoration:none; color:#ffffff;">IMU + Webcam</a></u>.
+                    </div>
+
+                    <div class="stext"><b class="bc">8. Final checklist before field tests</b></div>
+                    <div class="rtext">
+                        <li>Camera feed is stable and clearly visible in telemetry.</li>
+                    </div>
+                    <div class="rtext">
+                        <li>AprilTag detection runs consistently with usable pose output.</li>
+                    </div>
+                    <div class="rtext">
+                        <li>Autonomous paths are validated in a safe area at low speed first, then scaled up.</li>
+                    </div>
+                <?php endif; ?>
+
                 <script>
                     document.addEventListener('DOMContentLoaded', function () {
                         var video = document.getElementById('setupVideo');
                         var overlay = document.querySelector('.video-play-overlay');
+                        if (!video || !overlay) {
+                            return;
+                        }
 
                         video.addEventListener('play', function () {
                             overlay.style.opacity = '0';
@@ -351,130 +410,6 @@ if ($detection_method == 'machine_learning') {
                         });
                     });
                 </script>
-                <div class="stext"><b class="bc">1. Visual Studio Code</b></div>
-                <div class="rtext">1. Download <b class="bc">Visual Studio Code</b>. (Recommended)
-                    <div class="downloadbtn"><a href="https://code.visualstudio.com/docs/?dv=win64user">Download</a>
-                    </div>
-                </div>
-
-                <div class="stext">2.<b class="bc"> Download Python 3.7 or newer </b>(tested on Python
-                    3.8/3.9/3.10/3.11)</div>
-                <div class="rtext">
-                    <div class="downloadbtn"><a
-                            href="https://www.python.org/ftp/python/3.12.9/python-3.12.9-amd64.exe">Download</a></div>
-                </div>
-                <div class="stext"><b class="bc">3. Configure Visual Studio Code & Terminal </b></div>
-                <div class="rtext">1. Open Folder (This is the folder where you want to have the OpenML project)</div>
-                <div class="rtext">2. Open New Terminal</div>
-                <div class="rtext"><img src="/assets/ai/terminal.png" width=500 style="border-radius: 10px;"></div>
-                <div class="rtext">3. Install the dependencies</div>
-                <div class="stext"><b class="bc">4. Dependencies (use pip3 for python3)</b></div>
-                <div class="stext">
-                    <div class="codee-window">
-                        <pre><code class="language-python" >pip install opencv-python ultralytics numpy</code></pre>
-                    </div>
-                </div>
-                <div class="stext">Or</div>
-                <div class="stext">
-                    <div class="codee-window">
-                        <pre><code class="language-python" >pip install opencv-python==4.8.0.76
-                                            pip install ultralytics==8.0.196
-                                            pip install numpy==1.24.4		</code></pre>
-                    </div>
-                </div>
-                <div class="stext"><u>If OpenCV does not work try to reinstall it using the method above
-                        (or retry using the methods below)</u></div>
-                <div class="stext">
-                    <div class="codee-window">
-                        <pre><code class="language-python" >pip install opencv-python </code></pre>
-                    </div>
-                </div>
-                <div class="stext">Example </div>
-                <div class="stext"><img src="/assets/ai/show_terminal_2.png" width="600" style="border-radius: 10px;">
-                </div>
-                <div class="stext">5.<b class="bc"> Hardware Requirements</b></div>
-                <div class="rtext">
-                    <li>A Webcam connected to the device is required (the code uses cv2.VideoCapture(0), make sure
-                        camera index 0 is correct for your configuration.)</li>
-                </div>
-                <div class="rtext">
-                    <li>Sufficient CPU power for real-time inference (a CUDA-enabled graphics card is recommended
-                        for better performance) for Testing and Control Hub is also accepted.
-                    </li>
-                </div>
-                <div class="stext"><b class="bc">6. Test Camera Python Script</b></div>
-                <div class="rtext">
-                    <li>Create a Python script named <b>camera_test.py</b> and add the following code to it</li>
-                </div>
-                <div class="stext"><a href="/resources/camera_test.py" download><u><b>camera_test.py</b></u></a> (Click
-                    to
-                    download)</div>
-                <div class="stext">
-                    <div class="codee-window">
-                        <pre><code class="language-python" >import cv2
-    cap = cv2.VideoCapture(0) #If it doesn't work, increment the number by 1 until the camera works and appears on the screen
-    ret, frame = cap.read()
-    print("Camera working:", ret)
-    cap.release()</code></pre>
-                    </div>
-                </div>
-                <div class="stext">
-                    Then</div>
-                <div class="stext">
-                    <div class="codee-window">
-                        <pre><code class="language-python" >python camera_test.py</pre></code>
-                    </div>
-                </div>
-
-                <div class="stext">7.<b class="bc">If the camera works, download the ML model from
-                        <u>Resources</u></b></div>
-                <div class="rtext">
-                    <li>If you have a <b class="bc">Very Low / Low</b> quality camera download the <u><a
-                                href="/model/<?php echo $season_path; ?>/resources"
-                                style="text-decoration: none; color: white;">first ML</a></u>
-                    </li>
-                </div>
-                <div class="rtext">
-                    <li>If you have a <b class="bc">Medium / Very Good </b> quality camera download the <u><a
-                                href="/model/<?php echo $season_path; ?>/resources"
-                                style="text-decoration: none; color: white;">second
-                                ML</a></u></li>
-                </div>
-                <div class="rtext">
-                    <li><u>Make sure you download the model with <b class="bc">[Python Testing]</b> for your camera
-                            quality
-                            [It matters a lot]</u></li>
-                </div>
-
-                <div class="stext">8. <b class="bc">Calibrate The Camera</b></div>
-                <div class="rtext">
-                    <li>Access <u><a href="/model/<?php echo $season_path; ?>/cameracalib"
-                                style="text-decoration: none; color: white">Camera
-                                Calibration</a></u>, and then return after you have finished calibrating the camera.
-                    </li>
-                </div>
-
-                <div class="stext">9.🎉If you have <b class="bc">successfully</b> completed all steps, you can proceed
-                    to <b class="bc">Python Code For Detection</b> to test the OpenML model 🎉 </div>
-                <div class="rtext">
-                    <li>Access <u><a href="/model/<?php echo $season_path; ?>/pythonml"
-                                style="text-decoration: none; color: white;">Python Code
-                                For Detection</a></u></li>
-                    </li>
-                </div>
-
-                <div class="stext">10.<b class="bc"> Additional Notes</b></div>
-                <div class="rtext">
-                    <li>The code uses math and cv2 modules for geometric calculations and camera operations. These
-                        are included in the dependencies mentioned above.</li>
-                </div>
-                <div class="rtext">
-                    <li>If you encounter CUDA-related errors, ensure you have compatible GPU drivers and PyTorch/CUDA
-                        is installed (Ultralytics YOLO usually handles this automatically).</li>
-                </div>
-                <div class="rtext">
-                    <li>Adjust the fov_degrees, first_angle and y values based on your camera calibration.</li>
-                </div>
 
                 <div class="endLine"></div>
                 <div class="endD"><a href="https://discord.gg/ZB6vQ62KZT">Support -> Discord</a></div>
@@ -678,6 +613,8 @@ if ($detection_method == 'machine_learning') {
             <?php endif; ?>
         </div>
     </div>
+
+    <?php include_once $_SERVER['DOCUMENT_ROOT'] . '/assets/includes/chat_widget.php'; ?>
 </body>
 
 </html>

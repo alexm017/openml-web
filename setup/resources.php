@@ -35,7 +35,8 @@ if ($detection_method == 'machine_learning') {
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>AlphaBit - OpenML</title>
-	<link rel="stylesheet" href="/assets/css/model_style.css">
+	<link rel="stylesheet" href="/assets/css/model_style.css?v=20260304">
+	<link rel="stylesheet" href="/assets/css/overview_theme.css?v=20260304">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	<link rel="shortcut icon" type="image/x-icon" href="/assets/images/alphabit.ico" />
@@ -46,8 +47,8 @@ if ($detection_method == 'machine_learning') {
 		<div class="language-popup-content">
 			<h2>Choose Language / Alege Limba</h2>
 			<div class="language-options">
-				<button onclick="selectLanguage('ro')">🇷🇴 Română</button>
-				<button onclick="selectLanguage('en')">🇬🇧 English</button>
+				<button onclick="selectLanguage('ro')">Română</button>
+				<button onclick="selectLanguage('en')">English</button>
 			</div>
 		</div>
 	</div>
@@ -169,8 +170,8 @@ if ($detection_method == 'machine_learning') {
 						Modelul ML în <b class="bc">Python</b> Descarcă Acest Model:</div>
 					<div class="rtext">
 						<div class="stext">
-							<li><b>Model Machine Learning <u>[Webcam Normal]</u> <b class="bc"><u>[Pentru Testare
-											Python]</u></b></li>
+							<li><b>Model Machine Learning <u>[Webcam Normal]</u></b> <b class="bc"><u>[Pentru Testare
+										Python]</u></b></li>
 						</div>
 						<div class="downloadbtn"><a href="/assets/ai/high.pt">Descarcă</a></div>
 					</div>
@@ -183,8 +184,8 @@ if ($detection_method == 'machine_learning') {
 					</div>
 					<div class="rtext">
 						<div class="ftext">
-							<li><b>Machine Learning <u>[Cameră Calitate Scăzută]</u> <b class="bc"><u>[Robot (Control
-											Hub)]</u>
+							<li><b>Machine Learning <u>[Cameră Calitate Scăzută]</u></b> <b class="bc"><u>[Robot (Control
+										Hub)]</u>
 							</li></b>
 						</div>
 						<div class="downloadbtn"><a href="/assets/ai/low.tflite">Descarcă</a></div><br></br>
@@ -193,8 +194,8 @@ if ($detection_method == 'machine_learning') {
 						Modelul ML pe <b class="bc">Robot</b> Descarcă Acest Model:</div>
 					<div class="rtext">
 						<div class="stext">
-							<li><b>Model Machine Learning <u>[Webcam Normal]</u> <b class="bc"><u>[Robot (Control
-											Hub)]</u></b></li>
+							<li><b>Model Machine Learning <u>[Webcam Normal]</u> </b><b class="bc"><u>[Robot (Control
+										Hub)]</u></b></li>
 						</div>
 						<div class="downloadbtn"><a href="/assets/ai/high.tflite">Descarcă</a></div>
 					</div>
@@ -216,8 +217,8 @@ if ($detection_method == 'machine_learning') {
 						ML Model in <b class="bc">Python</b> Download This Model:</div>
 					<div class="rtext">
 						<div class="stext">
-							<li><b>Machine Learning Model <u>[Normal Webcams]</u> <b class="bc"><u>[For Python
-											Testing]</u></b></li>
+							<li><b>Machine Learning Model <u>[Normal Webcams]</u></b> <b class="bc"><u>[For Python
+										Testing]</u></b></li>
 						</div>
 						<div class="downloadbtn"><a href="/assets/ai/high.pt">Download</a></div>
 					</div>
@@ -228,7 +229,8 @@ if ($detection_method == 'machine_learning') {
 						the <b class="bc">Robot</b> Download This Model:</div>
 					<div class="rtext">
 						<div class="ftext">
-							<li><b>Machine Learning <u>[Low Quality Camera]</u> <b class="bc"><u>[Robot (Control Hub)]</u>
+							<li><b>Machine Learning <u>[Low Quality Camera]</u> </b><b class="bc"><u>[Robot (Control
+										Hub)]</u>
 							</li></b>
 						</div>
 						<div class="downloadbtn"><a href="/assets/ai/low.tflite">Download</a></div><br></br>
@@ -237,8 +239,8 @@ if ($detection_method == 'machine_learning') {
 						ML Model on the <b class="bc">Robot</b> Download This Model:</div>
 					<div class="rtext">
 						<div class="stext">
-							<li><b>Machine Learning Model <u>[Normal Webcam]</u> <b class="bc"><u>[Robot (Control
-											Hub)]</u></b></li>
+							<li><b>Machine Learning Model <u>[Normal Webcam]</u></b> <b class="bc"><u>[Robot (Control
+										Hub)]</u></b></li>
 						</div>
 						<div class="downloadbtn"><a href="/assets/ai/high.tflite">Download</a></div>
 					</div>
@@ -376,6 +378,8 @@ if ($detection_method == 'machine_learning') {
 			<?php endif; ?>
 		</div>
 	</div>
+
+	<?php include_once $_SERVER['DOCUMENT_ROOT'] . '/assets/includes/chat_widget.php'; ?>
 </body>
 
 </html>

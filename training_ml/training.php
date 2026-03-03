@@ -26,8 +26,8 @@ fclose($record_file);
 		<div class="language-popup-content">
 			<h2>Choose Language / Alege Limba</h2>
 			<div class="language-options">
-				<button onclick="selectLanguage('ro')">🇷🇴 Română</button>
-				<button onclick="selectLanguage('en')">🇬🇧 English</button>
+				<button onclick="selectLanguage('ro')">Română</button>
+				<button onclick="selectLanguage('en')">English</button>
 			</div>
 		</div>
 	</div>
@@ -133,7 +133,7 @@ fclose($record_file);
 		<div class="before_docs"><?php echo $season_year; ?></div>
 		<?php if ($lang == 'ro'): ?>
 			<div class="welcome-text">
-				Fiecare fotografie pe care o distribuiți îmbunătățește viziunea robotului nostru ✨.
+				Fiecare fotografie pe care o distribuiți îmbunătățește viziunea robotului nostru.
 				<p>Haideți să dominăm terenul!</p>
 			</div>
 
@@ -146,7 +146,7 @@ fclose($record_file);
 			</div>
 		<?php else: ?>
 			<div class="welcome-text">
-				Every photo you share sharpens our robot’s vision ✨.
+				Every photo you share sharpens our robot’s vision.
 				<p>Let’s dominate the field!</p>
 			</div>
 

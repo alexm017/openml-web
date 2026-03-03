@@ -33,7 +33,8 @@ if ($detection_method == 'machine_learning') {
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>AlphaBit - OpenML</title>
-	<link rel="stylesheet" href="/assets/css/model_style.css">
+	<link rel="stylesheet" href="/assets/css/model_style.css?v=20260304">
+	<link rel="stylesheet" href="/assets/css/overview_theme.css?v=20260304">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	<link rel="shortcut icon" type="image/x-icon" href="/assets/images/alphabit.ico" />
@@ -51,8 +52,8 @@ if ($detection_method == 'machine_learning') {
 		<div class="language-popup-content">
 			<h2>Choose Language / Alege Limba</h2>
 			<div class="language-options">
-				<button onclick="selectLanguage('ro')">🇷🇴 Română</button>
-				<button onclick="selectLanguage('en')">🇬🇧 English</button>
+				<button onclick="selectLanguage('ro')">Română</button>
+				<button onclick="selectLanguage('en')">English</button>
 			</div>
 		</div>
 	</div>
@@ -269,8 +270,8 @@ if ($detection_method == 'machine_learning') {
 								Calibration</a></u>, iar apoi întoarce-te după ce ai terminat calibrarea camerei.</li>
 				</div>
 
-				<div class="stext">9.🎉Dacă ai parcurs cu <b class="bc">succes</b> toți pașii, poți trece la <b
-						class="bc">Cod Python pentru Detecție</b> pentru a testa modelul OpenML 🎉 </div>
+				<div class="stext">9. Dacă ai parcurs cu <b class="bc">succes</b> toți pașii, poți trece la <b
+						class="bc">Cod Python pentru Detecție</b> pentru a testa modelul OpenML.</div>
 				<div class="rtext">
 					<li>Accesează <u><a href="/model/<?php echo $season_path; ?>/pythonml"
 								style="text-decoration: none; color: white;">Cod Python
@@ -394,8 +395,8 @@ if ($detection_method == 'machine_learning') {
 					</li>
 				</div>
 
-				<div class="stext">9.🎉If you have <b class="bc">successfully</b> completed all steps, you can proceed
-					to <b class="bc">Python Code For Detection</b> to test the OpenML model 🎉 </div>
+				<div class="stext">9. If you have <b class="bc">successfully</b> completed all steps, you can proceed
+					to <b class="bc">Python Code For Detection</b> to test the OpenML model.</div>
 				<div class="rtext">
 					<li>Access <u><a href="/model/<?php echo $season_path; ?>/pythonml"
 								style="text-decoration: none; color: white;">Python Code
@@ -548,6 +549,8 @@ if ($detection_method == 'machine_learning') {
 			<?php endif; ?>
 		</div>
 	</div>
+
+	<?php include_once $_SERVER['DOCUMENT_ROOT'] . '/assets/includes/chat_widget.php'; ?>
 </body>
 
 </html>

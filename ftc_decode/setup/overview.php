@@ -14,6 +14,7 @@ fclose($record_file);
 $season_cookie = isset($_COOKIE['season_choice']) ? $_COOKIE['season_choice'] : 'IntoTheDeep';
 $season_year = ($season_cookie == 'Decode') ? '2026' : '2025';
 $season_path = ($season_cookie == 'Decode') ? 'decode' : 'intothedeep';
+$lang = isset($_COOKIE['site_lang']) ? $_COOKIE['site_lang'] : 'en';
 ?>
 
 <!DOCTYPE html>
@@ -24,7 +25,8 @@ $season_path = ($season_cookie == 'Decode') ? 'decode' : 'intothedeep';
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AlphaBit - OpenML</title>
-    <link rel="stylesheet" href="/assets/css/model_style.css">
+    <link rel="stylesheet" href="/assets/css/model_style.css?v=20260304">
+    <link rel="stylesheet" href="/assets/css/overview_theme.css?v=20260304">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="shortcut icon" type="image/x-icon" href="/assets/images/alphabit.ico" />
@@ -35,8 +37,8 @@ $season_path = ($season_cookie == 'Decode') ? 'decode' : 'intothedeep';
         <div class="language-popup-content">
             <h2>Choose Language / Alege Limba</h2>
             <div class="language-options">
-                <button onclick="selectLanguage('ro')">🇷🇴 Română</button>
-                <button onclick="selectLanguage('en')">🇬🇧 English</button>
+                <button onclick="selectLanguage('ro')">Română</button>
+                <button onclick="selectLanguage('en')">English</button>
             </div>
         </div>
     </div>
@@ -212,10 +214,11 @@ $season_path = ($season_cookie == 'Decode') ? 'decode' : 'intothedeep';
             return null;
         }
 
-        function selectSeason(lang) {
-            setCookie('season_choice', lang, 365);
+        function selectSeason(season) {
+            setCookie('season_choice', season, 365);
             document.getElementById('season-popup').style.display = 'none';
-            window.location.reload();
+            var seasonPath = season === 'Decode' ? 'decode' : 'intothedeep';
+            window.location.href = '/model/' + seasonPath + '/overview';
         }
 
         document.addEventListener("DOMContentLoaded", function () {
@@ -237,128 +240,91 @@ $season_path = ($season_cookie == 'Decode') ? 'decode' : 'intothedeep';
         </div>
         <div class="docs">Documentation</div>
         <div class="rbox">
-            <div class="title">Introduction</div>
-            <div style="margin-left: 20vh; margin-bottom: -90px;margin-top:180px;">
-                <iframe src="https://www.youtube.com/embed/WIGv4dXdv54" title="OpenML Introduction" width="720"
-                    height="360" frameborder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowfullscreen>
-                </iframe>
-            </div>
+            <div class="title"><?php echo ($lang == 'ro') ? 'Prezentare Generala - Decode 2026' : 'Overview - Decode 2026'; ?></div>
             <div class="text-container">
-                <?php
-                $lang = isset($_COOKIE['site_lang']) ? $_COOKIE['site_lang'] : 'en';
-                if ($lang == 'ro'):
-                    ?>
+                <?php if ($lang == 'ro'): ?>
                     <div class="ftext">
-                        <b>Urmează pașii din -> </b><b class="bc"><u><a
-                                    href="/model/<?php echo $season_path; ?>/prerequisites"
-                                    style="text-decoration:none; color: #ffffffff">Getting Started</a></u></b> pentru a-ți
-                        pregăti dispozitivul pentru folosirea modelului de Machine Learning.
+                        OpenML Decode este documentatia pentru sezonul FTC Decode 2026. Daca este prima ta vizita, incepe cu
+                        <a href="/model/<?php echo $season_path; ?>/prerequisites"
+                            style="text-decoration:none; color:#ffffff;">Getting Started</a>.
                     </div>
-                    <div class="stext">Bine ați venit la documentația de dezvoltare a OpenML pentru robotul FTC – o
-                        platformă open-source inovatoare dezvoltată de echipa AlphaBit Machine Learning. Proiectul nostru
-                        este conceput pentru a aduce cele mai avansate tehnologii de machine learning direct în arena
-                        roboticii FTC, facilitând accesul gratuit la o soluție completă, pre-antrenată și pregătită
-                        matematic pentru orice echipă interesată de performanță și inovație.</div>
 
-                    <div class="stext">Într-o lume în care competiția este din ce în ce mai acerbă, integrarea inteligenței
-                        artificiale și a algoritmilor avansați în sistemele robotice devine esențială. De aceea, am
-                        dezvoltat OpenML pentru robotul FTC astfel încât să puteți beneficia de:</div>
+                    <div class="stext">Ce include aceasta sectiune</div>
                     <div class="rtext">
-                        <li><b class="bc">Modele pre-antrenate</b>: Soluția noastră vine echipată cu modele de machine
-                            learning deja antrenate, optimizate pentru recunoașterea obiectelor, navigație autonomă și alte
-                            funcții critice în timpul competițiilor FTC.</li>
+                        <li>Configurare AprilTag pentru localizare si orientare pe teren.</li>
                     </div>
                     <div class="rtext">
-                        <li><b class="bc">Detectarea orientării și a unghiurilor</b>: OpenML integrează algoritmi matematici
-                            ce permit detectarea precisă a orientării și a unghiurilor de la camera de bord. Acest aspect
-                            este esențial pentru navigarea autonomă și performanța în terenul de competiție.</li>
+                        <li>Control autonom cu odometrie, Road Runner si Pedro Pathing.</li>
                     </div>
                     <div class="rtext">
-                        <li><b class="bc">Arhitectură modulară</b>: Fiecare componentă a platformei poate fi personalizată
-                            și extinsă, permițând echipelor să adauge funcționalități specifice sau să integreze noi module
-                            în funcție de strategia lor de competiție.</li>
+                        <li>Auto aiming cu IMU, camera sau combinatie IMU + camera.</li>
                     </div>
                     <div class="rtext">
-                        <li><b class="bc">Open-Source</b>: Toate resursele sunt disponibile gratuit pentru orice echipă
-                            interesată. Indiferent dacă sunteți o echipă nouă sau una consacrată, puteți beneficia de aceste
-                            tehnologii.</li>
+                        <li>Exemple de implementare pentru integrare rapida pe robot.</li>
                     </div>
+
+                    <div class="stext">Parcurs recomandat</div>
+                    <div class="rtext">
+                        <li>1. Finalizeaza setup-ul in <a href="/model/<?php echo $season_path; ?>/prerequisites"
+                                style="text-decoration:none; color:#ffffff;">Getting Started</a>.</li>
+                    </div>
+                    <div class="rtext">
+                        <li>2. Configureaza detectia in <a href="/model/<?php echo $season_path; ?>/apriltag"
+                                style="text-decoration:none; color:#ffffff;">AprilTag</a>.</li>
+                    </div>
+                    <div class="rtext">
+                        <li>3. Construieste fluxul de miscare in <a href="/model/<?php echo $season_path; ?>/autonomous"
+                                style="text-decoration:none; color:#ffffff;">Autonomous Control</a>.</li>
+                    </div>
+                    <div class="rtext">
+                        <li>4. Activeaza ochirea asistata in <a href="/model/<?php echo $season_path; ?>/auto_aiming_getting_started"
+                                style="text-decoration:none; color:#ffffff;">Auto Aiming</a>.</li>
+                    </div>
+
                     <div class="stext">
-                        Acest proiect este destinat tuturor echipelor – fie că sunteți la început de drum sau aveți deja
-                        experiență în domeniu. Prin deschiderea resurselor noastre, dorim să stimulăm inovația, să
-                        îmbunătățim performanțele în competițiile FTC și să creăm o comunitate colaborativă în care fiecare
-                        contribuție contează.
-                        <br><br>
-                        Vă invităm să explorați în detaliu fiecare componentă a acestei platforme și să descoperiți modul în
-                        care OpenML poate transforma strategia și execuția echipei voastre pe terenul de competiție. Fiecare
-                        secțiune a documentației este gândită pentru a vă oferi suportul necesar în implementarea rapidă și
-                        eficientă a tehnologiilor de machine learning în robotica FTC.
-                        <br><br>
-                        Bucurați-vă de această experiență inovatoare și nu ezitați să contribuiți la dezvoltarea continuă a
-                        proiectului!
+                        Rezultatul dorit: un workflow stabil, usor de testat si gata pentru iteratii rapide in meciurile Decode.
                     </div>
                 <?php else: ?>
                     <div class="ftext">
-                        <b>Follow the steps in -> </b><b class="bc"><u><a
-                                    href="/model/<?php echo $season_path; ?>/prerequisites"
-                                    style="text-decoration:none; color: #ffffffff">Getting Started</a></u></b> to prepare
-                        your
-                        device for using the <u>Machine Learning</u> model or the <u>Color Blob Detection</u> model.
+                        OpenML Decode is the documentation hub for FTC Decode 2026. If this is your first visit, start with
+                        <a href="/model/<?php echo $season_path; ?>/prerequisites"
+                            style="text-decoration:none; color:#ffffff;">Getting Started</a>.
                     </div>
-                    <div class="stext">Welcome to the OpenML development documentation for the FTC robot – an innovative
-                        open-source platform developed by the AlphaBit Machine Learning team. Our project is designed to
-                        bring
-                        the most advanced machine learning technologies directly into the FTC robotics arena, facilitating
-                        free
-                        access to a complete, pre-trained, and mathematically prepared solution for any team interested in
-                        performance and innovation.</div>
 
-                    <div class="stext">In a world where competition is increasingly fierce, integrating artificial
-                        intelligence
-                        and advanced algorithms into robotic systems becomes essential. That's why we developed OpenML for
-                        the
-                        FTC robot so you can benefit from:</div>
+                    <div class="stext">What this section covers</div>
                     <div class="rtext">
-                        <li><b class="bc">Pre-trained Models</b>: Our solution comes equipped with already trained machine
-                            learning models, optimized for object recognition, autonomous navigation, and other critical
-                            functions during FTC competitions.</li>
+                        <li>AprilTag setup for field localization and robot orientation.</li>
                     </div>
                     <div class="rtext">
-                        <li><b class="bc">Orientation and Angle Detection</b>: OpenML integrates mathematical algorithms
-                            that
-                            allow precise detection of orientation and angles from the onboard camera. This aspect is
-                            essential
-                            for autonomous navigation and performance on the competition field.</li>
+                        <li>Autonomous control with odometry, Road Runner, and Pedro Pathing.</li>
                     </div>
                     <div class="rtext">
-                        <li><b class="bc">Modular Architecture</b>: Each component of the platform can be customized and
-                            extended, allowing teams to add specific functionalities or integrate new modules according to
-                            their
-                            competition strategy.</li>
+                        <li>Auto aiming using IMU-only, camera-only, or hybrid IMU + camera.</li>
                     </div>
                     <div class="rtext">
-                        <li><b class="bc">Open-Source</b>: All resources are available for free to any interested team.
-                            Whether
-                            you are a new team or an established one, you can benefit from these technologies.</li>
+                        <li>Implementation examples you can adapt directly to your robot codebase.</li>
                     </div>
+
+                    <div class="stext">Recommended path</div>
+                    <div class="rtext">
+                        <li>1. Complete setup in <a href="/model/<?php echo $season_path; ?>/prerequisites"
+                                style="text-decoration:none; color:#ffffff;">Getting Started</a>.</li>
+                    </div>
+                    <div class="rtext">
+                        <li>2. Configure detection in <a href="/model/<?php echo $season_path; ?>/apriltag"
+                                style="text-decoration:none; color:#ffffff;">AprilTag</a>.</li>
+                    </div>
+                    <div class="rtext">
+                        <li>3. Build movement logic in <a href="/model/<?php echo $season_path; ?>/autonomous"
+                                style="text-decoration:none; color:#ffffff;">Autonomous Control</a>.</li>
+                    </div>
+                    <div class="rtext">
+                        <li>4. Add assisted aiming in <a href="/model/<?php echo $season_path; ?>/auto_aiming_getting_started"
+                                style="text-decoration:none; color:#ffffff;">Auto Aiming</a>.</li>
+                    </div>
+
                     <div class="stext">
-                        This project is intended for all teams – whether you are just starting out or already have
-                        experience in
-                        the field. By opening up our resources, we aim to stimulate innovation, improve performance in FTC
-                        competitions, and create a collaborative community where every contribution counts.
-                        <br><br>
-                        We invite you to explore each component of this platform in detail and discover how OpenML can
-                        transform
-                        your team's strategy and execution on the competition field. Each section of the documentation is
-                        designed to provide you with the necessary support for the rapid and efficient implementation of
-                        machine
-                        learning technologies in FTC robotics.
-                        <br><br>
-                        Enjoy this innovative experience and do not hesitate to contribute to the continuous development of
-                        the
-                        project!
+                        Expected outcome: a stable, testable workflow your team can tune quickly for Decode matches.
                     </div>
                 <?php endif; ?>
                 <div class="endLine"></div>
@@ -464,6 +430,8 @@ $season_path = ($season_cookie == 'Decode') ? 'decode' : 'intothedeep';
             <?php endif; ?>
         </div>
     </div>
+
+<?php include_once $_SERVER['DOCUMENT_ROOT'] . '/assets/includes/chat_widget.php'; ?>
 </body>
 
 </html>

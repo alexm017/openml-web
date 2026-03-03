@@ -11,15 +11,15 @@
     RewriteCond %{REQUEST_FILENAME} !-d
 
     # Route /register to register.php
-    RewriteRule ^register/?$ register.php [L,QSA]
+    RewriteRule ^register/?$ administrative/register.php [L,QSA]
 
     #####################################################################################
     # Administrative | Route /login to login.php
-    RewriteRule ^login/?$ login.php [L,QSA]
-    RewriteRule ^profile/?$ profile.php [L,QSA]
-    RewriteRule ^upload/?$ upload.php [L,QSA]
+    RewriteRule ^login/?$ administrative/login.php [L,QSA]
+    RewriteRule ^profile/?$ administrative/profile.php [L,QSA]
+    RewriteRule ^upload/?$ administrative/developer.php [L,QSA]
     RewriteRule ^model/?$ overview.php [L,QSA] #ml_model.php redirect to overview.php
-    RewriteRule ^logout/?$ logout.php [L,QSA]
+    RewriteRule ^logout/?$ administrative/logout.php [L,QSA]
     RewriteRule ^training/?$ training_ml/training.php [L,QSA] #upload training data, community
 
     
@@ -64,21 +64,21 @@
 
     RewriteRule ^model/decode/apriltag/?$ ftc_decode/apriltag/getting_started.php [L,QSA]
     RewriteRule ^model/decode/apriltag_code_sample/?$ ftc_decode/apriltag/apriltag_code_sample.php [L,QSA]
-    RewriteRule ^model/decode/apriltag_implementation/?$ ftc_decode/apriltag/apriltag_implement.php [L,QSA]
+    RewriteRule ^model/decode/apriltag_implementation/?$ ftc_decode/apriltag/apriltag_code_sample.php [L,QSA]
 
     #Autonomous Control
-    RewriteRule ^model/decode/autonomous/?$ ftc_decode/autonomous/getting_started.php [L,QSA]
-    RewriteRule ^model/decode/odometry/?$ ftc_decode/odometry/getting_started.php [L,QSA]
-    RewriteRule ^model/decode/road_runner_056/?$ ftc_decode/road_runner_056/getting_started.php [L,QSA]
-    RewriteRule ^model/decode/road_runner_10/?$ ftc_decode/road_runner_10/getting_started.php [L,QSA]
-    RewriteRule ^model/decode/pedro_pathing/?$ ftc_decode/pedro_pathing/getting_started.php [L,QSA]
+    RewriteRule ^model/decode/autonomous/?$ ftc_decode/auto_control/getting_started.php [L,QSA]
+    RewriteRule ^model/decode/odometry/?$ ftc_decode/auto_control/odometry_pods.php [L,QSA]
+    RewriteRule ^model/decode/road_runner_056/?$ ftc_decode/auto_control/rr_05.php [L,QSA]
+    RewriteRule ^model/decode/road_runner_10/?$ ftc_decode/auto_control/rr_10.php [L,QSA]
+    RewriteRule ^model/decode/pedro_pathing/?$ ftc_decode/auto_control/pedro_pathing.php [L,QSA]
 
-    #Auto Artifact Pick-up (beta)
-    RewriteRule ^model/decode/auto_artifact/?$ ftc_decode/auto_artifact/getting_started.php [L,QSA]
-    RewriteRule ^model/decode/auto_artifact_detection/?$ ftc_decode/auto_artifact_detection/getting_started.php [L,QSA]
-    RewriteRule ^model/decode/auto_artifact_code/?$ ftc_decode/auto_artifact_code/getting_started.php [L,QSA]
+    #Auto Aiming
+    RewriteRule ^model/decode/auto_aiming_getting_started/?$ ftc_decode/auto_aim/getting_started.php [L,QSA]
+    RewriteRule ^model/decode/gyroscope_only/?$ ftc_decode/auto_aim/gyroscope_only.php [L,QSA]
+    RewriteRule ^model/decode/camera_only/?$ ftc_decode/auto_aim/webcam_only.php [L,QSA]
+    RewriteRule ^model/decode/gyroscope_and_camera/?$ ftc_decode/auto_aim/gyroscope_and_webcam.php [L,QSA]
 
     # Optionally, route the root URL to index.php
     RewriteRule ^$ index.php [L,QSA]
 </IfModule>
-

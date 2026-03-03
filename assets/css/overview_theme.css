@@ -1,0 +1,352 @@
+:root {
+  --ov-font: 'Manrope', 'Montserrat', sans-serif;
+  --ov-ink: #f5f5f4;
+  --ov-muted: #d0d0cc;
+  --ov-soft: #a3a39d;
+  --ov-accent: #f5f5f4;
+  --ov-accent-2: #ebebe8;
+  --ov-control-ink: #0a0a0a;
+  --ov-sidebar-width: clamp(320px, 28vw, 390px);
+  --ov-sidebar-gap: 0.7rem;
+  --ov-left-lane-width: calc(var(--ov-sidebar-width) + var(--ov-sidebar-gap));
+  --ov-left-center-x: calc(var(--ov-left-lane-width) / 2);
+  --ov-left-center-shift: clamp(74px, 5.8vw, 116px);
+  --ov-left-anchor-x: calc(var(--ov-left-center-x) - var(--ov-left-center-shift));
+  --ov-left-content-width: min(255px, calc(var(--ov-left-lane-width) - 3rem));
+  --ov-surface: rgba(12, 12, 12, 0.9);
+  --ov-surface-2: rgba(8, 8, 8, 0.9);
+  --ov-border: rgba(255, 255, 255, 0.14);
+  --ov-shadow: 0 16px 38px rgba(0, 0, 0, 0.34);
+}
+
+html,
+body {
+  font-family: var(--ov-font) !important;
+  background: linear-gradient(165deg, #040404 0%, #090909 52%, #101010 100%) !important;
+  color: var(--ov-ink);
+}
+
+body::before,
+body::after {
+  content: '';
+  position: fixed;
+  border-radius: 999px;
+  pointer-events: none;
+  z-index: -1;
+}
+
+body::before {
+  width: 32rem;
+  height: 32rem;
+  top: -12rem;
+  right: -11rem;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0));
+}
+
+body::after {
+  width: 26rem;
+  height: 26rem;
+  bottom: -9rem;
+  left: -9rem;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0));
+}
+
+.background-container {
+  background: transparent !important;
+  opacity: 1 !important;
+  overflow: hidden !important;
+  min-height: 100vh;
+}
+
+.alphabit-topleft,
+.before_docs,
+.docs,
+.title,
+.ftext,
+.stext,
+.rtext,
+.setup,
+.sub-section,
+.sub-section a,
+.text-container,
+.docs-container {
+  color: var(--ov-muted) !important;
+}
+
+.alphabit-topleft {
+  top: 0.95rem !important;
+  left: var(--ov-left-anchor-x) !important;
+  transform: translateX(-50%);
+  text-align: center;
+  width: var(--ov-left-content-width);
+  font-size: clamp(1.02rem, 1.4vw, 1.16rem) !important;
+  font-weight: 800 !important;
+  z-index: 10;
+}
+
+.alphabit-topleft a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.36rem;
+  color: var(--ov-ink) !important;
+}
+
+.alphabit-topleft a::after {
+  content: '';
+  width: 1.62rem;
+  height: 1.62rem;
+  background: url('/assets/images/ai_star_alpha.png') no-repeat center / contain;
+  flex: 0 0 auto;
+}
+
+.ai-star-logo {
+  display: none !important;
+}
+
+.before_docs {
+  top: 3.95rem !important;
+  left: var(--ov-left-anchor-x) !important;
+  transform: translateX(-50%);
+  width: var(--ov-left-content-width);
+  text-align: center;
+  color: var(--ov-soft) !important;
+  z-index: 10;
+}
+
+.docs {
+  top: 6rem !important;
+  left: var(--ov-left-anchor-x) !important;
+  transform: translateX(-50%);
+  width: var(--ov-left-content-width);
+  text-align: center;
+  color: var(--ov-ink) !important;
+  z-index: 10;
+}
+
+.docsLine,
+.endLine,
+.endLinee {
+  background: rgba(255, 255, 255, 0.14) !important;
+}
+
+.docs-container {
+  position: absolute !important;
+  top: 7.9rem !important;
+  left: var(--ov-left-anchor-x) !important;
+  transform: translateX(-50%);
+  margin: 0 !important;
+  width: var(--ov-left-content-width) !important;
+  max-width: var(--ov-left-content-width) !important;
+  box-sizing: border-box !important;
+  max-height: calc(100vh - 7.3rem) !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  background: var(--ov-surface) !important;
+  border: 1px solid var(--ov-border);
+  border-radius: 1rem;
+  padding: 0.88rem;
+  box-shadow: var(--ov-shadow);
+}
+
+.setup {
+  color: var(--ov-ink) !important;
+}
+
+.sub-section {
+  color: var(--ov-soft) !important;
+}
+
+.sub-section a {
+  color: var(--ov-soft) !important;
+}
+
+.sub-section:hover a {
+  color: #f5f5f4 !important;
+}
+
+.rbox {
+  position: absolute !important;
+  top: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  left: var(--ov-left-lane-width) !important;
+  width: auto !important;
+  max-width: calc(100% - var(--ov-left-lane-width)) !important;
+  overflow-x: hidden !important;
+  background: var(--ov-surface-2) !important;
+  border-left: 1px solid var(--ov-border);
+}
+
+.title {
+  left: clamp(1.1rem, 3.2vw, 2.4rem) !important;
+  color: var(--ov-ink) !important;
+}
+
+.rbox > div[style*='margin-left'] {
+  margin-left: clamp(1.1rem, 3.2vw, 2.4rem) !important;
+  margin-right: clamp(1rem, 3vw, 2rem) !important;
+  margin-top: 8.2rem !important;
+  margin-bottom: -2.4rem !important;
+  max-width: min(860px, calc(100% - 3rem)) !important;
+}
+
+.rbox iframe {
+  width: 100% !important;
+  max-width: 860px !important;
+}
+
+.text-container {
+  margin-top: 12.4rem !important;
+  margin-left: clamp(1.1rem, 3.2vw, 2.4rem) !important;
+  margin-right: clamp(1rem, 3vw, 2rem) !important;
+  max-width: min(940px, calc(100% - 3rem)) !important;
+}
+
+.stext a,
+.bc {
+  color: #f5f5f4 !important;
+}
+
+.downloadbtn {
+  background: linear-gradient(135deg, var(--ov-accent), var(--ov-accent-2)) !important;
+  color: var(--ov-control-ink) !important;
+  border: 1px solid rgba(0, 0, 0, 0.18) !important;
+  border-radius: 999px !important;
+  padding: 0.62rem 0.92rem !important;
+  box-shadow: 0 10px 18px rgba(0, 0, 0, 0.35) !important;
+}
+
+.downloadbtn a {
+  color: var(--ov-control-ink) !important;
+}
+
+.code-window,
+.codee-window {
+  background: #0a0a0a !important;
+  border: 1px solid var(--ov-border) !important;
+  border-radius: 0.8rem !important;
+}
+
+pre,
+pre code {
+  color: var(--ov-muted) !important;
+  background: transparent !important;
+}
+
+iframe {
+  border-radius: 0.9rem;
+  border: 1px solid var(--ov-border);
+}
+
+body .language-popup-content,
+body .season-popup-content,
+body .choice-popup-content {
+  background: #0a0a0a !important;
+  border: 1px solid var(--ov-border) !important;
+  box-shadow: var(--ov-shadow) !important;
+}
+
+body .language-popup-content h2,
+body .season-popup-content h2,
+body .choice-popup-content h2 {
+  color: var(--ov-ink) !important;
+  font-family: var(--ov-font) !important;
+}
+
+body .language-options button,
+body .season-options button,
+body .choice-options button {
+  border: 1px solid rgba(0, 0, 0, 0.18) !important;
+  border-radius: 0.8rem !important;
+  background: linear-gradient(135deg, var(--ov-accent), var(--ov-accent-2)) !important;
+  color: var(--ov-control-ink) !important;
+  font-weight: 700 !important;
+}
+
+body .language-options button:hover,
+body .season-options button:hover,
+body .choice-options button:hover {
+  background: linear-gradient(135deg, #ffffff, #f0f0ee) !important;
+}
+
+@media (max-width: 980px) {
+  .background-container {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    overflow-y: auto !important;
+  }
+
+  .alphabit-topleft {
+    top: 1rem !important;
+    left: 1rem !important;
+    transform: none !important;
+    width: auto !important;
+    text-align: left !important;
+  }
+
+  .before_docs {
+    top: 1.2rem !important;
+    left: 12.8rem !important;
+    transform: none !important;
+    width: auto !important;
+    text-align: left !important;
+  }
+
+  .ai-star-logo {
+    top: 0.8rem !important;
+    left: auto !important;
+    right: 1rem !important;
+    transform: none !important;
+  }
+
+  .docs {
+    top: 3.8rem !important;
+    left: 1rem !important;
+    transform: none !important;
+    width: auto !important;
+    text-align: left !important;
+  }
+
+  .docs-container {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    transform: none !important;
+    order: 1 !important;
+    width: auto !important;
+    max-width: none !important;
+    max-height: none !important;
+    margin: 5.2rem 1rem 0 !important;
+  }
+
+  .rbox {
+    position: relative !important;
+    order: 2 !important;
+    left: 0 !important;
+    right: auto !important;
+    top: auto !important;
+    bottom: auto !important;
+    width: 100% !important;
+    max-width: none !important;
+    min-height: 70vh !important;
+    margin-top: 0.9rem !important;
+    border-left: 0 !important;
+    border-top: 1px solid var(--ov-border);
+  }
+
+  .title {
+    left: 1rem !important;
+  }
+
+  .rbox > div[style*='margin-left'] {
+    margin: 1rem 1rem 0 !important;
+    max-width: none !important;
+  }
+
+  .text-container {
+    margin: 1rem !important;
+    max-width: none !important;
+  }
+}
