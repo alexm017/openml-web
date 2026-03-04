@@ -18,15 +18,11 @@ if ($record_file) {
 
 $season = strtolower(trim((string) ($_GET['season'] ?? '')));
 $slug = alphabit_model_pages_slugify((string) ($_GET['slug'] ?? ''));
-$contentSeason = strtolower(trim((string) ($_GET['_content_season'] ?? $season)));
 
 if (!alphabit_model_pages_is_valid_season($season) || $slug === '') {
     http_response_code(404);
     echo 'Page not found.';
     exit;
-}
-if (!alphabit_model_pages_is_valid_season($contentSeason)) {
-    $contentSeason = $season;
 }
 
 $lang = isset($_COOKIE['site_lang']) ? $_COOKIE['site_lang'] : 'en';
@@ -35,7 +31,7 @@ if ($lang !== 'ro') {
 }
 
 $pages = alphabit_model_pages_load_all();
-$page = alphabit_model_pages_find($pages, $contentSeason, $slug, true);
+$page = alphabit_model_pages_find($pages, $season, $slug, true);
 
 if (!is_array($page)) {
     http_response_code(404);

@@ -43,8 +43,79 @@ if ($detection_method == 'machine_learning') {
 	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/styles/atom-one-dark.min.css">
 	<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/highlight.min.js"></script>
 	<script>
+		function normalizeCodeBlocks() {
+			var blocks = document.querySelectorAll('pre code');
+			for (var i = 0; i < blocks.length; i++) {
+				var block = blocks[i];
+				var text = (block.textContent || '').replace(/\r\n?/g, '\n');
+				var lines = text.split('\n');
+
+				while (lines.length > 0 && lines[0].trim() === '') {
+					lines.shift();
+				}
+				while (lines.length > 0 && lines[lines.length - 1].trim() === '') {
+					lines.pop();
+				}
+				if (lines.length === 0) {
+					continue;
+				}
+
+				var leadingCount = function (line) {
+					var match = line.match(/^[\t ]*/);
+					return match ? match[0].length : 0;
+				};
+
+				var nonEmpty = [];
+				for (var j = 0; j < lines.length; j++) {
+					if (lines[j].trim() !== '') {
+						nonEmpty.push(lines[j]);
+					}
+				}
+				if (nonEmpty.length === 0) {
+					block.textContent = '';
+					continue;
+				}
+
+				var minAll = null;
+				for (var k = 0; k < nonEmpty.length; k++) {
+					var countAll = leadingCount(nonEmpty[k]);
+					minAll = (minAll === null) ? countAll : Math.min(minAll, countAll);
+				}
+
+				var minBody = null;
+				for (var t = 1; t < lines.length; t++) {
+					if (lines[t].trim() === '') {
+						continue;
+					}
+					var countBody = leadingCount(lines[t]);
+					minBody = (minBody === null) ? countBody : Math.min(minBody, countBody);
+				}
+
+				var dedent = (minAll === null) ? 0 : minAll;
+				if (dedent === 0 && leadingCount(lines[0]) === 0 && minBody !== null && minBody > 0) {
+					dedent = minBody;
+				}
+
+				if (dedent > 0) {
+					for (var n = 0; n < lines.length; n++) {
+						if (lines[n].trim() === '') {
+							lines[n] = '';
+							continue;
+						}
+						var currentIndent = leadingCount(lines[n]);
+						lines[n] = lines[n].slice(Math.min(currentIndent, dedent));
+					}
+				}
+
+				block.textContent = lines.join('\n');
+			}
+		}
+
 		document.addEventListener("DOMContentLoaded", () => {
-			hljs.highlightAll();
+			normalizeCodeBlocks();
+			if (window.hljs && hljs.highlightAll) {
+				hljs.highlightAll();
+			}
 		});
 	</script>
 </head>
@@ -201,7 +272,7 @@ if ($detection_method == 'machine_learning') {
 								break
 
 						cap.release()
-						cv2.destroyAllWindows()</pre></code>
+						cv2.destroyAllWindows()</code></pre>
 						</div>
 					</div>
 					<div class="stext"><b class="bc">2.</b> Pentru a calcula orientarea la care se află sample-ul trebuie
@@ -368,7 +439,7 @@ if ($detection_method == 'machine_learning') {
 								break
 
 						cap.release()
-						cv2.destroyAllWindows()</pre></code>
+						cv2.destroyAllWindows()</code></pre>
 						</div>
 					</div>
 					<div class="stext"><b class="bc">2.</b> To calculate the orientation of the sample, minWidth, maxWidth,

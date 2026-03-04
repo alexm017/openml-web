@@ -21,45 +21,13 @@ if ($forcedLang === 'en' || $forcedLang === 'ro') {
 
 $pages = alphabit_model_pages_load_all();
 $customPage = alphabit_model_pages_find($pages, $season, $slug, true);
-$customPageSeason = $season;
-
-if (!is_array($customPage)) {
-    $requestedBuiltin = alphabit_model_builtin_find($season, $slug);
-    if (is_array($requestedBuiltin)) {
-        foreach (alphabit_model_pages_allowed_seasons() as $otherSeason) {
-            if ($otherSeason === $season) {
-                continue;
-            }
-
-            $otherCustom = alphabit_model_pages_find($pages, $otherSeason, $slug, true);
-            if (!is_array($otherCustom)) {
-                continue;
-            }
-
-            $otherBuiltin = alphabit_model_builtin_find($otherSeason, $slug);
-            if (!is_array($otherBuiltin)) {
-                continue;
-            }
-
-            $requestedFile = (string) ($requestedBuiltin['file'] ?? '');
-            $otherFile = (string) ($otherBuiltin['file'] ?? '');
-            if ($requestedFile === '' || $otherFile === '' || $requestedFile !== $otherFile) {
-                continue;
-            }
-
-            $customPage = $otherCustom;
-            $customPageSeason = $otherSeason;
-            break;
-        }
-    }
+if (is_array($customPage) && alphabit_model_is_builtin_slug($season, $slug)) {
+    $customPage = null;
 }
 
 if (is_array($customPage)) {
     $_GET['season'] = $season;
     $_GET['slug'] = $slug;
-    if ($customPageSeason !== $season) {
-        $_GET['_content_season'] = $customPageSeason;
-    }
     require __DIR__ . '/render.php';
     exit;
 }

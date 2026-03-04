@@ -235,6 +235,165 @@ function admin_model_pages_sort_pages(array &$pages): void
     });
 }
 
+function admin_model_pages_delete_by_route(array &$pages, string $season, string $slug): bool
+{
+    $season = strtolower(trim($season));
+    $slug = alphabit_model_pages_slugify($slug);
+    $removed = false;
+    $updated = [];
+
+    foreach ($pages as $page) {
+        if (!is_array($page)) {
+            continue;
+        }
+        $normalized = alphabit_model_pages_normalize_record($page);
+        if (($normalized['season'] ?? '') === $season && ($normalized['slug'] ?? '') === $slug) {
+            $removed = true;
+            continue;
+        }
+        $updated[] = $normalized;
+    }
+
+    if ($removed) {
+        $pages = $updated;
+    }
+
+    return $removed;
+}
+
+function admin_model_pages_format_content_for_php_branch(string $html, int $indentLevel = 5): string
+{
+    $html = trim(str_replace(['<?', '?>'], ['&lt;?', '?&gt;'], $html));
+    if ($html === '') {
+        return str_repeat("\t", $indentLevel) . '<div class="stext"></div>';
+    }
+
+    $lines = preg_split('/\R/', $html);
+    if (!is_array($lines) || count($lines) === 0) {
+        return str_repeat("\t", $indentLevel) . $html;
+    }
+
+    $indent = str_repeat("\t", $indentLevel);
+    $out = [];
+    foreach ($lines as $line) {
+        $out[] = $indent . rtrim((string) $line);
+    }
+
+    return implode("\n", $out);
+}
+
+function admin_model_pages_extract_footer_blocks(string $html): string
+{
+    $html = trim($html);
+    if ($html === '') {
+        return '';
+    }
+
+    $pattern = '/((?:<div\s+class\s*=\s*["\']endLine["\'][^>]*>\s*<\/div>\s*)?(?:<div\s+class\s*=\s*["\']endD["\'][^>]*>[\s\S]*?<\/div>\s*)(?:<div\s+class\s*=\s*["\']end["\'][^>]*>\s*<\/div>\s*)?)$/i';
+    if (!preg_match($pattern, $html, $matches)) {
+        return '';
+    }
+
+    return trim((string) ($matches[1] ?? ''));
+}
+
+function admin_model_pages_preserve_footer_blocks(string $existingHtml, string $incomingHtml): string
+{
+    $incomingHtml = trim($incomingHtml);
+    $footer = admin_model_pages_extract_footer_blocks($existingHtml);
+    if ($footer === '') {
+        return $incomingHtml;
+    }
+
+    $lineBlock = '';
+    if (preg_match('/<div\s+class\s*=\s*["\']endLine["\'][^>]*>\s*<\/div>/i', $footer, $lineMatch)) {
+        $lineBlock = trim((string) ($lineMatch[0] ?? ''));
+    }
+
+    $endBlock = '';
+    if (preg_match('/<div\s+class\s*=\s*["\']end["\'][^>]*>\s*<\/div>/i', $footer, $endMatch)) {
+        $endBlock = trim((string) ($endMatch[0] ?? ''));
+    }
+
+    if ($incomingHtml !== '' && preg_match('/class\s*=\s*["\']endD["\']/i', $incomingHtml)) {
+        $hasLine = preg_match('/class\s*=\s*["\']endLine["\']/i', $incomingHtml) === 1;
+        $hasEnd = preg_match('/class\s*=\s*["\']end["\']/i', $incomingHtml) === 1;
+
+        if (!$hasLine && $lineBlock !== '') {
+            $withLine = preg_replace(
+                '/(<div\s+class\s*=\s*["\']endD["\'][^>]*>[\s\S]*?<\/div>)/i',
+                $lineBlock . "\n" . '$1',
+                $incomingHtml,
+                1
+            );
+            if (is_string($withLine) && $withLine !== '') {
+                $incomingHtml = $withLine;
+            }
+        }
+
+        if (!$hasEnd && $endBlock !== '') {
+            $incomingHtml = rtrim($incomingHtml) . "\n" . $endBlock;
+        }
+
+        return trim($incomingHtml);
+    }
+
+    if ($incomingHtml === '') {
+        return $footer;
+    }
+
+    return rtrim($incomingHtml) . "\n" . $footer;
+}
+
+function admin_model_pages_update_builtin_source_file(string $relativeFile, string $contentRo, string $contentEn): bool
+{
+    $relativeFile = ltrim(trim($relativeFile), '/');
+    if ($relativeFile === '') {
+        return false;
+    }
+
+    $absoluteFile = dirname(__DIR__) . '/' . $relativeFile;
+    if (!is_file($absoluteFile) || !is_readable($absoluteFile) || !is_writable($absoluteFile)) {
+        return false;
+    }
+
+    $raw = @file_get_contents($absoluteFile);
+    if (!is_string($raw) || $raw === '') {
+        return false;
+    }
+
+    $pattern = '/(<div class="text-container">\s*<\?php[\s\S]*?if\s*\(\$lang\s*==\s*[\'"]ro[\'"]\)\s*:\s*\?>)([\s\S]*?)(<\?php\s*else:\s*\?>)([\s\S]*?)(<\?php\s*endif;\s*\?>)/i';
+    $matches = [];
+    if (!preg_match($pattern, $raw, $matches)) {
+        return false;
+    }
+
+    $existingRo = (string) ($matches[2] ?? '');
+    $existingEn = (string) ($matches[4] ?? '');
+    $contentRo = admin_model_pages_preserve_footer_blocks($existingRo, $contentRo);
+    $contentEn = admin_model_pages_preserve_footer_blocks($existingEn, $contentEn);
+
+    $roBlock = admin_model_pages_format_content_for_php_branch($contentRo, 5);
+    $enBlock = admin_model_pages_format_content_for_php_branch($contentEn, 5);
+
+    $updated = preg_replace(
+        $pattern,
+        '$1' . "\n" . $roBlock . "\n" . '$3' . "\n" . $enBlock . "\n" . '$5',
+        $raw,
+        1
+    );
+
+    if (!is_string($updated) || $updated === '') {
+        return false;
+    }
+
+    if ($updated === $raw) {
+        return true;
+    }
+
+    return @file_put_contents($absoluteFile, $updated, LOCK_EX) !== false;
+}
+
 if (isset($_GET['saved'])) {
     $flashType = 'success';
     $flashMessage = 'Page saved successfully.';
@@ -287,6 +446,28 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
                 $flashType = 'error';
                 $flashMessage = 'English title is required.';
             } else {
+                $contentEnSanitized = alphabit_model_pages_sanitize_html($contentEn);
+                $contentRoSanitized = alphabit_model_pages_sanitize_html($contentRo);
+                $builtinRoute = alphabit_model_builtin_find($season, $slug);
+
+                if (is_array($builtinRoute)) {
+                    $builtinFile = (string) ($builtinRoute['file'] ?? '');
+                    if ($builtinFile === '') {
+                        $flashType = 'error';
+                        $flashMessage = 'Built-in route file is missing.';
+                    } elseif (!admin_model_pages_update_builtin_source_file($builtinFile, $contentRoSanitized, $contentEnSanitized)) {
+                        $flashType = 'error';
+                        $flashMessage = 'Could not update the built-in source file. Please check file permissions.';
+                    } else {
+                        admin_model_pages_delete_by_route($pages, $season, $slug);
+                        if (!alphabit_model_pages_save_all($pages)) {
+                            $flashType = 'error';
+                            $flashMessage = 'Built-in file was updated, but cleanup of legacy override storage failed.';
+                        } else {
+                            admin_model_pages_redirect('saved=1&season=' . rawurlencode($season) . '&slug=' . rawurlencode($slug));
+                        }
+                    }
+                } else {
                 $duplicate = false;
                 foreach ($pages as $existingPage) {
                     if (!is_array($existingPage)) {
@@ -315,8 +496,8 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
                         'slug' => $slug,
                         'title_en' => $titleEn,
                         'title_ro' => $titleRo,
-                        'content_en' => $contentEn,
-                        'content_ro' => $contentRo,
+                        'content_en' => $contentEnSanitized,
+                        'content_ro' => $contentRoSanitized,
                         'is_active' => $isActive,
                     ];
 
@@ -327,6 +508,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
                     } else {
                         admin_model_pages_redirect('saved=1&season=' . rawurlencode($savedRecord['season']) . '&slug=' . rawurlencode($savedRecord['slug']));
                     }
+                }
                 }
             }
 
@@ -991,9 +1173,9 @@ if ($formValues['slug'] !== '' && alphabit_model_pages_is_valid_season((string) 
             <p class="helper">Allowed HTML tags in content: <code>p, h1-h6, strong, em, ul, ol, li, a, img, code, pre, blockquote</code>.</p>
             <?php if ($selectedIsBuiltin): ?>
                 <?php if ((string) $formValues['id'] === ''): ?>
-                    <p class="helper">This is a built-in route. Existing content can be imported below; saving creates a custom override for this page.</p>
+                    <p class="helper">This is a built-in route. Existing content can be imported below; saving writes directly into the source PHP file.</p>
                 <?php else: ?>
-                    <p class="helper">This built-in route currently has a custom override. Deleting it reverts to the original file page.</p>
+                    <p class="helper">This built-in route has a legacy override record. Saving now migrates changes into the source PHP file and removes the legacy override.</p>
                 <?php endif; ?>
             <?php endif; ?>
 
@@ -1166,7 +1348,7 @@ if ($formValues['slug'] !== '' && alphabit_model_pages_is_valid_season((string) 
                     return null;
                 }
 
-                var removeSelectors = ['.endLine', '.endD', '.end', '.chat-launch-button', '#chat-widget'];
+                var removeSelectors = ['.chat-launch-button', '#chat-widget'];
                 for (var i = 0; i < removeSelectors.length; i++) {
                     var nodes = contentNode.querySelectorAll(removeSelectors[i]);
                     for (var j = 0; j < nodes.length; j++) {
