@@ -1,5 +1,6 @@
 <?php
 session_start();
+require_once __DIR__ . '/assets/includes/admin_access.php';
 
 $record_file = @fopen('/var/www/html/record_index.txt', 'a');
 if ($record_file) {
@@ -16,6 +17,7 @@ $season_cookie = isset($_COOKIE['season_choice']) ? $_COOKIE['season_choice'] : 
 $season_path = ($season_cookie === 'Decode') ? 'decode' : 'intothedeep';
 $is_logged_in = isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] === 'userLoggedIn';
 $team_name = isset($_SESSION['teamname']) ? $_SESSION['teamname'] : '';
+$is_admin = $is_logged_in && alphabit_session_is_admin();
 $current_year = date('Y');
 
 $translations = [
@@ -23,6 +25,8 @@ $translations = [
         'news' => 'New release: explore our open source ML model for object detection and autonomy.',
         'training_data' => 'Training Data',
         'ml_model' => 'ML Model',
+        'online_training' => 'Online Training ML',
+        'admin_panel' => 'Admin Panel',
         'signup' => 'Sign Up',
         'login' => 'Login',
         'hello' => 'Hello,',
@@ -62,6 +66,8 @@ $translations = [
         'news' => 'Lansare nouă: explorează modelul nostru open source pentru detecție și autonomie.',
         'training_data' => 'Date de Antrenament',
         'ml_model' => 'Model ML',
+        'online_training' => 'Antrenare ML Online',
+        'admin_panel' => 'Panou Admin',
         'signup' => 'Înregistrare',
         'login' => 'Autentificare',
         'hello' => 'Salut,',
@@ -148,6 +154,8 @@ $text = $translations[$lang];
                     href="model/<?php echo $season_path; ?>/training"><?php echo htmlspecialchars($text['training_data'], ENT_QUOTES, 'UTF-8'); ?></a>
                 <a class="nav-link"
                     href="model/<?php echo $season_path; ?>/overview"><?php echo htmlspecialchars($text['ml_model'], ENT_QUOTES, 'UTF-8'); ?></a>
+                <a class="nav-link"
+                    href="model/<?php echo $season_path; ?>/online_training_ml"><?php echo htmlspecialchars($text['online_training'], ENT_QUOTES, 'UTF-8'); ?></a>
             </nav>
 
             <div class="navbar-actions">
@@ -157,6 +165,10 @@ $text = $translations[$lang];
                     <a class="nav-link nav-link-accent"
                         href="/login"><?php echo htmlspecialchars($text['login'], ENT_QUOTES, 'UTF-8'); ?></a>
                 <?php else: ?>
+                    <?php if ($is_admin): ?>
+                        <a class="nav-link nav-link-soft"
+                            href="/admin/model-pages"><?php echo htmlspecialchars($text['admin_panel'], ENT_QUOTES, 'UTF-8'); ?></a>
+                    <?php endif; ?>
                     <a class="profile-chip" href="/profile">
                         <img src="assets/images/user3.png" alt="Profile picture">
                         <span><?php echo htmlspecialchars($text['hello'] . ' ' . $team_name . '!', ENT_QUOTES, 'UTF-8'); ?></span>
@@ -288,7 +300,8 @@ $text = $translations[$lang];
     </section>
 
     <div id="chat-bubble" class="chat-bubble">
-        <span class="chat-bubble-title"><?php echo htmlspecialchars($text['chat_bubble'], ENT_QUOTES, 'UTF-8'); ?></span>
+        <span
+            class="chat-bubble-title"><?php echo htmlspecialchars($text['chat_bubble'], ENT_QUOTES, 'UTF-8'); ?></span>
         <span
             class="chat-bubble-subtitle"><?php echo htmlspecialchars($text['chat_bubble_sub'], ENT_QUOTES, 'UTF-8'); ?></span>
     </div>
@@ -366,7 +379,7 @@ $text = $translations[$lang];
             }
         });
     </script>
-    <script src="assets/js/chat.js"></script>
+    <script src="assets/js/chat.js?v=20260306"></script>
 </body>
 
 </html>

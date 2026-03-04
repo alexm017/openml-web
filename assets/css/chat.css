@@ -166,6 +166,10 @@ body:has(.chat-window.open) .chat-bubble {
   word-break: break-word;
 }
 
+.message strong {
+  font-weight: 700;
+}
+
 .message.user {
   align-self: flex-end;
   background: var(--chat-user-msg);
@@ -178,6 +182,18 @@ body:has(.chat-window.open) .chat-bubble {
   background: var(--chat-ai-msg);
   color: var(--chat-ai-text);
   border-bottom-left-radius: 0.25rem;
+}
+
+.message .chat-inline-link {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  font-weight: 600;
+}
+
+.message.ai .chat-inline-link:hover,
+.message.user .chat-inline-link:hover {
+  opacity: 0.88;
 }
 
 .typing-indicator {

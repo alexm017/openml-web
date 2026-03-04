@@ -52,29 +52,31 @@ $text = [
 
 $datasets = [
     [
-        'title_en' => 'ITD Dataset 01 - Core Samples (Medium)',
-        'title_ro' => 'ITD Dataset 01 - Mostre de baza (Mediu)',
+        'title_en' => 'Dataset 01 - Samples (Medium)',
+        'title_ro' => 'Dataset 01 - Samples (Mediu)',
         'desc_en' => 'Balanced starter set for initial model training and quick iteration.',
         'desc_ro' => 'Set echilibrat pentru antrenare initiala si iteratii rapide.',
+        'preview' => '/assets/ai/combined.jpeg',
         'download' => '/assets/ai/medium_dataset.rar',
     ],
     [
-        'title_en' => 'ITD Dataset 02 - Extended Samples (Large)',
-        'title_ro' => 'ITD Dataset 02 - Mostre extinse (Mare)',
+        'title_en' => 'Dataset 02 - Samples (Large)',
+        'title_ro' => 'Dataset 02 - Samples (Extins)',
         'desc_en' => 'Large dataset with more diversity for stronger generalization.',
         'desc_ro' => 'Set mare de date cu diversitate mai mare pentru generalizare mai buna.',
+        'preview' => '/assets/ai/combined_large.jpeg',
         'download' => '/assets/ai/large_dataset.rar',
     ],
     [
-        'title_en' => 'ITD Dataset 03 - Lighting Variations',
-        'title_ro' => 'ITD Dataset 03 - Variatii de iluminare',
+        'title_en' => 'Dataset 03 - Artifacts (Medium)',
+        'title_ro' => 'Dataset 03 - Artifacts (Mediu)',
         'desc_en' => 'Focused split for difficult lighting conditions and color consistency.',
         'desc_ro' => 'Set dedicat conditiilor de lumina dificile si consistentei culorilor.',
         'download' => '/assets/ai/intothedeep_dataset_03.rar',
     ],
     [
-        'title_en' => 'ITD Dataset 04 - Validation Holdout',
-        'title_ro' => 'ITD Dataset 04 - Validare holdout',
+        'title_en' => 'Dataset 04 - Artifacts (Large)',
+        'title_ro' => 'Dataset 04 - Artifacts (Extins)',
         'desc_en' => 'Reserved validation set for objective model checks before deployment.',
         'desc_ro' => 'Set rezervat pentru validare obiectiva inainte de deploy.',
         'download' => '/assets/ai/intothedeep_dataset_04.rar',
@@ -188,6 +190,7 @@ $current_year = date('Y');
             width: clamp(1.85rem, 3vw, 2.25rem);
             height: clamp(1.85rem, 3vw, 2.25rem);
             object-fit: contain;
+            transform: translateY(4px);
         }
 
         .navbar-links,
@@ -307,6 +310,15 @@ $current_year = date('Y');
             line-height: 1.4;
         }
 
+        .preview-image {
+            display: block;
+            width: 100%;
+            height: 100%;
+            min-height: 180px;
+            border-radius: 0.7rem;
+            object-fit: cover;
+        }
+
         .download-btn {
             display: inline-flex;
             align-items: center;
@@ -412,11 +424,17 @@ $current_year = date('Y');
                     <p><?php echo htmlspecialchars($lang === 'ro' ? $dataset['desc_ro'] : $dataset['desc_en'], ENT_QUOTES, 'UTF-8'); ?>
                     </p>
                     <div class="preview-slot">
-                        <div>
-                            <strong><?php echo htmlspecialchars($t['preview'], ENT_QUOTES, 'UTF-8'); ?>
-                                <?php echo $index + 1; ?></strong><br>
-                            <?php echo htmlspecialchars($t['preview_hint'], ENT_QUOTES, 'UTF-8'); ?>
-                        </div>
+                        <?php if (!empty($dataset['preview'])): ?>
+                            <img class="preview-image"
+                                src="<?php echo htmlspecialchars($dataset['preview'], ENT_QUOTES, 'UTF-8'); ?>"
+                                alt="<?php echo htmlspecialchars(($lang === 'ro' ? $dataset['title_ro'] : $dataset['title_en']) . ' preview', ENT_QUOTES, 'UTF-8'); ?>">
+                        <?php else: ?>
+                            <div>
+                                <strong><?php echo htmlspecialchars($t['preview'], ENT_QUOTES, 'UTF-8'); ?>
+                                    <?php echo $index + 1; ?></strong><br>
+                                <?php echo htmlspecialchars($t['preview_hint'], ENT_QUOTES, 'UTF-8'); ?>
+                            </div>
+                        <?php endif; ?>
                     </div>
                     <a class="download-btn"
                         href="<?php echo htmlspecialchars($dataset['download'], ENT_QUOTES, 'UTF-8'); ?>" download>

@@ -128,6 +128,7 @@ a {
   width: clamp(1.85rem, 3vw, 2.25rem);
   height: clamp(1.85rem, 3vw, 2.25rem);
   object-fit: contain;
+  transform: translateY(4px);
 }
 
 .navbar-links,

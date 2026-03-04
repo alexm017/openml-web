@@ -3,10 +3,26 @@ declare(strict_types=1);
 
 header('Content-Type: application/json; charset=utf-8');
 
+function encodeJson($payload): ?string
+{
+    $json = json_encode($payload, JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE);
+    if (!is_string($json)) {
+        return null;
+    }
+
+    return $json;
+}
+
 function respond(array $payload, int $status = 200): void
 {
     http_response_code($status);
-    echo json_encode($payload, JSON_UNESCAPED_UNICODE);
+    $json = encodeJson($payload);
+    if ($json === null) {
+        echo '{"success":false,"error":"Failed to encode JSON response."}';
+        exit;
+    }
+
+    echo $json;
     exit;
 }
 
@@ -39,6 +55,149 @@ function loadOpenAiKey(): string
     return $candidate;
 }
 
+function truncateText(string $text, int $maxLength): string
+{
+    if ($maxLength <= 0 || $text === '') {
+        return '';
+    }
+
+    if (function_exists('mb_strlen') && function_exists('mb_substr')) {
+        if (mb_strlen($text, 'UTF-8') <= $maxLength) {
+            return $text;
+        }
+
+        return rtrim(mb_substr($text, 0, $maxLength - 3, 'UTF-8')) . '...';
+    }
+
+    if (strlen($text) <= $maxLength) {
+        return $text;
+    }
+
+    return rtrim(substr($text, 0, $maxLength - 3)) . '...';
+}
+
+function extractVisibleText(string $content): string
+{
+    $withoutPhp = preg_replace('/<\?(?:php|=)?[\s\S]*?\?>/i', ' ', $content);
+    $withoutScripts = preg_replace('/<script\b[^>]*>[\s\S]*?<\/script>/i', ' ', (string) $withoutPhp);
+    $withoutStyles = preg_replace('/<style\b[^>]*>[\s\S]*?<\/style>/i', ' ', (string) $withoutScripts);
+    $plain = strip_tags((string) $withoutStyles);
+    $decoded = html_entity_decode($plain, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+    $collapsed = preg_replace('/\s+/', ' ', $decoded);
+
+    return trim((string) $collapsed);
+}
+
+function extractPageSnippet(string $projectRoot, string $relativePath, int $maxLength = 420): string
+{
+    $fullPath = realpath($projectRoot . '/' . ltrim($relativePath, '/'));
+    if (!is_string($fullPath) || !is_readable($fullPath)) {
+        return '';
+    }
+
+    if (strpos($fullPath, $projectRoot) !== 0) {
+        return '';
+    }
+
+    $content = file_get_contents($fullPath);
+    if (!is_string($content) || $content === '') {
+        return '';
+    }
+
+    $plainText = extractVisibleText($content);
+    return truncateText($plainText, $maxLength);
+}
+
+function buildWebsiteKnowledgeContext(): string
+{
+    static $cachedContext = null;
+    if (is_string($cachedContext)) {
+        return $cachedContext;
+    }
+
+    $projectRoot = realpath(__DIR__ . '/..');
+    if (!is_string($projectRoot) || $projectRoot === '') {
+        $cachedContext = '';
+        return $cachedContext;
+    }
+
+    $pages = [
+        ['label' => 'Main landing page + contact form', 'route' => '/', 'file' => 'index.php'],
+        ['label' => 'IntoTheDeep model overview', 'route' => '/model/intothedeep/overview', 'file' => 'setup/overview.php'],
+        ['label' => 'IntoTheDeep prerequisites', 'route' => '/model/intothedeep/prerequisites', 'file' => 'setup/prerequisites.php'],
+        ['label' => 'IntoTheDeep resources', 'route' => '/model/intothedeep/resources', 'file' => 'setup/resources.php'],
+        ['label' => 'Training datasets page', 'route' => '/model/intothedeep/training', 'file' => 'training_ml/traningdata.php'],
+        ['label' => 'Online ML training page', 'route' => '/model/intothedeep/online_training_ml', 'file' => 'training_ml/online_training_ml.php'],
+        ['label' => 'Online ML training guide', 'route' => '/model/intothedeep/training_ml', 'file' => 'training_ml/pythontraining.php'],
+        ['label' => 'Training data structure guide', 'route' => '/model/intothedeep/training_structure', 'file' => 'training_ml/trainings.php'],
+        ['label' => 'Label tool guide', 'route' => '/model/intothedeep/label_tool', 'file' => 'training_ml/label_tool.php'],
+        ['label' => 'Python ML integration example', 'route' => '/model/intothedeep/pythonml', 'file' => 'examples/pythonml.php'],
+        ['label' => 'Android Studio integration example', 'route' => '/model/intothedeep/android_studio', 'file' => 'examples/android_studio.php'],
+        ['label' => 'Robot control example', 'route' => '/model/intothedeep/robot_control', 'file' => 'examples/robot_control.php'],
+        ['label' => 'Decode model overview', 'route' => '/model/decode/overview', 'file' => 'ftc_decode/setup/overview.php'],
+        ['label' => 'Decode prerequisites', 'route' => '/model/decode/prerequisites', 'file' => 'ftc_decode/setup/prerequisites.php'],
+        ['label' => 'Decode resources', 'route' => '/model/decode/resources', 'file' => 'ftc_decode/setup/resources.php'],
+        ['label' => 'Decode AprilTag getting started', 'route' => '/model/decode/apriltag', 'file' => 'ftc_decode/apriltag/getting_started.php'],
+    ];
+
+    $lines = [
+        'Website context for AlphaBit OpenML (FTC robotics + machine learning platform).',
+        'Key support routes: /register, /login, /profile, and /#contact.',
+        'For requests needing manual team intervention, direct users to the contact form at /#contact and mention the team will respond as quickly as possible.',
+    ];
+
+    foreach ($pages as $page) {
+        $snippet = extractPageSnippet($projectRoot, $page['file']);
+        if ($snippet === '') {
+            continue;
+        }
+
+        $lines[] = $page['label'] . ' [' . $page['route'] . ' | ' . $page['file'] . ']: ' . $snippet;
+    }
+
+    $cachedContext = implode("\n", $lines);
+    return $cachedContext;
+}
+
+function normalizeConversationHistory($rawHistory): array
+{
+    if (!is_array($rawHistory)) {
+        return [];
+    }
+
+    $normalized = [];
+    foreach ($rawHistory as $entry) {
+        if (!is_array($entry)) {
+            continue;
+        }
+
+        $role = strtolower(trim((string) ($entry['role'] ?? '')));
+        if ($role === 'ai') {
+            $role = 'assistant';
+        }
+
+        if ($role !== 'assistant' && $role !== 'user') {
+            continue;
+        }
+
+        $content = trim((string) ($entry['content'] ?? ''));
+        if ($content === '') {
+            continue;
+        }
+
+        $normalized[] = [
+            'role' => $role,
+            'content' => truncateText($content, 1200),
+        ];
+    }
+
+    if (count($normalized) > 20) {
+        $normalized = array_slice($normalized, -20);
+    }
+
+    return $normalized;
+}
+
 if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
     respond([
         'success' => false,
@@ -63,6 +222,40 @@ if ($userMessage === '') {
     ], 400);
 }
 
+$history = normalizeConversationHistory($input['history'] ?? null);
+$websiteContext = buildWebsiteKnowledgeContext();
+$systemPrompt = 'You are AlphaBit Assistant for the AlphaBit OpenML FTC robotics platform. Use the provided website context to guide users through navigation, setup pages, training datasets, examples, and model workflows. Keep responses practical and concise with concrete next steps and route paths when useful. If a request needs manual team intervention (account-specific actions, unresolved bugs, custom requests, partnerships, or anything requiring a human), direct the user to the contact form at /#contact and mention the team will respond as quickly as possible. If safety-critical robotics behavior is discussed, remind users to validate changes on a controlled test field. Always reply in the same language as the user.';
+
+$messages = [
+    [
+        'role' => 'system',
+        'content' => $systemPrompt,
+    ],
+];
+
+if ($websiteContext !== '') {
+    $messages[] = [
+        'role' => 'system',
+        'content' => 'Website knowledge base from local files: ' . $websiteContext,
+    ];
+}
+
+foreach ($history as $item) {
+    $messages[] = $item;
+}
+
+$lastHistoryMessage = $history[count($history) - 1] ?? null;
+if (
+    !is_array($lastHistoryMessage) ||
+    ($lastHistoryMessage['role'] ?? '') !== 'user' ||
+    trim((string) ($lastHistoryMessage['content'] ?? '')) !== $userMessage
+) {
+    $messages[] = [
+        'role' => 'user',
+        'content' => $userMessage,
+    ];
+}
+
 $apiKey = loadOpenAiKey();
 if ($apiKey === '') {
     respond([
@@ -73,19 +266,17 @@ if ($apiKey === '') {
 
 $payload = [
     'model' => 'gpt-4o-mini',
-    'messages' => [
-        [
-            'role' => 'system',
-            'content' => 'You are AlphaBit Assistant for an FTC robotics ML website. Help with model training, dataset quality, inference debugging, deployment, and autonomous robotics workflows. Keep answers practical and concise, with concrete next steps. If safety-critical robotics behavior is discussed, remind users to validate on controlled test fields. Always reply in the same language as the user message.',
-        ],
-        [
-            'role' => 'user',
-            'content' => $userMessage,
-        ],
-    ],
-    'temperature' => 0.5,
-    'max_tokens' => 320,
+    'messages' => $messages,
+    'temperature' => 0.4,
+    'max_tokens' => 420,
 ];
+$payloadJson = encodeJson($payload);
+if ($payloadJson === null) {
+    respond([
+        'success' => false,
+        'error' => 'Failed to build OpenAI JSON payload.',
+    ], 500);
+}
 
 $apiUrl = 'https://api.openai.com/v1/chat/completions';
 $responseBody = '';
@@ -100,7 +291,7 @@ if (function_exists('curl_init')) {
             'Content-Type: application/json',
             'Authorization: Bearer ' . $apiKey,
         ],
-        CURLOPT_POSTFIELDS => json_encode($payload, JSON_UNESCAPED_UNICODE),
+        CURLOPT_POSTFIELDS => $payloadJson,
         CURLOPT_CONNECTTIMEOUT => 12,
         CURLOPT_TIMEOUT => 30,
     ]);
@@ -122,7 +313,7 @@ if (function_exists('curl_init')) {
             'method' => 'POST',
             'header' => "Content-Type: application/json\r\n" .
                 'Authorization: Bearer ' . $apiKey . "\r\n",
-            'content' => json_encode($payload, JSON_UNESCAPED_UNICODE),
+            'content' => $payloadJson,
             'timeout' => 30,
             'ignore_errors' => true,
         ],

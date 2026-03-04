@@ -1,0 +1,26 @@
+<annotation>
+	<folder>images_to_send_blue</folder>
+	<filename>frame_1737560080950.jpg</filename>
+	<path>C:\Users\admin\Desktop\images_to_send_blue\frame_1737560080950.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>640</width>
+		<height>480</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>BlueSample</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>36</xmin>
+			<ymin>91</ymin>
+			<xmax>146</xmax>
+			<ymax>175</ymax>
+		</bndbox>
+	</object>
+</annotation>

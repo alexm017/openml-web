@@ -1,0 +1,38 @@
+<annotation>
+	<folder>Blue&amp;Yellow(334 img)</folder>
+	<filename>frame_1738070784269.jpg</filename>
+	<path>C:\Users\yanis\Desktop\Blue&amp;Yellow(334 img)\frame_1738070784269.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>640</width>
+		<height>480</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>YellowSample</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>43</xmin>
+			<ymin>78</ymin>
+			<xmax>185</xmax>
+			<ymax>195</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>BlueSample</name>
+		<pose>Unspecified</pose>
+		<truncated>1</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>557</xmin>
+			<ymin>188</ymin>
+			<xmax>640</xmax>
+			<ymax>338</ymax>
+		</bndbox>
+	</object>
+</annotation>

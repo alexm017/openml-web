@@ -18,9 +18,13 @@
     RewriteRule ^login/?$ administrative/login.php [L,QSA]
     RewriteRule ^profile/?$ administrative/profile.php [L,QSA]
     RewriteRule ^upload/?$ administrative/developer.php [L,QSA]
+    RewriteRule ^admin/model-pages/?$ administrative/model_pages.php [L,QSA]
     RewriteRule ^model/?$ overview.php [L,QSA] #ml_model.php redirect to overview.php
     RewriteRule ^logout/?$ administrative/logout.php [L,QSA]
     RewriteRule ^training/?$ training_ml/training.php [L,QSA] #upload training data, community
+
+    # Unified model route handler (built-in files + editable overrides + shared custom section)
+    RewriteRule ^model/(intothedeep|decode)/([a-zA-Z0-9_-]+)/?$ model_pages/router.php?season=$1&slug=$2 [L,QSA]
 
     
     #Setup
@@ -44,11 +48,13 @@
     RewriteRule ^model/intothedeep/training?$ training_ml/traningdata.php [L,QSA]
     RewriteRule ^model/decode/training?$ training_ml/traningdata.php [L,QSA]
     RewriteRule ^model/intothedeep/training_structure?$ training_ml/trainings.php [L,QSA]
-    RewriteRule ^model/decode/training_structure?$ ftc_decode/training_ml/trainings.php [L,QSA]
+    RewriteRule ^model/decode/training_structure?$ training_ml/trainings.php [L,QSA]
     RewriteRule ^model/intothedeep/training_ml?$ training_ml/pythontraining.php [L,QSA]
-    RewriteRule ^model/decode/training_ml?$ ftc_decode/training_ml/pythontraining.php [L,QSA]
+    RewriteRule ^model/decode/training_ml?$ training_ml/pythontraining.php [L,QSA]
+    RewriteRule ^model/intothedeep/online_training_ml?$ training_ml/online_training_ml.php [L,QSA]
+    RewriteRule ^model/decode/online_training_ml?$ training_ml/online_training_ml.php [L,QSA]
     RewriteRule ^model/intothedeep/label_tool?$ training_ml/label_tool.php [L,QSA]
-    RewriteRule ^model/decode/label_tool?$ ftc_decode/training_ml/label_tool.php [L,QSA]
+    RewriteRule ^model/decode/label_tool?$ training_ml/label_tool.php [L,QSA]
 
     #Examples
     RewriteRule ^model/intothedeep/pythonml?$ examples/pythonml.php [L,QSA]

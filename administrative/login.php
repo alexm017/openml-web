@@ -11,6 +11,7 @@ if ($record_file) {
 }
 
 session_start();
+require_once __DIR__ . '/../assets/includes/admin_access.php';
 
 if (isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] === 'userLoggedIn') {
     header('Location: /');
@@ -41,6 +42,8 @@ if ($email !== '' && $user_password !== '') {
             $stmt->fetch();
             $_SESSION['loggedIn'] = 'userLoggedIn';
             $_SESSION['teamname'] = $teamname;
+            $_SESSION['user_email'] = alphabit_normalize_email($email);
+            $_SESSION['is_admin'] = alphabit_is_admin_email($email) ? '1' : '0';
             setcookie(session_name(), session_id(), time() + 86400, '/');
             header('Location: /');
             exit;

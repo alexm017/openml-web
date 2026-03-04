@@ -64,4 +64,4 @@ window.AlphaBitChatConfig = {
     networkErrorMessage: <?php echo json_encode($chat_offline); ?>
 };
 </script>
-<script src="/assets/js/chat.js"></script>
+<script src="/assets/js/chat.js?v=20260306"></script>

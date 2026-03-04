@@ -1,0 +1,26 @@
+<annotation>
+	<folder>red_samples_326</folder>
+	<filename>frame_1737579604382.jpg</filename>
+	<path>C:\Users\gabi\Desktop\red_samples_326\frame_1737579604382.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>640</width>
+		<height>480</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>RedSample</name>
+		<pose>Unspecified</pose>
+		<truncated>1</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>490</xmin>
+			<ymin>223</ymin>
+			<xmax>640</xmax>
+			<ymax>359</ymax>
+		</bndbox>
+	</object>
+</annotation>
