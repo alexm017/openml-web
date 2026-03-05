@@ -79,6 +79,7 @@ if ($email !== '' && $user_password !== '') {
         <nav class="navbar-links" aria-label="Primary">
             <a class="nav-link" href="/model/<?php echo $season_path; ?>/training">Training Data</a>
             <a class="nav-link" href="/model/<?php echo $season_path; ?>/overview">ML Model</a>
+            <a class="nav-link" href="/model/<?php echo $season_path; ?>/online_training_ml">Online Training ML</a>
         </nav>
 
         <div class="navbar-actions">

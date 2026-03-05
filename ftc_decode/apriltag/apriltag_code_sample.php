@@ -1,675 +1,101 @@
 <?php
-session_start();
+$pageRecord = 'decode-apriltag-implementation';
+$pageTitleEn = 'AprilTag Implementation - Code Samples';
+$pageTitleRo = 'Implementare AprilTag - Exemple de Cod';
+$activePage = 'apriltag_impl';
 
-$lang = isset($_COOKIE['site_lang']) ? $_COOKIE['site_lang'] : 'en';
-$season_cookie = isset($_COOKIE['season_choice']) ? $_COOKIE['season_choice'] : 'IntoTheDeep';
-$season_year = ($season_cookie == 'Decode') ? '2026' : '2025';
-$season_path = ($season_cookie == 'Decode') ? 'decode' : 'intothedeep';
+$contentEn = <<<'HTML'
+<div class="ftext">This page provides practical code blocks adapted from the active robot code so teams can replicate the AprilTag workflow in TeleOp and Autonomous.</div>
 
-if (isset($_COOKIE['detection_method'])) {
-    $detection_method = $_COOKIE['detection_method'];
-} else {
-    $detection_method = 'machine_learning';
-}
+<div class="stext" style="color: white !important; font-size: 26px !important; font-weight: 500 !important; margin-top: 26px !important; margin-bottom: 14px !important; line-height: 1.1 !important;">Vision Subsystem Class Skeleton</div>
+<div class="rtext">Use a dedicated class (as in `AprilTagIdentification`) to isolate camera init, pattern readout, and robot-pose updates.</div>
+<div class="rtext">
+    <div class="codee-window">
+<pre><code class="language-java">public class AprilTagIdentification {
+    AprilTagProcessor aprilTagProcessor;
+    VisionPortal visionPortal;
+    public int detectionId = 0;
+    public double robotPose_x = 0.0;
+    public double robotPose_y = 0.0;
+    public double bearingAngle = 0.0;
+    public boolean locTagFound = false;
 
-if ($detection_method == 'color_blob') {
-    $detection_method = 'Color Blob Detection';
-}
-if ($detection_method == 'machine_learning') {
-    $detection_method = 'Machine Learning';
-}
-
-?>
-
-<!DOCTYPE html>
-<html>
-
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AlphaBit - OpenML</title>
-    <link rel="stylesheet" href="/assets/css/model_style.css?v=20260304">
-	<link rel="stylesheet" href="/assets/css/overview_theme.css?v=20260304">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="shortcut icon" type="image/x-icon" href="/assets/images/alphabit.ico" />
-    <!-- Highlight.js CSS Theme -->
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/styles/atom-one-dark.min.css">
-</head>
-
-<body>
-    <div id="language-popup" class="language-popup-overlay" style="display: none;">
-        <div class="language-popup-content">
-            <h2>Choose Language / Alege Limba</h2>
-            <div class="language-options">
-                <button onclick="selectLanguage('ro')">Română</button>
-                <button onclick="selectLanguage('en')">English</button>
-            </div>
-        </div>
+    public void init(HardwareMap hwdmap, MultipleTelemetry telemetrys) {
+        // Build processor + portal here
+    }
+}</code></pre>
     </div>
+</div>
 
-    <style>
-        .language-popup-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.9);
-            z-index: 9999;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+<div class="stext" style="color: white !important; font-size: 26px !important; font-weight: 500 !important; margin-top: 26px !important; margin-bottom: 14px !important; line-height: 1.1 !important;">Pattern Selection in Autonomous Init</div>
+<div class="rtext">Reference autonomous uses AprilTags in `opModeInInit()` to lock pattern before start:</div>
+<div class="rtext">
+    <div class="codee-window">
+<pre><code class="language-java">if (!nearBasket) {
+    currentId = artifactControl.getCurrentTag();
+    if (currentId != 0) {
+        switch (currentId) {
+            case 21: currentPattern = ObeliskPattern.GPP; break;
+            case 22: currentPattern = ObeliskPattern.PGP; break;
+            case 23: currentPattern = ObeliskPattern.PPG; break;
         }
-
-        .language-popup-content {
-            background-color: #1e1e1e;
-            padding: 40px;
-            border-radius: 15px;
-            text-align: center;
-            border: 1px solid #333;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-        }
-
-        .language-popup-content h2 {
-            color: #fff;
-            margin-bottom: 35px;
-            font-family: Arial, sans-serif;
-        }
-
-        .language-options {
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-        }
-
-        .language-options button {
-            padding: 15px 30px;
-            font-size: 18px;
-            cursor: pointer;
-            background-color: #d4d4d4ff;
-            color: black;
-            border: none;
-            border-radius: 8px;
-        }
-
-        .language-options button:hover {
-            background-color: #ffffffff;
-            transform: scale(1.05);
-        }
-    </style>
-
-    <script>
-        function setCookie(name, value, days) {
-            var expires = "";
-            if (days) {
-                var date = new Date();
-                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-                expires = "; expires=" + date.toUTCString();
-            }
-            document.cookie = name + "=" + (value || "") + expires + "; path=/";
-        }
-
-        function getCookie(name) {
-            var nameEQ = name + "=";
-            var ca = document.cookie.split(';');
-            for (var i = 0; i < ca.length; i++) {
-                var c = ca[i];
-                while (c.charAt(0) == ' ') c = c.substring(1, c.length);
-                if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
-            }
-            return null;
-        }
-
-        function selectLanguage(lang) {
-            setCookie('site_lang', lang, 365);
-            document.getElementById('language-popup').style.display = 'none';
-            location.reload();
-        }
-
-        document.addEventListener("DOMContentLoaded", function () {
-            var lang = getCookie('site_lang');
-            if (!lang) {
-                document.getElementById('language-popup').style.display = 'flex';
-            }
-        });
-    </script>
-    <div class="background-container">
-        <div class="alphabit-topleft">
-            <a href="/">AlphaBit OpenML</a>
-        </div>
-        <div class="before_docs"><?php echo $season_year; ?></div>
-        <div class="ai-star-logo">
-            <img src="/assets/images/ai_star_alpha.png" width=50>
-        </div>
-        <div class="docs">Documentation</div>
-        <div class="rbox">
-            <div class="title">
-                <?php if ($lang == 'ro'): ?>
-                    Implementare AprilTag (TeleOp + Detectie AprilTag)
-                <?php else: ?>
-                    AprilTag Implementation (TeleOp + AprilTag Detection)
-                <?php endif; ?>
-            </div>
-            <div class="text-container">
-                <?php
-                if ($lang == 'ro'):
-                    ?>
-                    <div class="stext"><b class="bc">Pasul 1</b> -> Adaugă fișierul <u>aprilTagIdentification.java</u> în
-                        proiectul tău. (Click pentru descărcare)
-                    </div>
-                    <div class="stext"><u>aprilTagIdentification.java</u></div>
-                    <div class="code-window">
-                        <pre><code class="language-java" >
-    package org.firstinspires.ftc.teamcode.drive.ComputerVision;
-
-    import android.util.Size;
-
-    import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
-    import com.qualcomm.robotcore.hardware.HardwareMap;
-
-    import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-    import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-    import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-    import org.firstinspires.ftc.vision.VisionPortal;
-    import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
-    import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
-
-    import java.util.List;
-
-    public class AprilTagIdentification {
-        AprilTagProcessor aprilTagProcessor;
-        VisionPortal visionPortal;
-        MultipleTelemetry telemetry;
-
-        public double detectionId;
-        public void init(HardwareMap hwdmap, MultipleTelemetry telemetrys){
-            telemetry = telemetrys;
-            aprilTagProcessor = new AprilTagProcessor.Builder()
-                    .setDrawTagID(true)
-                    .setDrawTagOutline(true)
-                    .setDrawAxes(true)
-                    .setDrawCubeProjection(true)
-                    .setOutputUnits(DistanceUnit.CM, AngleUnit.DEGREES)
-                    .build();
-
-            VisionPortal.Builder builder = new VisionPortal.Builder();
-            builder.setCamera(hwdmap.get(WebcamName.class, "YOUR_WEBCAM_NAME"));
-            builder.setCameraResolution(new Size(640, 480));
-            builder.addProcessor(aprilTagProcessor);
-
-            visionPortal = builder.build();
-        }
-
-        public void telemetryAprilTag() {
-
-            List<AprilTagDetection> currentDetections = aprilTagProcessor.getDetections();
-            telemetry.addData("[->] AprilTags Detected", currentDetections.size());
-
-            for (AprilTagDetection detection : currentDetections) {
-                if (detection.metadata != null) {
-                    telemetry.addLine(String.format("\n==== (ID %d) %s", detection.id, detection.metadata.name));
-                    detectionId = detection.id;
-                } else {
-                    telemetry.addLine(String.format("\n==== (ID %d) Unknown", detection.id));
-                    telemetry.addLine(String.format("Center %6.0f %6.0f   (pixels)", detection.center.x, detection.center.y));
-                }
-            }
-
-        }
-
-        public void close(){
-            visionPortal.close();
-        }
+        patternFound = true;
     }
-                        </code></pre>
-                    </div>
-                    <div class="stext">
-                        <b class="bc">Pasul 2</b> -> Setează numele webcam-ului în driver hub.
-                    </div>
-                    <div class="rtext">
-                        <li>
-                            </b>1.</b> Mergi la driver hub și apasă pe cele 3 puncte din colțul dreapta-sus.</li>
-                    </div>
-                    <div class="rtext">
-                        <img style="border-radius: 10px;" width="500" src="/ftc_decode/data/step0_webcam.png">
-                    </div>
-                    <div class="rtext">
-                        <li>
-                            </b>2.</b> Apoi apasă pe Configure Robot.</li>
-                    </div>
-                    <div class="rtext">
-                        <img style="border-radius: 10px;" width="500" src="/ftc_decode/data/step1_webcam.png">
-                    </div>
-                    <div class="rtext">
-                        <li>
-                            </b>3.</b> Apasă mai întâi pe butonul <u>Scan</u> apoi așteaptă să apară webcam-ul. După ce
-                            vezi webcam-ul în configurație, apasă pe el și redenumește-l cum dorești.</li>
-                    </div>
-                    <div class="rtext">
-                        <img style="border-radius: 10px;" width="200" height="400" src="/ftc_decode/data/step2_webcam.jpg">
-                    </div>
-
-                    <div class="stext">
-                        <b class="bc">Pasul 3</b> -> Creează clasa ta TeleOp folosind codul de mai jos.
-                    </div>
-
-                    <div class="stext"><u>TeleOp_AprilTagDemonstration.java</u></div>
-                    <div class="code-window">
-                        <pre><code class="language-java" >
-                                                                        package org.firstinspires.ftc.teamcode.drive.OpModes;
-
-                                                                        import com.acmerobotics.dashboard.FtcDashboard;
-                                                                        import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
-                                                                        import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-                                                                        import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-
-                                                                        import org.firstinspires.ftc.teamcode.drive.ComputerVision.AprilTagIdentification;
-
-                                                                        @TeleOp
-                                                                        public class TeleOp_AprilTagDemonstration extends LinearOpMode {
-
-                                                                            MultipleTelemetry telemetrys;
-                                                                            AprilTagIdentification aprilTagIdentification = new AprilTagIdentification();
-
-                                                                            @Override
-                                                                            public void runOpMode() throws InterruptedException {
-
-                                                                                telemetrys = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-
-                                                                                aprilTagIdentification.init(hardwareMap, telemetrys);
-
-                                                                                while(opModeInInit()){
-                                                                                    aprilTagIdentification.telemetryAprilTag();
-                                                                                    telemetrys.update();
-                                                                                }
-
-                                                                                while(opModeIsActive()){
-                                                                                    aprilTagIdentification.telemetryAprilTag();
-
-                                                                                    telemetrys.update();
-                                                                                }
-                                                                            }
-                                                                        }
-                                                                                            </code></pre>
-                    </div>
-                    <div class="endLine"></div>
-                    <div class="endD"><a href="https://discord.gg/ZB6vQ62KZT">Support -> Discord</a></div>
-                    <div class="end"></div>
-                <?php else: ?>
-                    <div class="stext"><b class="bc">Step 1</b> -> Add the <u>aprilTagIdentification.java</u> file to your
-                        project. (Click to download)
-                    </div>
-                    <div class="stext"><u>aprilTagIdentification.java</u></div>
-                    <div class="code-window">
-                        <pre><code class="language-java" >
-    package org.firstinspires.ftc.teamcode.drive.ComputerVision;
-
-    import android.util.Size;
-
-    import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
-    import com.qualcomm.robotcore.hardware.HardwareMap;
-
-    import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-    import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-    import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-    import org.firstinspires.ftc.vision.VisionPortal;
-    import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
-    import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
-
-    import java.util.List;
-
-    public class AprilTagIdentification {
-        AprilTagProcessor aprilTagProcessor;
-        VisionPortal visionPortal;
-        MultipleTelemetry telemetry;
-
-        public double detectionId;
-        public void init(HardwareMap hwdmap, MultipleTelemetry telemetrys){
-            telemetry = telemetrys;
-            aprilTagProcessor = new AprilTagProcessor.Builder()
-                    .setDrawTagID(true)
-                    .setDrawTagOutline(true)
-                    .setDrawAxes(true)
-                    .setDrawCubeProjection(true)
-                    .setOutputUnits(DistanceUnit.CM, AngleUnit.DEGREES)
-                    .build();
-
-            VisionPortal.Builder builder = new VisionPortal.Builder();
-            builder.setCamera(hwdmap.get(WebcamName.class, "YOUR_WEBCAM_NAME"));
-            builder.setCameraResolution(new Size(640, 480));
-            builder.addProcessor(aprilTagProcessor);
-
-            visionPortal = builder.build();
-        }
-
-        public void telemetryAprilTag() {
-
-            List<AprilTagDetection> currentDetections = aprilTagProcessor.getDetections();
-            telemetry.addData("[->] AprilTags Detected", currentDetections.size());
-
-            for (AprilTagDetection detection : currentDetections) {
-                if (detection.metadata != null) {
-                    telemetry.addLine(String.format("\n==== (ID %d) %s", detection.id, detection.metadata.name));
-                    detectionId = detection.id;
-                } else {
-                    telemetry.addLine(String.format("\n==== (ID %d) Unknown", detection.id));
-                    telemetry.addLine(String.format("Center %6.0f %6.0f   (pixels)", detection.center.x, detection.center.y));
-                }
-            }
-
-        }
-
-        public void close(){
-            visionPortal.close();
-        }
-    }
-
-                    </code></pre>
-                    </div>
-                    <div class="stext">
-                        <b class="bc">Step 2</b> -> Set webcam name in your driver hub.
-                    </div>
-                    <div class="rtext">
-                        <li>
-                            </b>1.</b> Go to the driver hub and click on the 3-dots top-right corner.</li>
-                    </div>
-                    <div class="rtext">
-                        <img style="border-radius: 10px;" width="500" src="/ftc_decode/data/step0_webcam.png">
-                    </div>
-                    <div class="rtext">
-                        <li>
-                            </b>2.</b> Then click on Configure Robot.</li>
-                    </div>
-                    <div class="rtext">
-                        <img style="border-radius: 10px;" width="500" src="/ftc_decode/data/step1_webcam.png">
-                    </div>
-                    <div class="rtext">
-                        <li>
-                            </b>3.</b> Click first on the <u>Scan</u> button then wait for the webcam to appear. After you
-                            see webcam in the configuration click on it and rename it to what you want.</li>
-                    </div>
-                    <div class="rtext">
-                        <img style="border-radius: 10px;" width="200" height="400" src="/ftc_decode/data/step2_webcam.jpg">
-                    </div>
-
-                    <div class="stext">
-                        <b class="bc">Step 3</b> -> Create your TeleOp class using the code below.
-                    </div>
-
-                    <div class="stext"><u>TeleOp_AprilTagDemonstration.java</u></div>
-                    <div class="code-window">
-                        <pre><code class="language-java" >
-    package org.firstinspires.ftc.teamcode.drive.OpModes;
-
-    import com.acmerobotics.dashboard.FtcDashboard;
-    import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
-    import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-    import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-
-    import org.firstinspires.ftc.teamcode.drive.ComputerVision.AprilTagIdentification;
-
-    @TeleOp
-    public class TeleOp_AprilTagDemonstration extends LinearOpMode {
-
-        MultipleTelemetry telemetrys;
-        AprilTagIdentification aprilTagIdentification = new AprilTagIdentification();
-
-        @Override
-        public void runOpMode() throws InterruptedException {
-
-            telemetrys = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-
-            aprilTagIdentification.init(hardwareMap, telemetrys);
-
-            while(opModeInInit()){
-                aprilTagIdentification.telemetryAprilTag();
-                telemetrys.update();
-            }
-
-            while(opModeIsActive()){
-                aprilTagIdentification.telemetryAprilTag();
-
-                telemetrys.update();
-            }
-        }
-    }
-                    </code></pre>
-                    </div>
-                    <div class="rtext">
-                        <li>1. Select TeleOp_AprilTagDemonstration class in Driver Hub and <b>press init</b>. Do not press
-                            start
-                            after.</li>
-                    </div>
-                    <div class="rtext">
-                        <li>2. Press on the <b>3-dots top right corner</b>. Select <b>Camera Stream</b> to see image from
-                            your
-                            w ebcam.
-                        </li>
-                    </div>
-                    <div class="rtext">
-                        <img style="border-radius: 10px;" width="200" height="400" src="/ftc_decode/data/step3.jpg">
-                    </div>
-                    <div class="rtext">
-                        <li>3. You need to <b>press on the image</b> on your Driver Hub to <b>refresh</b> it.</li>
-                    </div>
-                    <div class="rtext">
-                        <img style="border-radius: 10px;" width="500" src="/ftc_decode/data/step4.png">
-                    </div>
-                    <div class="endLine"></div>
-                    <div class="endD"><a href="https://discord.gg/ZB6vQ62KZT">Support -> Discord</a></div>
-                    <div class="end"></div>
-                <?php endif; ?>
-            </div>
-        </div>
-        <div class="docs-container">
-            <?php if ($lang == 'ro'): ?>
-                <div class="setup">Configurare</div>
-                <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/overview">Prezentare Generală</a></div>
-                <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/prerequisites">Initializare Device</a>
-                </div>
-                <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/resources">Resurse</a></div>
-                <div class="docsLine"></div>
-
-                <?php if ($season_cookie != 'Decode'): ?>
-                    <div class="setup">Detectie Sample 2D</div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/sample_2d_math">Ghid de
-                            initializare</a>
-                    </div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/cameracalib">Calibrarea Camerei</a>
-                    </div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/sample_2d_math">Testare Detectie
-                            Python</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/sample_2d_math">Implementare Android
-                            Studio</a></div>
-
-                    <div class="docsLine"></div>
-
-                    <div class="setup">Detectie Sample 3D</div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/sample_2d_math">Ghid de
-                            initializare</a>
-                    </div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/cameracalib">Calibrarea Camerei</a>
-                    </div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/sample_2d_math">Testare Detectie
-                            Python</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/sample_2d_math">Implementare Android
-                            Studio</a></div>
-
-                    <div class="docsLine"></div>
-
-
-                    <?php if ($detection_method != 'Color Blob Detection'): ?>
-                        <div class="setup">Antrenare ML</div>
-                        <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/training">Set de Date Antrenament</a>
-                        </div>
-                        <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/training_structure">Structura
-                                Antrenamentului</a></div>
-                        <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/label_tool">Utilitar Etichetare
-                                Imagini</a></div>
-                        <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/training_ml">Cod Python pentru
-                                Antrenament</a></div>
-
-                        <div class="docsLine"></div>
-                    <?php endif; ?>
-
-                    <div class="setup">Exemple</div>
-                    <div class="sub-section">
-                        <p style="color:#c67171;">Cod Python pentru Detecție</p>
-                    </div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/android_studio">Implementare Android
-                            Studio</a></div>
-                    <?php if ($detection_method != 'Color Blob Detection'): ?>
-                        <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/robot_control">Control Colectare cu
-                                OpenML</a></div>
-                        <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/robot_control">Implementare ML
-                                Autonom</a></div>
-                        <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/robot_control">Implementare ML
-                                TeleOp</a></div>
-                    <?php endif; ?>
-                <?php else: ?>
-                    <div class="setup">Detectie AprilTag</div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/apriltag">Ghid de
-                            initializare</a></div>
-
-                    <div class="sub-section">
-                        <p style="color:#c67171;">Implementare AprilTag</p>
-                    </div>
-
-                    <div class="docsLine"></div>
-
-                    <div class="setup">Control Autonom</div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/autonomous">Ghid de
-                            initializare</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/odometry">Odometrie</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/road_runner_056">Implementare Road
-                            Runner 0.5.6</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/road_runner_10">Implementare Road
-                            Runner 1.0</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/pedro_pathing">Implementare Pedro
-                            Pathing</a></div>
-
-                    <div class="docsLine"></div>
-
-                    <div class="setup">Turela de Ochire Automată</div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/auto_aiming_getting_started">Ghid de
-                            initializare</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/gyroscope_only">Implementare
-                            Doar IMU</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/camera_only">
-                            Implementare Doar Webcam</a>
-                    </div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/gyroscope_and_camera">Implementare
-                            IMU & Webcam</a>
-                    </div>
-                <?php endif; ?>
-            <?php else: ?>
-                <div class="setup">Setup</div>
-                <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/overview">Overview</a></div>
-                <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/prerequisites">Getting Started</a>
-                </div>
-                <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/resources">Resources</a></div>
-                <div class="docsLine"></div>
-
-                <?php if ($season_cookie != 'Decode'): ?>
-                    <div class="setup">2D Sample Detection</div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/sample_2d_math">Starter Guide</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/cameracalib">Camera Calibration</a>
-                    </div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/sample_2d_math">Python Detection
-                            Testing</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/sample_2d_math">Android Studio
-                            Implementation</a></div>
-
-                    <div class="docsLine"></div>
-
-                    <div class="setup">3D Sample Detection</div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/sample_2d_math">Starter Guide</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/cameracalib">Camera Calibration</a>
-                    </div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/sample_2d_math">Python Detection
-                            Testing</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/sample_2d_math">Android Studio
-                            Implementation</a></div>
-
-                    <div class="docsLine"></div>
-
-
-                    <?php if ($detection_method != 'Color Blob Detection'): ?>
-                        <div class="setup">Training ML</div>
-                        <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/training">Training Dataset</a></div>
-                        <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/training_structure">Training
-                                Structure</a></div>
-                        <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/label_tool">Label Images Tool</a></div>
-                        <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/training_ml">Python Code For
-                                Training</a></div>
-
-                        <div class="docsLine"></div>
-                    <?php endif; ?>
-
-                    <div class="setup">Examples</div>
-                    <div class="sub-section">
-                        <p style="color:#c67171;">Python Code For Detection</p>
-                    </div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/android_studio">Android Studio
-                            Implementation</a></div>
-                    <?php if ($detection_method != 'Color Blob Detection'): ?>
-                        <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/robot_control">Control Intake Using The
-                                OpenML</a></div>
-                        <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/robot_control">Autonomous ML
-                                Implementation</a></div>
-                        <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/robot_control">TeleOp ML
-                                Implementation</a></div>
-                    <?php endif; ?>
-                <?php else: ?>
-                    <div class="setup">AprilTag Detection</div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/apriltag">Getting
-                            Started</a></div>
-
-                    <div class="sub-section">
-                        <p style="color:#c67171;">AprilTag Implementation</p>
-                    </div>
-
-                    <div class="docsLine"></div>
-
-                    <div class="setup">Autonomous Control</div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/autonomous">Getting
-                            Started</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/odometry">Odometry
-                            Pods</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/road_runner_056">Road Runner 0.5.6
-                            Implementation</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/road_runner_10">Road Runner 1.0
-                            Implementation</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/pedro_pathing">Pedro Pathing
-                            Implementation</a></div>
-
-                    <div class="docsLine"></div>
-
-                    <div class="setup">Auto Aiming Turret</div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/auto_aiming_getting_started">Getting
-                            Started</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/gyroscope_only">IMU
-                            Only
-                            Implementation</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/camera_only">
-                            Webcam Only
-                            Implementation</a>
-                    </div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/gyroscope_and_camera">IMU &
-                            Webcam
-                            Implementation</a>
-                    </div>
-                <?php endif; ?>
-            <?php endif; ?>
-        </div>
+}</code></pre>
     </div>
-    <!-- Include Highlight.js library -->
-    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/highlight.min.js"></script>
-    <script>hljs.highlightAll();</script>
+</div>
 
-<?php include_once $_SERVER['DOCUMENT_ROOT'] . '/assets/includes/chat_widget.php'; ?>
-</body>
+<div class="stext" style="color: white !important; font-size: 26px !important; font-weight: 500 !important; margin-top: 26px !important; margin-bottom: 14px !important; line-height: 1.1 !important;">Pose Refresh Integration in ArtifactControl</div>
+<div class="rtext">Tag pose is pulled and applied when safe (stationary + valid context). This is a key anti-drift pattern:</div>
+<div class="rtext">
+    <div class="codee-window">
+<pre><code class="language-java">if (aprilTagIdentification.locTagFound) {
+    calculatedRobotPose_X = aprilTagIdentification.robotPose_x;
+    calculatedRobotPose_Y = aprilTagIdentification.robotPose_y;
+    robotAngleAprilTag = aprilTagIdentification.bearingAngle;
 
-</html>
+    gyroscope.resetHeading();
+    gyroscope.setAngleOffset(36.5 - robotAngleAprilTag);
+    drive.setPose(new Pose(
+        calculatedRobotPose_X,
+        calculatedRobotPose_Y,
+        Math.toRadians(126.5 - robotAngleAprilTag)
+    ));
+}</code></pre>
+    </div>
+</div>
+
+<div class="stext" style="color: white !important; font-size: 26px !important; font-weight: 500 !important; margin-top: 26px !important; margin-bottom: 14px !important; line-height: 1.1 !important;">Telemetry Block for Validation</div>
+<div class="rtext">Expose enough telemetry to verify detections, pose, and bearing quality:</div>
+<div class="rtext">
+    <div class="codee-window">
+<pre><code class="language-java">telemetrys.addData("[Artifact] AprilTag Robot Pose X", artifactControl.calculatedRobotPose_X);
+telemetrys.addData("[Artifact] AprilTag Robot Pose Y", artifactControl.calculatedRobotPose_Y);
+telemetrys.addData("[Artifact] AprilTag Robot Angle", artifactControl.robotAngleAprilTag);
+telemetrys.addData("[->] Pattern", artifactControl.artifactPattern);
+</code></pre>
+    </div>
+</div>
+
+<div class="stext" style="color: white !important; font-size: 26px !important; font-weight: 500 !important; margin-top: 26px !important; margin-bottom: 14px !important; line-height: 1.1 !important;">Recommended Implementation Steps</div>
+<div class="rtext"><li>Create `AprilTagIdentification` with camera init + ID filters first.</li></div>
+<div class="rtext"><li>Integrate `getPatternId()` into autonomous init for case/pattern logic.</li></div>
+<div class="rtext"><li>Add `getRobotPose()` and test pose output while stationary.</li></div>
+<div class="rtext"><li>Only then enable pose reset hooks inside your control subsystem.</li></div>
+
+<div class="stext" style="color: white !important; font-size: 26px !important; font-weight: 500 !important; margin-top: 26px !important; margin-bottom: 14px !important; line-height: 1.1 !important;">Defensive Checks You Should Keep</div>
+<div class="rtext"><li>Require `detection.metadata != null` before using tag data.</li></div>
+<div class="rtext"><li>Limit pose reset to valid IDs (20/24) and safe robot state.</li></div>
+<div class="rtext"><li>Keep manual fallback in case camera confidence drops mid-match.</li></div>
+
+<div class="stext" style="color: white !important; font-size: 26px !important; font-weight: 500 !important; margin-top: 26px !important; margin-bottom: 14px !important; line-height: 1.1 !important;">Production Tips</div>
+<div class="rtext"><li>Log pattern and pose snapshots in practice runs to catch bad tags.</li></div>
+<div class="rtext"><li>Re-check camera pose offsets after every mount adjustment.</li></div>
+<div class="rtext"><li>Benchmark with match lighting, not only lab lighting.</li></div>
+
+<div class="stext" style="color: white !important; font-size: 26px !important; font-weight: 500 !important; margin-top: 26px !important; margin-bottom: 14px !important; line-height: 1.1 !important;">Next Step: Continue to Autonomous Control to connect vision decisions with full trajectory execution.</div>
+HTML;
+
+$contentRo = '';
+
+require __DIR__ . '/../includes/decode_doc_page.php';

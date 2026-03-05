@@ -36,8 +36,28 @@ $translations = [
         'hero_cta' => 'Explore OpenML Platform',
         'scroll_label' => 'Scroll to learn more',
         'second_news' => 'Try our newest ML stack built for competition robotics.',
-        'second_description' => 'Machine learning is not a buzzword for us. It is a practical layer that helps robots adapt in real time. Our training pipeline, model versions, and field-tested examples help teams move from experiments to reliable match performance faster.',
+        'second_description' => 'Machine learning is not a buzzword for our team. It is a practical engineering layer integrated into the full robot workflow. We use it to detect game elements, pick up artifacts autonomously, and automate as many repeatable actions as possible so drivers can focus on match strategy.',
+        'features_section_title' => 'Software Features on This Robot',
+        'feature_sensor_title' => 'Sensor Fusion + Vision Reliability',
+        'feature_sensor_text' => 'Odometry, IMU and camera tracking are fused for stable pose updates, with camera-based pose refresh to reduce drift during autonomous cycles.',
+        'feature_artifact_title' => 'Automated Artifact Cycle',
+        'feature_artifact_text' => 'Inverse kinematics auto-aim, autonomous artifact pickup, burst-shot sequencing and geofencing checks keep cycles fast, repeatable and safe in valid scoring zones.',
+        'feature_control_title' => 'Driver-First, Fail-Operational Control',
+        'feature_control_text' => 'Manual redundancy, safety interlocks and fast override paths keep the robot controllable under pressure even if a sensor pipeline degrades.',
+        'limelight_note' => 'For the national stage we switched to Limelight (Raspberry Pi based) to benchmark it against our previous camera stack.',
         'image_info' => 'Our sample detection model averages over 90% accuracy with a robust dataset and iterative training workflow.',
+        'robot_kicker' => 'FTC Decode 2026 Robot',
+        'robot_title' => 'Built for Reliable Autonomous Scoring',
+        'robot_description' => 'This platform robot combines mechanical consistency with an OpenML vision stack tuned for fast artifact detection and controlled shooting sequences. The result is a stable autonomous cycle under competition pressure.',
+        'robot_stats_title' => 'Performance Snapshot',
+        'robot_stat_detection_label' => 'Detection Accuracy',
+        'robot_stat_detection_value' => '90%+',
+        'robot_stat_latency_label' => 'Inference Pace',
+        'robot_stat_latency_value' => 'Real-time',
+        'robot_stat_validation_label' => 'Field Validation',
+        'robot_stat_validation_value' => 'Match-tested',
+        'robot_stat_season_label' => 'Competition Focus',
+        'robot_stat_season_value' => 'Decode 2026',
         'contact_heading' => 'Contact Details',
         'name_label' => 'Name',
         'name_placeholder' => 'Your full name',
@@ -53,6 +73,8 @@ $translations = [
         'rights_reserved' => 'All rights reserved.',
         'image_one_alt' => 'Object detection preview',
         'image_two_alt' => 'Model output sample',
+        'robot_image_alt' => 'FTC Decode 2026 robot',
+        'robot_action_alt' => 'FTC robot shooting artifacts',
         'chat_bubble' => 'Need help with OpenML?',
         'chat_bubble_sub' => 'Ask the AlphaBit assistant',
         'chat_title' => 'AlphaBit AI Assistant',
@@ -77,8 +99,28 @@ $translations = [
         'hero_cta' => 'Obține Modelul OpenML',
         'scroll_label' => 'Derulează pentru detalii',
         'second_news' => 'Testează cel mai nou stack ML creat pentru robotica de competiție.',
-        'second_description' => 'Machine learning-ul nu este un termen la modă pentru noi. Este un strat practic care ajută roboții să se adapteze în timp real. Pipeline-ul nostru de antrenament, versiunile de model și exemplele testate pe teren ajută echipele să treacă mai rapid de la experimente la performanță stabilă în meciuri.',
+        'second_description' => 'Machine learning-ul nu este un termen la modă pentru echipa noastră. Este un strat de inginerie practic, integrat în întregul workflow al robotului. Îl folosim pentru detectarea elementelor de joc, preluarea autonomă a artefactelor și automatizarea cât mai multor acțiuni repetitive, astfel încât driverii să se concentreze pe strategia de meci.',
+        'features_section_title' => 'Funcții Software pe Acest Robot',
+        'feature_sensor_title' => 'Sensor Fusion + Fiabilitate Vision',
+        'feature_sensor_text' => 'Fuziunea dintre odometrie, IMU și cameră oferă actualizări stabile de poziție, iar auto pose refresh reduce drift-ul în ciclurile autonome.',
+        'feature_artifact_title' => 'Ciclu Automatizat pentru Artefacte',
+        'feature_artifact_text' => 'Auto-aim cu cinematică inversă, preluare autonomă a artefactelor, secvențe burst-shot și verificări geofencing mențin ciclurile rapide, repetitive și sigure în zone valide de scor.',
+        'feature_control_title' => 'Control Driver-First, Fail-Operational',
+        'feature_control_text' => 'Redundanța manuală, interlock-urile de siguranță și override-ul rapid mențin robotul controlabil chiar dacă o componentă de sensing se degradează.',
+        'limelight_note' => 'Pentru etapa națională am trecut pe Limelight (bazat pe Raspberry Pi) pentru a-l compara cu stack-ul nostru anterior de cameră.',
         'image_info' => 'Modelul nostru de detectare a mostrelor depășește în medie 90% acuratețe datorită setului robust de date și antrenării iterative.',
+        'robot_kicker' => 'Robot FTC Decode 2026',
+        'robot_title' => 'Construit pentru punctaj autonom fiabil',
+        'robot_description' => 'Robotul combină consistența mecanică cu un stack OpenML optimizat pentru detectarea rapidă a artefactelor și secvențe controlate de lansare. Rezultatul este un ciclu autonom stabil în condiții de competiție.',
+        'robot_stats_title' => 'Statistici de Performanță',
+        'robot_stat_detection_label' => 'Acuratețe Detecție',
+        'robot_stat_detection_value' => '90%+',
+        'robot_stat_latency_label' => 'Viteză Inferență',
+        'robot_stat_latency_value' => 'În timp real',
+        'robot_stat_validation_label' => 'Validare pe Teren',
+        'robot_stat_validation_value' => 'Testat în meci',
+        'robot_stat_season_label' => 'Focus Competițional',
+        'robot_stat_season_value' => 'Decode 2026',
         'contact_heading' => 'Detalii Contact',
         'name_label' => 'Nume',
         'name_placeholder' => 'Numele tău complet',
@@ -94,6 +136,8 @@ $translations = [
         'rights_reserved' => 'Toate drepturile rezervate.',
         'image_one_alt' => 'Previzualizare detecție obiecte',
         'image_two_alt' => 'Exemplu rezultat model',
+        'robot_image_alt' => 'Robot FTC Decode 2026',
+        'robot_action_alt' => 'Robot FTC care lansează artefacte',
         'chat_bubble' => 'Ai nevoie de ajutor cu OpenML?',
         'chat_bubble_sub' => 'Intreaba asistentul AlphaBit',
         'chat_title' => 'Asistent AI AlphaBit',
@@ -122,7 +166,7 @@ $text = $translations[$lang];
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/home.css?v=20260303">
+    <link rel="stylesheet" href="assets/css/home.css?v=20260305">
     <link rel="stylesheet" href="assets/css/chat.css?v=20260304">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -198,23 +242,65 @@ $text = $translations[$lang];
         <p class="fpage-news"><?php echo htmlspecialchars($text['second_news'], ENT_QUOTES, 'UTF-8'); ?></p>
 
         <div class="fpage-grid">
-            <article class="ftext-box ftext-left">
+            <article class="ftext-box ftext-left robot-features-box">
                 <p class="fpage-ftext"><?php echo htmlspecialchars($text['second_description'], ENT_QUOTES, 'UTF-8'); ?>
                 </p>
+                <h3 class="feature-section-title"><?php echo htmlspecialchars($text['features_section_title'], ENT_QUOTES, 'UTF-8'); ?></h3>
+                <div class="feature-groups">
+                    <section class="feature-group">
+                        <h4 class="feature-group-title"><?php echo htmlspecialchars($text['feature_sensor_title'], ENT_QUOTES, 'UTF-8'); ?></h4>
+                        <p class="feature-group-text"><?php echo htmlspecialchars($text['feature_sensor_text'], ENT_QUOTES, 'UTF-8'); ?></p>
+                    </section>
+                    <section class="feature-group">
+                        <h4 class="feature-group-title"><?php echo htmlspecialchars($text['feature_artifact_title'], ENT_QUOTES, 'UTF-8'); ?></h4>
+                        <p class="feature-group-text"><?php echo htmlspecialchars($text['feature_artifact_text'], ENT_QUOTES, 'UTF-8'); ?></p>
+                    </section>
+                    <section class="feature-group">
+                        <h4 class="feature-group-title"><?php echo htmlspecialchars($text['feature_control_title'], ENT_QUOTES, 'UTF-8'); ?></h4>
+                        <p class="feature-group-text"><?php echo htmlspecialchars($text['feature_control_text'], ENT_QUOTES, 'UTF-8'); ?></p>
+                    </section>
+                </div>
+                <p class="limelight-note"><?php echo htmlspecialchars($text['limelight_note'], ENT_QUOTES, 'UTF-8'); ?></p>
             </article>
 
-            <figure class="fimage-box fimage-top">
-                <img class="fpage-fimage" src="assets/images/simage-ml.jpeg"
-                    alt="<?php echo htmlspecialchars($text['image_one_alt'], ENT_QUOTES, 'UTF-8'); ?>">
+            <article class="fimage-box fimage-top robot-showcase">
+                <figure class="robot-photo-frame">
+                    <img class="fpage-fimage robot-image" src="assets/images/robot.png"
+                        alt="<?php echo htmlspecialchars($text['robot_image_alt'], ENT_QUOTES, 'UTF-8'); ?>">
+                </figure>
+                <div class="robot-stats-wrap">
+                    <p class="robot-stats-title"><?php echo htmlspecialchars($text['robot_stats_title'], ENT_QUOTES, 'UTF-8'); ?></p>
+                    <div class="robot-stats-grid">
+                        <div class="robot-stat">
+                            <span class="robot-stat-label"><?php echo htmlspecialchars($text['robot_stat_detection_label'], ENT_QUOTES, 'UTF-8'); ?></span>
+                            <span class="robot-stat-value"><?php echo htmlspecialchars($text['robot_stat_detection_value'], ENT_QUOTES, 'UTF-8'); ?></span>
+                        </div>
+                        <div class="robot-stat">
+                            <span class="robot-stat-label"><?php echo htmlspecialchars($text['robot_stat_latency_label'], ENT_QUOTES, 'UTF-8'); ?></span>
+                            <span class="robot-stat-value"><?php echo htmlspecialchars($text['robot_stat_latency_value'], ENT_QUOTES, 'UTF-8'); ?></span>
+                        </div>
+                        <div class="robot-stat">
+                            <span class="robot-stat-label"><?php echo htmlspecialchars($text['robot_stat_validation_label'], ENT_QUOTES, 'UTF-8'); ?></span>
+                            <span class="robot-stat-value"><?php echo htmlspecialchars($text['robot_stat_validation_value'], ENT_QUOTES, 'UTF-8'); ?></span>
+                        </div>
+                        <div class="robot-stat">
+                            <span class="robot-stat-label"><?php echo htmlspecialchars($text['robot_stat_season_label'], ENT_QUOTES, 'UTF-8'); ?></span>
+                            <span class="robot-stat-value"><?php echo htmlspecialchars($text['robot_stat_season_value'], ENT_QUOTES, 'UTF-8'); ?></span>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <figure class="simage-box fimage-bottom robot-action-box">
+                <img class="fpage-simage robot-action-gif" src="assets/images/robot_shoot.gif"
+                    alt="<?php echo htmlspecialchars($text['robot_action_alt'], ENT_QUOTES, 'UTF-8'); ?>">
             </figure>
 
-            <figure class="simage-box fimage-bottom">
-                <img class="fpage-simage" src="assets/images/fimage-ml.jpeg"
-                    alt="<?php echo htmlspecialchars($text['image_two_alt'], ENT_QUOTES, 'UTF-8'); ?>">
-            </figure>
-
-            <article class="ftext-box ftext-right">
-                <p class="fpage-ftext"><?php echo htmlspecialchars($text['image_info'], ENT_QUOTES, 'UTF-8'); ?></p>
+            <article class="ftext-box ftext-right robot-about-box">
+                <p class="robot-kicker"><?php echo htmlspecialchars($text['robot_kicker'], ENT_QUOTES, 'UTF-8'); ?></p>
+                <h3 class="robot-title"><?php echo htmlspecialchars($text['robot_title'], ENT_QUOTES, 'UTF-8'); ?></h3>
+                <p class="fpage-ftext"><?php echo htmlspecialchars($text['robot_description'], ENT_QUOTES, 'UTF-8'); ?></p>
+                <p class="fimage-info"><?php echo htmlspecialchars($text['image_info'], ENT_QUOTES, 'UTF-8'); ?></p>
             </article>
         </div>
         <div class="fpage-cta-wrap">

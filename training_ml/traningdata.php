@@ -30,6 +30,7 @@ $text = [
         'download' => 'Download Dataset',
         'training_data' => 'Training Data',
         'ml_model' => 'ML Model',
+        'online_training' => 'Online Training ML',
         'signup' => 'Sign Up',
         'login' => 'Login',
         'hello' => 'Hello',
@@ -43,6 +44,7 @@ $text = [
         'download' => 'Descarca Setul de Date',
         'training_data' => 'Date de Antrenament',
         'ml_model' => 'Model ML',
+        'online_training' => 'Antrenare ML Online',
         'signup' => 'Inregistrare',
         'login' => 'Autentificare',
         'hello' => 'Salut',
@@ -395,6 +397,8 @@ $current_year = date('Y');
                 href="/model/<?php echo htmlspecialchars($season_path, ENT_QUOTES, 'UTF-8'); ?>/training"><?php echo htmlspecialchars($t['training_data'], ENT_QUOTES, 'UTF-8'); ?></a>
             <a class="nav-link"
                 href="/model/<?php echo htmlspecialchars($season_path, ENT_QUOTES, 'UTF-8'); ?>/overview"><?php echo htmlspecialchars($t['ml_model'], ENT_QUOTES, 'UTF-8'); ?></a>
+            <a class="nav-link"
+                href="/model/<?php echo htmlspecialchars($season_path, ENT_QUOTES, 'UTF-8'); ?>/online_training_ml"><?php echo htmlspecialchars($t['online_training'], ENT_QUOTES, 'UTF-8'); ?></a>
         </nav>
 
         <div class="navbar-actions">

@@ -1,441 +1,87 @@
 <?php
-session_start();
-$record_file = fopen("/var/www/html/record_index.txt", "a");
-$txt = "prereq\n";
-$txtt = "prereq";
-$user_agent = $_SERVER["HTTP_USER_AGENT"];
-$ip = $_SERVER["REMOTE_ADDR"];
-$date = date('m/d/Y h:i:s a', time());
-$txt2 = $txtt . " " . $user_agent . " " . $ip . " " . $date . "\n";
-fwrite($record_file, $txt);
-fwrite($record_file, $txt2);
-fclose($record_file);
+$pageRecord = 'decode-apriltag-start';
+$pageTitleEn = 'AprilTag Detection - Getting Started';
+$pageTitleRo = 'Detectie AprilTag - Ghid de Initializare';
+$activePage = 'apriltag_start';
 
-$season_cookie = isset($_COOKIE['season_choice']) ? $_COOKIE['season_choice'] : 'IntoTheDeep';
-$season_year = ($season_cookie == 'Decode') ? '2026' : '2025';
-$season_path = ($season_cookie == 'Decode') ? 'decode' : 'intothedeep';
-if (isset($_COOKIE['detection_method'])) {
-    $detection_method = $_COOKIE['detection_method'];
-}
-if ($detection_method == 'color_blob') {
-    $detection_method = 'Color Blob Detection';
-}
-if ($detection_method == 'machine_learning') {
-    $detection_method = 'Machine Learning';
-}
-?>
+$contentEn = <<<'HTML'
+<div class="ftext">This page documents the exact AprilTag foundation used in the robot code (`drive/ComputerVision/AprilTagIdentification.java`) so teams can reproduce the same localization and pattern-detection workflow.</div>
 
-<!DOCTYPE html>
-<html>
+<div class="stext" style="color: white !important; font-size: 26px !important; font-weight: 500 !important; margin-top: 26px !important; margin-bottom: 14px !important; line-height: 1.1 !important;">Decode AprilTag Roles</div>
+<div class="rtext"><li>Pattern detection: IDs 21 / 22 / 23 map game pattern states (GPP/PGP/PPG).</li></div>
+<div class="rtext"><li>Localization correction: IDs 20 / 24 are used to estimate robot pose and bearing.</li></div>
+<div class="rtext"><li>Auto + TeleOp support: same vision source feeds autonomous case selection and pose reset utilities.</li></div>
 
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AlphaBit - OpenML</title>
-    <link rel="stylesheet" href="/assets/css/model_style.css?v=20260304">
-	<link rel="stylesheet" href="/assets/css/overview_theme.css?v=20260304">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="shortcut icon" type="image/x-icon" href="/assets/images/alphabit.ico" />
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/styles/atom-one-dark.min.css">
-    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/highlight.min.js"></script>
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            hljs.highlightAll();
-        });
-    </script>
-</head>
+<div class="stext" style="color: white !important; font-size: 26px !important; font-weight: 500 !important; margin-top: 26px !important; margin-bottom: 14px !important; line-height: 1.1 !important;">Camera Mount and Pose Offsets (from code)</div>
+<div class="rtext">The implementation uses camera pose offsets directly inside `AprilTagIdentification`:</div>
+<div class="rtext"><li>Position offsets (inch): X=0.0, Y=6.0236, Z=9.8818</li></div>
+<div class="rtext"><li>Orientation offsets (deg): Yaw=0.0, Pitch=-70.0, Roll=0.0</li></div>
+<div class="rtext">These values must match your physical mount geometry for reliable robot pose output.</div>
 
-<body>
-    <div id="language-popup" class="language-popup-overlay" style="display: none;">
-        <div class="language-popup-content">
-            <h2>Choose Language / Alege Limba</h2>
-            <div class="language-options">
-                <button onclick="selectLanguage('ro')">Română</button>
-                <button onclick="selectLanguage('en')">English</button>
-            </div>
-        </div>
+<div class="stext" style="color: white !important; font-size: 26px !important; font-weight: 500 !important; margin-top: 26px !important; margin-bottom: 14px !important; line-height: 1.1 !important;">Real Initialization Snippet</div>
+<div class="rtext">
+    <div class="codee-window">
+<pre><code class="language-java">aprilTagProcessor = new AprilTagProcessor.Builder()
+    .setDrawTagID(true)
+    .setDrawTagOutline(true)
+    .setDrawAxes(true)
+    .setDrawCubeProjection(true)
+    .setOutputUnits(DistanceUnit.INCH, AngleUnit.DEGREES)
+    .setCameraPose(cameraPosition, cameraOrientation)
+    .build();
+
+VisionPortal.Builder builder = new VisionPortal.Builder();
+builder.setCamera(hwdmap.get(WebcamName.class, "AlphaBit_Webcam"));
+builder.setCameraResolution(new Size(640, 480));
+builder.addProcessor(aprilTagProcessor);
+visionPortal = builder.build();</code></pre>
     </div>
+</div>
 
-    <style>
-        .language-popup-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.9);
-            z-index: 9999;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+<div class="stext" style="color: white !important; font-size: 26px !important; font-weight: 500 !important; margin-top: 26px !important; margin-bottom: 14px !important; line-height: 1.1 !important;">Pattern and Pose Readout Logic</div>
+<div class="rtext">Pattern and localization are filtered by tag IDs inside the same class:</div>
+<div class="rtext">
+    <div class="codee-window">
+<pre><code class="language-java">public int getPatternId(){
+    for (AprilTagDetection d : aprilTagProcessor.getDetections()) {
+        if (d.metadata != null && (d.id == 21 || d.id == 22 || d.id == 23)) {
+            detectionId = d.id;
         }
+    }
+    return detectionId;
+}
 
-        .language-popup-content {
-            background-color: #1e1e1e;
-            padding: 40px;
-            border-radius: 15px;
-            text-align: center;
-            border: 1px solid #333;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+public void getRobotPose(){
+    locTagFound = false;
+    for (AprilTagDetection d : aprilTagProcessor.getDetections()) {
+        if (d.metadata != null && (d.id == 20 || d.id == 24)) {
+            robotPose_x = d.robotPose.getPosition().x;
+            robotPose_y = d.robotPose.getPosition().y;
+            bearingAngle = d.ftcPose.bearing;
+            locTagFound = true;
         }
-
-        .language-popup-content h2 {
-            color: #fff;
-            margin-bottom: 35px;
-            font-family: Arial, sans-serif;
-        }
-
-        .language-options {
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-        }
-
-        .language-options button {
-            padding: 15px 30px;
-            font-size: 18px;
-            cursor: pointer;
-            background-color: #d4d4d4ff;
-            color: black;
-            border: none;
-            border-radius: 8px;
-        }
-
-        .language-options button:hover {
-            background-color: #ffffffff;
-            transform: scale(1.05);
-        }
-    </style>
-
-
-    <script>
-        function setCookie(name, value, days) {
-            var expires = "";
-            if (days) {
-                var date = new Date();
-                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-                expires = "; expires=" + date.toUTCString();
-            }
-            document.cookie = name + "=" + (value || "") + expires + "; path=/";
-        }
-
-        function getCookie(name) {
-            var nameEQ = name + "=";
-            var ca = document.cookie.split(';');
-            for (var i = 0; i < ca.length; i++) {
-                var c = ca[i];
-                while (c.charAt(0) == ' ') c = c.substring(1, c.length);
-                if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
-            }
-            return null;
-        }
-
-        function selectLanguage(lang) {
-            setCookie('site_lang', lang, 365);
-            document.getElementById('language-popup').style.display = 'none';
-            location.reload();
-        }
-
-        document.addEventListener("DOMContentLoaded", function () {
-            var lang = getCookie('site_lang');
-            if (!lang) {
-                document.getElementById('language-popup').style.display = 'flex';
-            }
-        });
-    </script>
-
-    <div class="background-container">
-        <div class="alphabit-topleft">
-            <a href="/">AlphaBit OpenML</a>
-        </div>
-        <div class="before_docs">
-            <?php echo $season_year; ?>
-        </div>
-        <div class="ai-star-logo">
-            <img src="/assets/images/ai_star_alpha.png" width=50>
-        </div>
-        <div class="docs">Documentation</div>
-        <div class="rbox">
-            <div class="title"><span style="color:#D4D4D4;">Getting Started with AprilTag Detection</span>
-            </div>
-            <div class="text-container">
-
-                <div class="stext"><b class="bc">1. What are AprilTags?</b></div>
-                <div class="rtext">
-                    AprilTags are a type of visual fiducial system, similar to QR codes, but designed specifically for
-                    robotics and machine vision. They are 2D bar codes that a standard webcam or phone camera can
-                    detect.
-                    Unlike standard QR codes which store data (like URLs), AprilTags are designed to provide highly
-                    accurate 3D position and orientation relative to the camera.
-                </div>
-                <div class="rtext">
-                    <img src="/assets/images/apriltag_example.png" width="400"
-                        style="border-radius: 10px; margin-top:10px;">
-                </div>
-
-                <div class="stext"><b class="bc">2. Why are AprilTags Helpful?</b></div>
-                <div class="rtext">
-                    <li><b class="bc">High Precision:</b> They provide a very accurate "pose" (position and rotation).
-                        This allows the robot to know exactly where it is on the field (Localization).</li>
-                </div>
-                <div class="rtext">
-                    <li><b class="bc">Robustness:</b> AprilTag algorithms are designed to work in varying lighting
-                        conditions,
-                        at steep angles, and even when the image is somewhat blurry or low resolution.</li>
-                </div>
-                <div class="rtext">
-                    <li><b class="bc">Speed:</b> The detection algorithm is computationally efficient, allowing for
-                        real-time detection on mobile processors (like the Control Hub or Android phones) without
-                        significant lag.</li>
-                </div>
-
-                <div class="stext"><b class="bc">3. What can you do with AprilTags?</b></div>
-                <div class="rtext">
-                    <b class="bc">Field Localization:</b> By placing tags at known locations on the field perimeter,
-                    your robot can calculate its exact X, Y, and Heading coordinates globally. This effectively fixes
-                    "odometry drift" that occurs over time with dead-reckoning.
-                </div>
-                <div class="rtext">
-                    <b class="bc">Automated Alignment:</b> You can put tags on specific game elements (like Backdrops,
-                    Baskets, or Junctions). The robot can detect the tag and automatically drive to align its intake
-                    or outtake mechanisms perfectly with the target.
-                </div>
-                <div class="rtext">
-                    <b class="bc">Multi-Tag Estimation:</b> Using a library like VisionPortal, you can detect multiple
-                    tags simultaneously to average the result, resulting in extremely stable navigation data.
-                </div>
-
-                <div class="stext"><b class="bc">4. How it Works (The Math)</b></div>
-                <div class="rtext">
-                    When the camera sees the black and white square, it identifies the four corners. Because the
-                    physical size of the tag is known (e.g., 2 inches or 5 inches), the software uses "SolvePnP"
-                    (Perspective-n-Point) geometry to calculate the translation vector (x, y, z distance) and
-                    rotation matrix (pitch, roll, yaw) required to make the tag appear that way in the image.
-                </div>
-
-                <div class="stext"><b class="bc">5. Requirements for Implementation</b></div>
-                <div class="rtext">
-                    <li>A standard UVC Webcam (Logitech C920, C270, etc.) or a built-in Phone Camera.</li>
-                </div>
-                <div class="rtext">
-                    <li>Camera Calibration data (Lens Intrinsics: fx, fy, cx, cy). This is crucial for accurate distance
-                        measurement.</li>
-                </div>
-                <div class="rtext">
-                    <li>The OpenML / VisionPortal software stack provided in this documentation.</li>
-                </div>
-
-                <div class="stext">Next Steps: Proceed to <b class="bc">AprilTag Implementation</b> to configure your
-                    code.</div>
-
-                <div class="endLine"></div>
-                <div class="endD"><a href="https://discord.gg/ZB6vQ62KZT">Support -> Discord</a></div>
-                <div class="end"></div>
-            </div>
-        </div>
-        <div class="docs-container">
-            <?php if ($lang == 'ro'): ?>
-                <div class="setup">Configurare</div>
-                <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/overview">Prezentare Generală</a></div>
-                <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/prerequisites">Initializare Device</a>
-                </div>
-                <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/resources">Resurse</a></div>
-                <div class="docsLine"></div>
-
-                <?php if ($season_cookie != 'Decode'): ?>
-                    <div class="setup">Detectie Sample 2D</div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/2d_start">Ghid de initializare</a>
-                    </div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/2d_cameracalib">Calibrarea Camerei</a>
-                    </div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/2d_python_test">Testare Detecție
-                            Python</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/2d_android">Implementare Android
-                            Studio</a></div>
-
-                    <div class="docsLine"></div>
-
-                    <div class="setup">Detectie Sample 3D</div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/3d_start">Ghid de initializare</a>
-                    </div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/3d_cameracalib">Calibrarea Camerei</a>
-                    </div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/3d_python_test">Testare Detecție
-                            Python</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/3d_android">Implementare Android
-                            Studio</a></div>
-
-                    <div class="docsLine"></div>
-
-
-                    <?php if ($detection_method != 'Color Blob Detection'): ?>
-                        <div class="setup">Antrenare ML</div>
-                        <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/training">Set de Date Antrenament</a>
-                        </div>
-                        <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/training_structure">Structura
-                                Antrenamentului</a></div>
-                        <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/label_tool">Utilitar Etichetare
-                                Imagini</a></div>
-                        <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/training_ml">Cod Python pentru
-                                Antrenament</a></div>
-
-                        <div class="docsLine"></div>
-                    <?php endif; ?>
-
-                    <div class="setup">Exemple</div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/pythonml">Cod Python pentru
-                            Detecție</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/android_studio">Implementare Android
-                            Studio</a></div>
-                    <?php if ($detection_method != 'Color Blob Detection'): ?>
-                        <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/robot_control">Control Colectare cu
-                                OpenML</a></div>
-                        <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/robot_control">Implementare ML
-                                Autonom</a></div>
-                        <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/robot_control">Implementare ML
-                                TeleOp</a></div>
-                    <?php endif; ?>
-                <?php else: ?>
-                    <div class="setup">Detectie AprilTag</div>
-                    <div class="sub-section">
-                        <p style="color:#c67171;">Ghid de initializare</p>
-                    </div>
-
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/apriltag_code_sample">Implementare
-                            AprilTag</a></div>
-
-                    <div class="docsLine"></div>
-
-                    <div class="setup">Control Autonom</div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/autonomous">Ghid de
-                            initializare</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/odometry">Odometrie</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/road_runner_056">Implementare Road
-                            Runner 0.5.6</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/road_runner_10">Implementare Road
-                            Runner 1.0</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/pedro_pathing">Implementare Pedro
-                            Pathing</a></div>
-
-                    <div class="docsLine"></div>
-
-                    <div class="setup">Turela de Ochire Automată</div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/auto_aiming_getting_started">Ghid de
-                            initializare</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/gyroscope_only">Implementare
-                            Doar IMU</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/camera_only">
-                            Implementare Doar Webcam</a>
-                    </div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/gyroscope_and_camera">Implementare
-                            IMU & Webcam</a>
-                    </div>
-                <?php endif; ?>
-            <?php else: ?>
-                <div class="setup">Setup</div>
-                <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/overview">Overview</a></div>
-                <div class="sub-section">
-                    <a href="/model/<?php echo $season_path; ?>/prerequisites">Getting Started</a>
-                </div>
-                <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/resources">Resources</a></div>
-                <div class="docsLine"></div>
-
-                <?php if ($season_cookie != 'Decode'): ?>
-                    <div class="setup">2D Sample Detection</div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/2d_start">Starter Guide</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/2d_cameracalib">Camera Calibration</a>
-                    </div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/2d_python_test">Python Detection
-                            Testing</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/2d_android">Android Studio
-                            Implementation</a></div>
-
-                    <div class="docsLine"></div>
-
-                    <div class="setup">3D Sample Detection</div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/3d_start">Starter Guide</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/3d_cameracalib">Camera Calibration</a>
-                    </div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/3d_python_test">Python Detection
-                            Testing</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/3d_android">Android Studio
-                            Implementation</a></div>
-
-                    <div class="docsLine"></div>
-
-
-                    <?php if ($detection_method != 'Color Blob Detection'): ?>
-                        <div class="setup">Training ML</div>
-                        <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/training">Training Dataset</a></div>
-                        <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/training_structure">Training
-                                Structure</a></div>
-                        <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/label_tool">Label Images Tool</a></div>
-                        <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/training_ml">Python Code For
-                                Training</a></div>
-
-                        <div class="docsLine"></div>
-                    <?php endif; ?>
-
-                    <div class="setup">Examples</div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/pythonml">Python Code For Detection</a>
-                    </div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/android_studio">Android Studio
-                            Implementation</a></div>
-                    <?php if ($detection_method != 'Color Blob Detection'): ?>
-                        <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/robot_control">Control Intake Using The
-                                OpenML</a></div>
-                        <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/robot_control">Autonomous ML
-                                Implementation</a></div>
-                        <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/robot_control">TeleOp ML
-                                Implementation</a></div>
-                    <?php endif; ?>
-                <?php else: ?>
-                    <div class="setup">AprilTag Detection</div>
-                    <div class="sub-section">
-                        <p style="color:#c67171;">Getting Started</p>
-                    </div>
-
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/apriltag_code_sample">AprilTag
-                            Implementation</a></div>
-
-                    <div class="docsLine"></div>
-
-                    <div class="setup">Autonomous Control</div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/autonomous">Getting
-                            Started</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/odometry">Odometry
-                            Pods</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/road_runner_056">Road Runner 0.5.6
-                            Implementation</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/road_runner_10">Road Runner 1.0
-                            Implementation</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/pedro_pathing">Pedro Pathing
-                            Implementation</a></div>
-
-                    <div class="docsLine"></div>
-
-                    <div class="setup">Auto Aiming Turret</div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/auto_aiming_getting_started">Getting
-                            Started</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/gyroscope_only">IMU
-                            Only
-                            Implementation</a></div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/camera_only">
-                            Webcam Only
-                            Implementation</a>
-                    </div>
-                    <div class="sub-section"><a href="/model/<?php echo $season_path; ?>/gyroscope_and_camera">IMU &
-                            Webcam
-                            Implementation</a>
-                    </div>
-                <?php endif; ?>
-            <?php endif; ?>
-        </div>
+    }
+}</code></pre>
     </div>
+</div>
 
-<?php include_once $_SERVER['DOCUMENT_ROOT'] . '/assets/includes/chat_widget.php'; ?>
-</body>
+<div class="stext" style="color: white !important; font-size: 26px !important; font-weight: 500 !important; margin-top: 26px !important; margin-bottom: 14px !important; line-height: 1.1 !important;">Integration Points in Main Robot Flow</div>
+<div class="rtext"><li>`ArtifactControl` calls `updateAprilTag()` and `updateArtifactPose()` each loop.</li></div>
+<div class="rtext"><li>`AutonomousControl` checks pattern tags during `opModeInInit()` to lock pattern before match start.</li></div>
+<div class="rtext"><li>Pose reset utilities use tag bearing + alliance offsets to re-anchor heading and pose.</li></div>
 
-</html>
+<div class="stext" style="color: white !important; font-size: 26px !important; font-weight: 500 !important; margin-top: 26px !important; margin-bottom: 14px !important; line-height: 1.1 !important;">Tuning and Reliability Checklist</div>
+<div class="rtext"><li>Confirm camera name exactly matches `AlphaBit_Webcam` in hardware config.</li></div>
+<div class="rtext"><li>Validate tag scale and mount angle before autonomous testing.</li></div>
+<div class="rtext"><li>Reject low-confidence detections when robot is moving aggressively.</li></div>
+<div class="rtext"><li>Prefer pose reset only when stationary and inside valid zone checks.</li></div>
+
+<div class="stext" style="color: white !important; font-size: 26px !important; font-weight: 500 !important; margin-top: 26px !important; margin-bottom: 14px !important; line-height: 1.1 !important;">Optional Color-Blob Companion Pipeline</div>
+<div class="rtext">The same class initializes `ColorBlobLocatorProcessor` for purple artifact detection with contour area and circularity filtering. This helps runtime artifact awareness alongside AprilTag field localization.</div>
+
+<div class="stext" style="color: white !important; font-size: 26px !important; font-weight: 500 !important; margin-top: 26px !important; margin-bottom: 14px !important; line-height: 1.1 !important;">Next Step: Open AprilTag Implementation for a full integration template with autonomous and turret subsystems.</div>
+HTML;
+
+$contentRo = '';
+
+require __DIR__ . '/../includes/decode_doc_page.php';

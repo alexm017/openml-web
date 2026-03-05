@@ -249,7 +249,7 @@ $lang = isset($_COOKIE['site_lang']) ? $_COOKIE['site_lang'] : 'en';
                             style="text-decoration:none; color:#ffffff;">Getting Started</a>.
                     </div>
 
-                    <div class="stext">Ce include aceasta sectiune</div>
+                    <div class="stext" style="color: white !important; font-size: 26px !important; font-weight: 500 !important; margin-top: 26px !important; margin-bottom: 14px !important; line-height: 1.1 !important;">Ce include aceasta sectiune</div>
                     <div class="rtext">
                         <li>Configurare AprilTag pentru localizare si orientare pe teren.</li>
                     </div>
@@ -263,7 +263,7 @@ $lang = isset($_COOKIE['site_lang']) ? $_COOKIE['site_lang'] : 'en';
                         <li>Exemple de implementare pentru integrare rapida pe robot.</li>
                     </div>
 
-                    <div class="stext">Parcurs recomandat</div>
+                    <div class="stext" style="color: white !important; font-size: 26px !important; font-weight: 500 !important; margin-top: 26px !important; margin-bottom: 14px !important; line-height: 1.1 !important;">Parcurs recomandat</div>
                     <div class="rtext">
                         <li>1. Finalizeaza setup-ul in <a href="/model/<?php echo $season_path; ?>/prerequisites"
                                 style="text-decoration:none; color:#ffffff;">Getting Started</a>.</li>
@@ -281,7 +281,7 @@ $lang = isset($_COOKIE['site_lang']) ? $_COOKIE['site_lang'] : 'en';
                                 style="text-decoration:none; color:#ffffff;">Auto Aiming</a>.</li>
                     </div>
 
-                    <div class="stext">
+                    <div class="stext" style="color: white !important; font-size: 26px !important; font-weight: 500 !important; margin-top: 26px !important; margin-bottom: 14px !important; line-height: 1.1 !important;">
                         Rezultatul dorit: un workflow stabil, usor de testat si gata pentru iteratii rapide in meciurile Decode.
                     </div>
                 <?php else: ?>
@@ -291,7 +291,7 @@ $lang = isset($_COOKIE['site_lang']) ? $_COOKIE['site_lang'] : 'en';
                             style="text-decoration:none; color:#ffffff;">Getting Started</a>.
                     </div>
 
-                    <div class="stext">What this section covers</div>
+                    <div class="stext" style="color: white !important; font-size: 26px !important; font-weight: 500 !important; margin-top: 26px !important; margin-bottom: 14px !important; line-height: 1.1 !important;">What this section covers</div>
                     <div class="rtext">
                         <li>AprilTag setup for field localization and robot orientation.</li>
                     </div>
@@ -305,7 +305,7 @@ $lang = isset($_COOKIE['site_lang']) ? $_COOKIE['site_lang'] : 'en';
                         <li>Implementation examples you can adapt directly to your robot codebase.</li>
                     </div>
 
-                    <div class="stext">Recommended path</div>
+                    <div class="stext" style="color: white !important; font-size: 26px !important; font-weight: 500 !important; margin-top: 26px !important; margin-bottom: 14px !important; line-height: 1.1 !important;">Recommended path</div>
                     <div class="rtext">
                         <li>1. Complete setup in <a href="/model/<?php echo $season_path; ?>/prerequisites"
                                 style="text-decoration:none; color:#ffffff;">Getting Started</a>.</li>
@@ -323,9 +323,6 @@ $lang = isset($_COOKIE['site_lang']) ? $_COOKIE['site_lang'] : 'en';
                                 style="text-decoration:none; color:#ffffff;">Auto Aiming</a>.</li>
                     </div>
 
-                    <div class="stext">
-                        Expected outcome: a stable, testable workflow your team can tune quickly for Decode matches.
-                    </div>
                 <?php endif; ?>
                 <div class="endLine"></div>
                 <div class="endD"><a href="https://discord.gg/ZB6vQ62KZT">Support -> Discord</a></div>
