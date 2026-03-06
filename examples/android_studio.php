@@ -21,7 +21,7 @@ fclose($record_file);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AlphaBit - OpenML</title>
     <link rel="stylesheet" href="/assets/css/model_style.css?v=20260304">
-	<link rel="stylesheet" href="/assets/css/overview_theme.css?v=20260304">
+	<link rel="stylesheet" href="/assets/css/overview_theme.css?v=20260306j">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/styles/atom-one-dark.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -145,7 +145,7 @@ fclose($record_file);
             <div class="text-container">
                 <?php
                 $lang = isset($_COOKIE['site_lang']) ? $_COOKIE['site_lang'] : 'en';
-                $season_cookie = isset($_COOKIE['season_choice']) ? $_COOKIE['season_choice'] : 'IntoTheDeep';
+                $season_cookie = isset($_COOKIE['season_choice']) ? $_COOKIE['season_choice'] : 'Decode';
                 $season_year = ($season_cookie == 'Decode') ? '2026' : '2025';
                 $season_path = ($season_cookie == 'Decode') ? 'decode' : 'intothedeep';
                 if (isset($_COOKIE['detection_method'])) {

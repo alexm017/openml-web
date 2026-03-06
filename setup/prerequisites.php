@@ -11,7 +11,7 @@ fwrite($record_file, $txt);
 fwrite($record_file, $txt2);
 fclose($record_file);
 
-$season_cookie = isset($_COOKIE['season_choice']) ? $_COOKIE['season_choice'] : 'IntoTheDeep';
+$season_cookie = isset($_COOKIE['season_choice']) ? $_COOKIE['season_choice'] : 'Decode';
 $season_year = ($season_cookie == 'Decode') ? '2026' : '2025';
 $season_path = ($season_cookie == 'Decode') ? 'decode' : 'intothedeep';
 if (isset($_COOKIE['detection_method'])) {
@@ -34,7 +34,7 @@ if ($detection_method == 'machine_learning') {
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>AlphaBit - OpenML</title>
 	<link rel="stylesheet" href="/assets/css/model_style.css?v=20260304">
-	<link rel="stylesheet" href="/assets/css/overview_theme.css?v=20260304">
+	<link rel="stylesheet" href="/assets/css/overview_theme.css?v=20260306j">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	<link rel="shortcut icon" type="image/x-icon" href="/assets/images/alphabit.ico" />

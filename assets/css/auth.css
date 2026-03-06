@@ -121,6 +121,7 @@ a {
 .navbar-actions {
   justify-self: end;
   justify-content: flex-end;
+  margin-right: 1.1rem;
 }
 
 .nav-link {
@@ -280,6 +281,10 @@ button:hover {
   .navbar-links,
   .navbar-actions {
     justify-content: center;
+  }
+
+  .navbar-actions {
+    margin-right: 0;
   }
 
   .navbar-links {

@@ -16,7 +16,7 @@ if ($lang !== 'ro') {
     $lang = 'en';
 }
 
-$season_cookie = isset($_COOKIE['season_choice']) ? $_COOKIE['season_choice'] : 'IntoTheDeep';
+$season_cookie = isset($_COOKIE['season_choice']) ? $_COOKIE['season_choice'] : 'Decode';
 $season_path = ($season_cookie === 'Decode') ? 'decode' : 'intothedeep';
 $season_year = ($season_cookie === 'Decode') ? '2026' : '2025';
 $is_logged_in = isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] === 'userLoggedIn';
@@ -189,6 +189,7 @@ $t = $text[$lang];
         .navbar-actions {
             justify-self: end;
             justify-content: flex-end;
+            margin-right: 1.1rem;
         }
 
         .nav-link,
@@ -366,6 +367,10 @@ $t = $text[$lang];
             .navbar-links,
             .navbar-actions {
                 justify-content: center;
+            }
+
+            .navbar-actions {
+                margin-right: 0;
             }
 
             .navbar-links {

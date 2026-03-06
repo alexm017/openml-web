@@ -11,7 +11,7 @@ fwrite($record_file, $txt);
 fwrite($record_file, $txt2);
 fclose($record_file);
 
-$season_cookie = isset($_COOKIE['season_choice']) ? $_COOKIE['season_choice'] : 'IntoTheDeep';
+$season_cookie = isset($_COOKIE['season_choice']) ? $_COOKIE['season_choice'] : 'Decode';
 $season_year = ($season_cookie == 'Decode') ? '2026' : '2025';
 $season_path = ($season_cookie == 'Decode') ? 'decode' : 'intothedeep';
 $detection_method = isset($_COOKIE['detection_method']) ? $_COOKIE['detection_method'] : 'machine_learning';
@@ -32,7 +32,7 @@ if ($detection_method == 'machine_learning') {
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>AlphaBit - OpenML</title>
 	<link rel="stylesheet" href="/assets/css/model_style.css?v=20260304">
-	<link rel="stylesheet" href="/assets/css/overview_theme.css?v=20260304">
+	<link rel="stylesheet" href="/assets/css/overview_theme.css?v=20260306j">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	<link rel="shortcut icon" type="image/x-icon" href="/assets/images/alphabit.ico" />
@@ -128,13 +128,6 @@ if ($detection_method == 'machine_learning') {
 			window.location.reload();
 		}
 
-		function selectSeason(season) {
-			setCookie('season_choice', season, 365);
-			document.getElementById('season-popup').style.display = 'none';
-			var seasonPath = season === 'Decode' ? 'decode' : 'intothedeep';
-			window.location.href = '/model/' + seasonPath + '/overview';
-		}
-
 		function selectChoice(choice) {
 			setCookie('detection_method', choice, 365);
 			document.getElementById('choice-popup').style.display = 'none';
@@ -152,10 +145,10 @@ if ($detection_method == 'machine_learning') {
 				return; // Stop here, wait for reload
 			}
 
-			// 2. Season Popup
+			// 2. Default season to Decode on first visit
 			if (!season_choice) {
-				document.getElementById('season-popup').style.display = 'flex';
-				return; // Stop here, wait for reload
+				setCookie('season_choice', 'Decode', 365);
+				season_choice = 'Decode';
 			}
 
 			// 3. Detection Method Popup (Into The Deep only)
@@ -275,80 +268,6 @@ if ($detection_method == 'machine_learning') {
 			transform: scale(1.05);
 		}
 	</style>
-
-
-
-
-	<div id="season-popup" class="season-popup-overlay" style="display: none;">
-		<div class="season-popup-content">
-			<?php if ($lang == 'ro'): ?>
-				<h2>Selecteaza Sezonul FTC</h2>
-				<div class="season-options">
-					<button onclick="selectSeason('IntoTheDeep')">Into The Deep (2025)</button>
-					<button onclick="selectSeason('Decode')">Decode (2026)</button>
-				</div>
-			<?php else: ?>
-				<h2>Select FTC Season for Detection Models</h2>
-				<div class="season-options">
-					<button onclick="selectSeason('IntoTheDeep')">Into The Deep (2025)</button>
-					<button onclick="selectSeason('Decode')">Decode (2026)</button>
-				</div>
-			<?php endif; ?>
-		</div>
-	</div>
-
-	<style>
-		.season-popup-overlay {
-			position: fixed;
-			top: 0;
-			left: 0;
-			width: 100%;
-			height: 100%;
-			background-color: rgba(0, 0, 0, 0.8);
-			z-index: 9999;
-			display: flex;
-			justify-content: center;
-			align-items: center;
-		}
-
-		.season-popup-content {
-			background-color: #1e1e1e;
-			padding: 40px;
-			border-radius: 15px;
-			text-align: center;
-			border: 1px solid #333;
-			box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-		}
-
-		.season-popup-content h2 {
-			color: #fff;
-			margin-bottom: 35px;
-			font-family: Arial, sans-serif;
-		}
-
-		.season-options {
-			display: flex;
-			gap: 20px;
-			justify-content: center;
-		}
-
-		.season-options button {
-			padding: 15px 30px;
-			font-size: 18px;
-			cursor: pointer;
-			background-color: #d4d4d4ff;
-			color: black;
-			border: none;
-			border-radius: 8px;
-		}
-
-		.season-options button:hover {
-			background-color: #ffffffff;
-			transform: scale(1.05);
-		}
-	</style>
-
-
 
 	<!------------------------------------------------------------------------>
 

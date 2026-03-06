@@ -28,7 +28,7 @@ if ($record_file) {
     fclose($record_file);
 }
 
-$season_cookie = isset($_COOKIE['season_choice']) ? $_COOKIE['season_choice'] : 'IntoTheDeep';
+$season_cookie = isset($_COOKIE['season_choice']) ? $_COOKIE['season_choice'] : 'Decode';
 $season_path = ($season_cookie === 'Decode') ? 'decode' : 'intothedeep';
 $team_name = isset($_SESSION['teamname']) ? (string) $_SESSION['teamname'] : '';
 
@@ -1931,6 +1931,7 @@ if ($formValues['slug'] !== '' && alphabit_model_pages_is_valid_season((string) 
             });
         })();
     </script>
+    <?php include_once __DIR__ . '/../assets/includes/season_switcher.php'; ?>
 </body>
 
 </html>

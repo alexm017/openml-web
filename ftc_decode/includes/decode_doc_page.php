@@ -94,7 +94,7 @@ $renderNavItem = static function (string $id, string $href, string $text) use ($
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AlphaBit - OpenML</title>
     <link rel="stylesheet" href="/assets/css/model_style.css?v=20260305">
-    <link rel="stylesheet" href="/assets/css/overview_theme.css?v=20260305">
+    <link rel="stylesheet" href="/assets/css/overview_theme.css?v=20260306j">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="shortcut icon" type="image/x-icon" href="/assets/images/alphabit.ico" />

@@ -111,5 +111,6 @@ if(isset($_FILES["file"])) {
 			';
 		}?>
 	</div>
+	<?php include_once __DIR__ . '/../assets/includes/season_switcher.php'; ?>
 </body>
 </html>

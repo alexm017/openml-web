@@ -21,7 +21,7 @@ if ($chat_lang === 'ro') {
     $chat_offline = 'Could not reach the assistant right now. Please check your connection.';
 }
 ?>
-<link rel="stylesheet" href="/assets/css/chat.css?v=20260304">
+<link rel="stylesheet" href="/assets/css/chat.css?v=20260306c">
 
 <div id="chat-bubble" class="chat-bubble">
     <span class="chat-bubble-title"><?php echo htmlspecialchars($chat_bubble_title, ENT_QUOTES, 'UTF-8'); ?></span>
@@ -64,4 +64,5 @@ window.AlphaBitChatConfig = {
     networkErrorMessage: <?php echo json_encode($chat_offline); ?>
 };
 </script>
+<?php include_once __DIR__ . '/season_switcher.php'; ?>
 <script src="/assets/js/chat.js?v=20260306"></script>

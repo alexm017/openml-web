@@ -16,7 +16,7 @@ if ($lang !== 'ro') {
     $lang = 'en';
 }
 
-$season_cookie = isset($_COOKIE['season_choice']) ? $_COOKIE['season_choice'] : 'IntoTheDeep';
+$season_cookie = isset($_COOKIE['season_choice']) ? $_COOKIE['season_choice'] : 'Decode';
 $season_path = ($season_cookie === 'Decode') ? 'decode' : 'intothedeep';
 $is_logged_in = isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] === 'userLoggedIn';
 $team_name = isset($_SESSION['teamname']) ? $_SESSION['teamname'] : '';
@@ -211,6 +211,7 @@ $current_year = date('Y');
         .navbar-actions {
             justify-self: end;
             justify-content: flex-end;
+            margin-right: 1.1rem;
         }
 
         .nav-link,
@@ -368,6 +369,10 @@ $current_year = date('Y');
             .navbar-links,
             .navbar-actions {
                 justify-content: center;
+            }
+
+            .navbar-actions {
+                margin-right: 0;
             }
 
             .navbar-links {

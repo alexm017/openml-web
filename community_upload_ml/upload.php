@@ -102,5 +102,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])) {
             }
         });
     </script>
+    <?php include_once __DIR__ . '/../assets/includes/season_switcher.php'; ?>
 </body>
 </html>

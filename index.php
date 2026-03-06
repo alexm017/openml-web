@@ -13,7 +13,7 @@ if ($record_file) {
 }
 
 $lang = isset($_COOKIE['site_lang']) ? $_COOKIE['site_lang'] : 'en';
-$season_cookie = isset($_COOKIE['season_choice']) ? $_COOKIE['season_choice'] : 'IntoTheDeep';
+$season_cookie = isset($_COOKIE['season_choice']) ? $_COOKIE['season_choice'] : 'Decode';
 $season_path = ($season_cookie === 'Decode') ? 'decode' : 'intothedeep';
 $is_logged_in = isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] === 'userLoggedIn';
 $team_name = isset($_SESSION['teamname']) ? $_SESSION['teamname'] : '';
@@ -26,6 +26,7 @@ $translations = [
         'training_data' => 'Training Data',
         'ml_model' => 'ML Model',
         'online_training' => 'Online Training ML',
+        'menu' => 'Menu',
         'admin_panel' => 'Admin Panel',
         'signup' => 'Sign Up',
         'login' => 'Login',
@@ -89,6 +90,7 @@ $translations = [
         'training_data' => 'Date de Antrenament',
         'ml_model' => 'Model ML',
         'online_training' => 'Antrenare ML Online',
+        'menu' => 'Meniu',
         'admin_panel' => 'Panou Admin',
         'signup' => 'Înregistrare',
         'login' => 'Autentificare',
@@ -166,8 +168,8 @@ $text = $translations[$lang];
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/home.css?v=20260305">
-    <link rel="stylesheet" href="assets/css/chat.css?v=20260304">
+    <link rel="stylesheet" href="assets/css/home.css?v=20260306p">
+    <link rel="stylesheet" href="assets/css/chat.css?v=20260306c">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="shortcut icon" type="image/x-icon" href="assets/images/alphabit.ico">
@@ -187,37 +189,51 @@ $text = $translations[$lang];
     <noscript>You need to enable JavaScript to run this website.</noscript>
 
     <section class="background-container">
-        <header class="site-navbar">
+        <header class="site-navbar" id="site-navbar">
             <a class="brand-link" href="/">
                 <span>AlphaBit OpenML</span>
                 <img class="brand-logo" src="assets/images/ai_star_alpha.png" alt="AlphaBit logo">
             </a>
 
-            <nav class="navbar-links" aria-label="Primary">
-                <a class="nav-link"
-                    href="model/<?php echo $season_path; ?>/training"><?php echo htmlspecialchars($text['training_data'], ENT_QUOTES, 'UTF-8'); ?></a>
-                <a class="nav-link"
-                    href="model/<?php echo $season_path; ?>/overview"><?php echo htmlspecialchars($text['ml_model'], ENT_QUOTES, 'UTF-8'); ?></a>
-                <a class="nav-link"
-                    href="model/<?php echo $season_path; ?>/online_training_ml"><?php echo htmlspecialchars($text['online_training'], ENT_QUOTES, 'UTF-8'); ?></a>
-            </nav>
+            <button
+                type="button"
+                id="navbar-toggle"
+                class="navbar-toggle"
+                aria-label="<?php echo htmlspecialchars($text['menu'], ENT_QUOTES, 'UTF-8'); ?>"
+                aria-expanded="false"
+                aria-controls="navbar-mobile-panel">
+                <span class="navbar-toggle-line" aria-hidden="true"></span>
+                <span class="navbar-toggle-line" aria-hidden="true"></span>
+                <span class="navbar-toggle-line" aria-hidden="true"></span>
+            </button>
 
-            <div class="navbar-actions">
-                <?php if (!$is_logged_in): ?>
-                    <a class="nav-link nav-link-soft"
-                        href="/register"><?php echo htmlspecialchars($text['signup'], ENT_QUOTES, 'UTF-8'); ?></a>
-                    <a class="nav-link nav-link-accent"
-                        href="/login"><?php echo htmlspecialchars($text['login'], ENT_QUOTES, 'UTF-8'); ?></a>
-                <?php else: ?>
-                    <?php if ($is_admin): ?>
+            <div class="navbar-mobile-panel" id="navbar-mobile-panel">
+                <nav class="navbar-links" aria-label="Primary">
+                    <a class="nav-link"
+                        href="model/<?php echo $season_path; ?>/training"><?php echo htmlspecialchars($text['training_data'], ENT_QUOTES, 'UTF-8'); ?></a>
+                    <a class="nav-link"
+                        href="model/<?php echo $season_path; ?>/overview"><?php echo htmlspecialchars($text['ml_model'], ENT_QUOTES, 'UTF-8'); ?></a>
+                    <a class="nav-link"
+                        href="model/<?php echo $season_path; ?>/online_training_ml"><?php echo htmlspecialchars($text['online_training'], ENT_QUOTES, 'UTF-8'); ?></a>
+                </nav>
+
+                <div class="navbar-actions">
+                    <?php if (!$is_logged_in): ?>
                         <a class="nav-link nav-link-soft"
-                            href="/admin/model-pages"><?php echo htmlspecialchars($text['admin_panel'], ENT_QUOTES, 'UTF-8'); ?></a>
+                            href="/register"><?php echo htmlspecialchars($text['signup'], ENT_QUOTES, 'UTF-8'); ?></a>
+                        <a class="nav-link nav-link-accent"
+                            href="/login"><?php echo htmlspecialchars($text['login'], ENT_QUOTES, 'UTF-8'); ?></a>
+                    <?php else: ?>
+                        <?php if ($is_admin): ?>
+                            <a class="nav-link nav-link-soft"
+                                href="/admin/model-pages"><?php echo htmlspecialchars($text['admin_panel'], ENT_QUOTES, 'UTF-8'); ?></a>
+                        <?php endif; ?>
+                        <a class="profile-chip" href="/profile">
+                            <img src="assets/images/user3.png" alt="Profile picture">
+                            <span><?php echo htmlspecialchars($text['hello'] . ' ' . $team_name . '!', ENT_QUOTES, 'UTF-8'); ?></span>
+                        </a>
                     <?php endif; ?>
-                    <a class="profile-chip" href="/profile">
-                        <img src="assets/images/user3.png" alt="Profile picture">
-                        <span><?php echo htmlspecialchars($text['hello'] . ' ' . $team_name . '!', ENT_QUOTES, 'UTF-8'); ?></span>
-                    </a>
-                <?php endif; ?>
+                </div>
             </div>
         </header>
 
@@ -463,9 +479,45 @@ $text = $translations[$lang];
             if (!getCookie('site_lang')) {
                 document.getElementById('language-popup').style.display = 'flex';
             }
+
+            var navbar = document.getElementById('site-navbar');
+            var navToggle = document.getElementById('navbar-toggle');
+            var navPanel = document.getElementById('navbar-mobile-panel');
+            if (!navbar || !navToggle || !navPanel) {
+                return;
+            }
+
+            function setMenuState(isOpen) {
+                navbar.classList.toggle('is-open', isOpen);
+                navToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+                if (window.innerWidth <= 980) {
+                    navPanel.style.display = isOpen ? 'flex' : 'none';
+                } else {
+                    navPanel.style.display = '';
+                }
+            }
+
+            setMenuState(false);
+
+            navToggle.addEventListener('click', function () {
+                setMenuState(!navbar.classList.contains('is-open'));
+            });
+
+            navPanel.addEventListener('click', function (event) {
+                if (event.target && event.target.closest('a')) {
+                    setMenuState(false);
+                }
+            });
+
+            window.addEventListener('resize', function () {
+                if (window.innerWidth > 980) {
+                    setMenuState(false);
+                }
+            });
         });
     </script>
     <script src="assets/js/chat.js?v=20260306"></script>
+    <?php include_once __DIR__ . '/assets/includes/season_switcher.php'; ?>
 </body>
 
 </html>

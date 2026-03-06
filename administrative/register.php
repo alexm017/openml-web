@@ -21,7 +21,7 @@ if ($conn->connect_error) {
     die('Connection failed: ' . $conn->connect_error);
 }
 
-$season_cookie = isset($_COOKIE['season_choice']) ? $_COOKIE['season_choice'] : 'IntoTheDeep';
+$season_cookie = isset($_COOKIE['season_choice']) ? $_COOKIE['season_choice'] : 'Decode';
 $season_path = ($season_cookie === 'Decode') ? 'decode' : 'intothedeep';
 
 $email = isset($_POST['email']) ? trim($_POST['email']) : '';
@@ -71,7 +71,7 @@ if ($email !== '' && $user_password !== '' && $teamname !== '') {
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/assets/css/auth.css?v=20260304">
+    <link rel="stylesheet" href="/assets/css/auth.css?v=20260306a">
     <link rel="shortcut icon" type="image/x-icon" href="/assets/images/alphabit.ico">
 </head>
 <body>
@@ -164,5 +164,6 @@ if ($email !== '' && $user_password !== '' && $teamname !== '') {
             }
         });
     </script>
+    <?php include_once __DIR__ . '/../assets/includes/season_switcher.php'; ?>
 </body>
 </html>
