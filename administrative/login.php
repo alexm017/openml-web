@@ -1,14 +1,9 @@
 <?php
 $servername = 'localhost';
-$db_username = 'root';
-$db_password = '72hFig28JGo0K';
-$database = 'alphabit';
+$db_username = '<REDACTED>';
+$db_password = '<REDACTED>';
+$database = '<REDACTED>';
 
-$record_file = @fopen('/var/www/html/record_index.txt', 'a');
-if ($record_file) {
-    fwrite($record_file, "login\n");
-    fclose($record_file);
-}
 
 session_start();
 require_once __DIR__ . '/../assets/includes/admin_access.php';
@@ -29,6 +24,7 @@ $season_path = ($season_cookie === 'Decode') ? 'decode' : 'intothedeep';
 $email = isset($_POST['email']) ? trim($_POST['email']) : '';
 $user_password = isset($_POST['password']) ? trim($_POST['password']) : '';
 $error = '';
+$default_profile_image_path = '/assets/images/user3.png';
 
 if ($email !== '' && $user_password !== '') {
     $stmt = $conn->prepare('SELECT teamname FROM users WHERE email = ? AND password = ? LIMIT 1');
@@ -40,10 +36,29 @@ if ($email !== '' && $user_password !== '') {
         if ($stmt->num_rows > 0) {
             $stmt->bind_result($teamname);
             $stmt->fetch();
+            $normalized_email = alphabit_normalize_email($email);
             $_SESSION['loggedIn'] = 'userLoggedIn';
             $_SESSION['teamname'] = $teamname;
-            $_SESSION['user_email'] = alphabit_normalize_email($email);
+            $_SESSION['user_email'] = $normalized_email;
             $_SESSION['is_admin'] = alphabit_is_admin_email($email) ? '1' : '0';
+
+            $session_profile_image_path = $default_profile_image_path;
+            $profile_stmt = $conn->prepare('SELECT image_path FROM team_profiles WHERE user_email = ? LIMIT 1');
+            if ($profile_stmt) {
+                $profile_stmt->bind_param('s', $normalized_email);
+                if ($profile_stmt->execute()) {
+                    $profile_stmt->bind_result($stored_image_path);
+                    if ($profile_stmt->fetch() && is_string($stored_image_path)) {
+                        $stored_image_path = trim($stored_image_path);
+                        if (preg_match('#^/assets/uploads/team_profiles/[a-zA-Z0-9._-]+$#', $stored_image_path) === 1) {
+                            $session_profile_image_path = $stored_image_path;
+                        }
+                    }
+                }
+                $profile_stmt->close();
+            }
+            $_SESSION['profile_image_path'] = $session_profile_image_path;
+
             setcookie(session_name(), session_id(), time() + 86400, '/');
             header('Location: /');
             exit;

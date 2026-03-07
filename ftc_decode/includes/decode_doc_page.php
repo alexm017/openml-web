@@ -10,15 +10,6 @@ $contentEn = isset($contentEn) ? trim((string) $contentEn) : '';
 $contentRo = isset($contentRo) ? trim((string) $contentRo) : '';
 $activePage = isset($activePage) ? trim((string) $activePage) : '';
 
-$recordFile = @fopen('/var/www/html/record_index.txt', 'a');
-if ($recordFile) {
-    $userAgent = isset($_SERVER['HTTP_USER_AGENT']) ? (string) $_SERVER['HTTP_USER_AGENT'] : 'unknown-agent';
-    $ip = isset($_SERVER['REMOTE_ADDR']) ? (string) $_SERVER['REMOTE_ADDR'] : 'unknown-ip';
-    $date = date('m/d/Y h:i:s a', time());
-    fwrite($recordFile, $pageRecord . "\n");
-    fwrite($recordFile, $pageRecord . ' ' . $userAgent . ' ' . $ip . ' ' . $date . "\n");
-    fclose($recordFile);
-}
 
 $lang = isset($_COOKIE['site_lang']) ? (string) $_COOKIE['site_lang'] : 'en';
 if ($lang !== 'ro') {

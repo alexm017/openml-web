@@ -1,15 +1,5 @@
 <?php
 session_start();
-$record_file = fopen("/var/www/html/record_index.txt", "a");
-$txt = "modelo\n";
-$txtt = "modelo";
-$user_agent = $_SERVER["HTTP_USER_AGENT"];
-$ip = $_SERVER["REMOTE_ADDR"];
-$date = date('m/d/Y h:i:s a', time());
-$txt2 = $txtt . " " . $user_agent . " " . $ip . " " . $date . "\n";
-fwrite($record_file, $txt);
-fwrite($record_file, $txt2);
-fclose($record_file);
 
 $season_cookie = isset($_COOKIE['season_choice']) ? $_COOKIE['season_choice'] : 'Decode';
 $season_year = ($season_cookie == 'Decode') ? '2026' : '2025';

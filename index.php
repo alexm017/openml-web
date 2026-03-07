@@ -2,21 +2,16 @@
 session_start();
 require_once __DIR__ . '/assets/includes/admin_access.php';
 
-$record_file = @fopen('/var/www/html/record_index.txt', 'a');
-if ($record_file) {
-    $user_agent = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : 'unknown-agent';
-    $ip = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : 'unknown-ip';
-    $date = date('m/d/Y h:i:s a');
-    fwrite($record_file, "index\n");
-    fwrite($record_file, 'index ' . $user_agent . ' ' . $ip . ' ' . $date . "\n");
-    fclose($record_file);
-}
 
 $lang = isset($_COOKIE['site_lang']) ? $_COOKIE['site_lang'] : 'en';
 $season_cookie = isset($_COOKIE['season_choice']) ? $_COOKIE['season_choice'] : 'Decode';
 $season_path = ($season_cookie === 'Decode') ? 'decode' : 'intothedeep';
 $is_logged_in = isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] === 'userLoggedIn';
 $team_name = isset($_SESSION['teamname']) ? $_SESSION['teamname'] : '';
+$profile_image_path = isset($_SESSION['profile_image_path']) ? (string) $_SESSION['profile_image_path'] : '/assets/images/user3.png';
+if (preg_match('#^/assets/uploads/team_profiles/[a-zA-Z0-9._-]+$#', $profile_image_path) !== 1) {
+    $profile_image_path = '/assets/images/user3.png';
+}
 $is_admin = $is_logged_in && alphabit_session_is_admin();
 $current_year = date('Y');
 
@@ -229,7 +224,7 @@ $text = $translations[$lang];
                                 href="/admin/model-pages"><?php echo htmlspecialchars($text['admin_panel'], ENT_QUOTES, 'UTF-8'); ?></a>
                         <?php endif; ?>
                         <a class="profile-chip" href="/profile">
-                            <img src="assets/images/user3.png" alt="Profile picture">
+                            <img src="<?php echo htmlspecialchars($profile_image_path, ENT_QUOTES, 'UTF-8'); ?>" alt="Profile picture">
                             <span><?php echo htmlspecialchars($text['hello'] . ' ' . $team_name . '!', ENT_QUOTES, 'UTF-8'); ?></span>
                         </a>
                     <?php endif; ?>

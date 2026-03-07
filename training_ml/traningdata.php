@@ -1,15 +1,6 @@
 <?php
 session_start();
 
-$record_file = @fopen('/var/www/html/record_index.txt', 'a');
-if ($record_file) {
-    $user_agent = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : 'unknown-agent';
-    $ip = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : 'unknown-ip';
-    $date = date('m/d/Y h:i:s a');
-    fwrite($record_file, "training-data\n");
-    fwrite($record_file, 'training-data ' . $user_agent . ' ' . $ip . ' ' . $date . "\n");
-    fclose($record_file);
-}
 
 $lang = isset($_COOKIE['site_lang']) ? $_COOKIE['site_lang'] : 'en';
 if ($lang !== 'ro') {
@@ -20,13 +11,17 @@ $season_cookie = isset($_COOKIE['season_choice']) ? $_COOKIE['season_choice'] : 
 $season_path = ($season_cookie === 'Decode') ? 'decode' : 'intothedeep';
 $is_logged_in = isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] === 'userLoggedIn';
 $team_name = isset($_SESSION['teamname']) ? $_SESSION['teamname'] : '';
+$profile_image_path = isset($_SESSION['profile_image_path']) ? (string) $_SESSION['profile_image_path'] : '/assets/images/user3.png';
+if (preg_match('#^/assets/uploads/team_profiles/[a-zA-Z0-9._-]+$#', $profile_image_path) !== 1) {
+    $profile_image_path = '/assets/images/user3.png';
+}
 
 $text = [
     'en' => [
         'title' => 'Training Datasets',
         'subtitle' => 'Choose a dataset, review its preview section, and download the package.',
-        'preview' => 'Preview placeholder',
-        'preview_hint' => 'Add your dataset preview (image/video/notes) here later.',
+        'preview' => 'Preview image',
+        'preview_hint' => '',
         'download' => 'Download Dataset',
         'training_data' => 'Training Data',
         'ml_model' => 'ML Model',
@@ -39,8 +34,8 @@ $text = [
     'ro' => [
         'title' => 'Training Datasets',
         'subtitle' => 'Alege un set de date, vezi zona de preview și descarcă pachetul.',
-        'preview' => 'Placeholder preview',
-        'preview_hint' => 'Adauga aici mai tarziu preview-ul setului (imagine/video/notite).',
+        'preview' => 'Preview image',
+        'preview_hint' => '',
         'download' => 'Descarca Setul de Date',
         'training_data' => 'Date de Antrenament',
         'ml_model' => 'Model ML',
@@ -412,7 +407,7 @@ $current_year = date('Y');
                 <a class="nav-link" href="/login"><?php echo htmlspecialchars($t['login'], ENT_QUOTES, 'UTF-8'); ?></a>
             <?php else: ?>
                 <a class="profile-chip" href="/profile">
-                    <img src="/assets/images/user3.png" alt="Profile">
+                    <img src="<?php echo htmlspecialchars($profile_image_path, ENT_QUOTES, 'UTF-8'); ?>" alt="Profile">
                     <span><?php echo htmlspecialchars($t['hello'] . ', ' . $team_name, ENT_QUOTES, 'UTF-8'); ?></span>
                 </a>
             <?php endif; ?>
@@ -439,9 +434,7 @@ $current_year = date('Y');
                                 alt="<?php echo htmlspecialchars(($lang === 'ro' ? $dataset['title_ro'] : $dataset['title_en']) . ' preview', ENT_QUOTES, 'UTF-8'); ?>">
                         <?php else: ?>
                             <div>
-                                <strong><?php echo htmlspecialchars($t['preview'], ENT_QUOTES, 'UTF-8'); ?>
-                                    <?php echo $index + 1; ?></strong><br>
-                                <?php echo htmlspecialchars($t['preview_hint'], ENT_QUOTES, 'UTF-8'); ?>
+                                <strong><?php echo htmlspecialchars($t['preview'], ENT_QUOTES, 'UTF-8'); ?></strong>
                             </div>
                         <?php endif; ?>
                     </div>

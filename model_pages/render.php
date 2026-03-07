@@ -6,15 +6,6 @@ session_start();
 require_once __DIR__ . '/../assets/includes/model_pages_store.php';
 require_once __DIR__ . '/../assets/includes/model_routes.php';
 
-$record_file = @fopen('/var/www/html/record_index.txt', 'a');
-if ($record_file) {
-    $user_agent = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : 'unknown-agent';
-    $ip = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : 'unknown-ip';
-    $date = date('m/d/Y h:i:s a');
-    fwrite($record_file, "custom-model-page\n");
-    fwrite($record_file, 'custom-model-page ' . $user_agent . ' ' . $ip . ' ' . $date . "\n");
-    fclose($record_file);
-}
 
 $season = strtolower(trim((string) ($_GET['season'] ?? '')));
 $slug = alphabit_model_pages_slugify((string) ($_GET['slug'] ?? ''));

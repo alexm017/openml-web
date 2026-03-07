@@ -18,15 +18,6 @@ if (!alphabit_session_is_admin()) {
     exit;
 }
 
-$record_file = @fopen('/var/www/html/record_index.txt', 'a');
-if ($record_file) {
-    $user_agent = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : 'unknown-agent';
-    $ip = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : 'unknown-ip';
-    $date = date('m/d/Y h:i:s a');
-    fwrite($record_file, "model-pages-admin\n");
-    fwrite($record_file, 'model-pages-admin ' . $user_agent . ' ' . $ip . ' ' . $date . "\n");
-    fclose($record_file);
-}
 
 $season_cookie = isset($_COOKIE['season_choice']) ? $_COOKIE['season_choice'] : 'Decode';
 $season_path = ($season_cookie === 'Decode') ? 'decode' : 'intothedeep';

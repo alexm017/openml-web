@@ -1,14 +1,9 @@
 <?php
 $servername = 'localhost';
-$db_username = 'root';
-$db_password = '72hFig28JGo0K';
-$database = 'alphabit';
+$db_username = '<REDACTED>';
+$db_password = '<REDACTED>';
+$database = '<REDACTED>';
 
-$record_file = @fopen('/var/www/html/record_index.txt', 'a');
-if ($record_file) {
-    fwrite($record_file, "signup\n");
-    fclose($record_file);
-}
 
 session_start();
 if (isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] === 'userLoggedIn') {

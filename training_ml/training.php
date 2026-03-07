@@ -1,11 +1,4 @@
 <?php
-$record_file = fopen("/var/www/html/record_index.txt", "a");
-$txt = "training\n";
-$date = date('m/d/Y h:i:s a', time());
-$txt2 = "trainingIP: " . $_SERVER["REMOTE_ADDR"] . " date: " . $date . "\n";
-fwrite($record_file, $txt);
-fwrite($record_file, $txt2);
-fclose($record_file);
 ?>
 <!DOCTYPE html>
 <html>

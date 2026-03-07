@@ -1,15 +1,6 @@
 <?php
 session_start();
 
-$record_file = @fopen('/var/www/html/record_index.txt', 'a');
-if ($record_file) {
-    $user_agent = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : 'unknown-agent';
-    $ip = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : 'unknown-ip';
-    $date = date('m/d/Y h:i:s a');
-    fwrite($record_file, "online-training-ml\n");
-    fwrite($record_file, 'online-training-ml ' . $user_agent . ' ' . $ip . ' ' . $date . "\n");
-    fclose($record_file);
-}
 
 $lang = isset($_COOKIE['site_lang']) ? $_COOKIE['site_lang'] : 'en';
 if ($lang !== 'ro') {
@@ -21,6 +12,10 @@ $season_path = ($season_cookie === 'Decode') ? 'decode' : 'intothedeep';
 $season_year = ($season_cookie === 'Decode') ? '2026' : '2025';
 $is_logged_in = isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] === 'userLoggedIn';
 $team_name = isset($_SESSION['teamname']) ? $_SESSION['teamname'] : '';
+$profile_image_path = isset($_SESSION['profile_image_path']) ? (string) $_SESSION['profile_image_path'] : '/assets/images/user3.png';
+if (preg_match('#^/assets/uploads/team_profiles/[a-zA-Z0-9._-]+$#', $profile_image_path) !== 1) {
+    $profile_image_path = '/assets/images/user3.png';
+}
 $current_year = date('Y');
 
 $text = [
@@ -412,7 +407,7 @@ $t = $text[$lang];
                 <a class="nav-link" href="/login"><?php echo htmlspecialchars($t['login'], ENT_QUOTES, 'UTF-8'); ?></a>
             <?php else: ?>
                 <a class="profile-chip" href="/profile">
-                    <img src="/assets/images/user3.png" alt="Profile">
+                    <img src="<?php echo htmlspecialchars($profile_image_path, ENT_QUOTES, 'UTF-8'); ?>" alt="Profile">
                     <span><?php echo htmlspecialchars($t['hello'] . ', ' . $team_name, ENT_QUOTES, 'UTF-8'); ?></span>
                 </a>
             <?php endif; ?>

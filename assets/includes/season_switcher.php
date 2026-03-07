@@ -10,7 +10,8 @@ $isModelPath = is_string($requestPath) && preg_match('#^/model(?:/|$)#', $reques
 $isHomePath = ($requestPath === '/' || $requestPath === '/index.php');
 $isAuthPath = in_array($requestPath, ['/login', '/register', '/administrative/login.php', '/administrative/register.php'], true);
 $isTrainingDataPath = is_string($requestPath) && preg_match('#^/model/(?:decode|intothedeep)/training(?:/|$)#', $requestPath) === 1;
-$showSeasonSwitchButton = $isModelPath && !$isTrainingDataPath;
+$isOnlineTrainingPath = is_string($requestPath) && preg_match('#^/model/(?:decode|intothedeep)/online_training_ml(?:/|$)#', $requestPath) === 1;
+$showSeasonSwitchButton = $isModelPath && !$isTrainingDataPath && !$isOnlineTrainingPath;
 
 $rawSeasonChoice = isset($_COOKIE['season_choice']) ? (string) $_COOKIE['season_choice'] : 'Decode';
 $seasonChoice = ($rawSeasonChoice === 'IntoTheDeep') ? 'IntoTheDeep' : 'Decode';
